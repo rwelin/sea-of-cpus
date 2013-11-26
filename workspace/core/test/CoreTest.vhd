@@ -3,6 +3,7 @@ library work;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.all;
+use work.core_interface.all;
 
 entity CoreTest is
 end CoreTest;
@@ -15,8 +16,8 @@ architecture behav of CoreTest is
     signal dia, dib, dic, did: word;
     signal we: std_logic;
     signal br_addra, br_addrb: ram_addr;
-    signal br_douta, br_doutb: word;
-    signal br_dina, br_dinb: word;
+    signal br_doa, br_dob: word;
+    signal br_dia, br_dib: word;
     signal br_wea, br_web: word;
 
 begin
@@ -33,8 +34,8 @@ begin
 
     br_addra <= (others => '0');
     br_addrb <= (others => '0');
-    br_dina <= (others => '0');
-    br_dinb <= (others => '0');
+    br_dia <= (others => '0');
+    br_dib <= (others => '0');
     br_wea <= (others => '0');
     br_web <= (others => '0');
 
@@ -54,14 +55,14 @@ begin
         dic => dic,
         did => did,
         we => we,
-        br_addra,
-        br_addrb,
-        br_douta,
-        br_doutb,
-        br_dina,
-        br_dinb,
-        br_wea,
-        br_web
+        br_addra => br_addra,
+        br_addrb => br_addrb,
+        br_doa => br_doa,
+        br_dob => br_dob,
+        br_dia => br_dia,
+        br_dib => br_dib ,
+        br_wea => br_wea,
+        br_web => br_web
     );
 
     ClkGen : process

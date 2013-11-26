@@ -100,6 +100,8 @@ begin
         DOB => br_dob,
         CLKA => clk,
         CLKB => clk,
+        ENA => '1',
+        ENB => '1',
         REGCEA => '1',
         REGCEB => '1',
         RSTA => '0',
