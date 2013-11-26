@@ -18,7 +18,7 @@ architecture behav of CoreTest is
     signal br_addra, br_addrb: ram_addr;
     signal br_doa, br_dob: word;
     signal br_dia, br_dib: word;
-    signal br_wea, br_web: word;
+    signal br_wea, br_web: std_logic;
 
 begin
 
@@ -36,8 +36,8 @@ begin
     br_addrb <= (others => '0');
     br_dia <= (others => '0');
     br_dib <= (others => '0');
-    br_wea <= (others => '0');
-    br_web <= (others => '0');
+    br_wea <= '0';
+    br_web <= '0';
 
     CoreInst : entity Core
     port map (

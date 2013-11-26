@@ -7,6 +7,7 @@ package core_interface is
     constant WORD_LENGTH: integer := 18;
     constant REGISTER_ADDR_LENGTH: integer := 6;
     constant RAM_ADDR_LENGTH: integer := 11;
+    constant RAM_DEPTH: integer := 2**RAM_ADDR_LENGTH;
     constant OPCODE_LENGTH: integer := 4;
 
     subtype word is std_logic_vector(WORD_LENGTH - 1 downto 0);

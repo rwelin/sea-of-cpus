@@ -1,10 +1,10 @@
 library ieee;
-library unimacro;
 library unisim;
+library work;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use unimacro.vcomponents.all;
 use unisim.vcomponents.all;
+use work.all;
 use work.core_interface.all;
 
 entity Core is
@@ -17,7 +17,7 @@ entity Core is
         br_addra, br_addrb: in ram_addr;
         br_doa, br_dob: out word;
         br_dia, br_dib: in word;
-        br_wea, br_web: in word
+        br_wea, br_web: in std_logic
     );
 end Core;
 
@@ -78,36 +78,17 @@ begin
          );
     end generate GenerateRegisterFile;
 
-    block_ram : BRAM_TDP_MACRO
-    generic map (
-        BRAM_SIZE => "36Kb",
-        DEVICE => "Virtex6",
-        DOA_REG => 1,
-        DOB_REG => 1,
-        READ_WIDTH_A => WORD_LENGTH,
-        READ_WIDTH_B => WORD_LENGTH,
-        SIM_COLLISION_CHECK => "ALL",
-        WRITE_MODE_A => "WRITE_FIRST",
-        WRITE_MODE_B => "WRITE_FIRST",
-        WRITE_WIDTH_A => WORD_LENGTH,
-        WRITE_WIDTH_B => WORD_LENGTH)
+    MainRam : entity BlockRam
     port map (
-        ADDRA => br_addra,
-        ADDRB => br_addrb,
-        DIA => br_dia,
-        DIB => br_dib,
-        DOA => br_doa,
-        DOB => br_dob,
-        CLKA => clk,
-        CLKB => clk,
-        ENA => '1',
-        ENB => '1',
-        REGCEA => '1',
-        REGCEB => '1',
-        RSTA => '0',
-        RSTB => '0',
-        WEA => br_wea,
-        WEB => br_web 
+        addra => br_addra,
+        addrb => br_addrb,
+        dia => br_dia,
+        dib => br_dib,
+        doa => br_doa,
+        dob => br_dob,
+        clk => clk,
+        wea => br_wea,
+        web => br_web
     );
 
 end behav;
