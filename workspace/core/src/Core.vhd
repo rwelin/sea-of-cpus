@@ -12,7 +12,7 @@ entity Core is
         clk: in std_logic;
         doa, dob, doc, dod: out word;
         addra, addrb, addrc, addrd: in register_addr;
-        dia, dib, dic, did: in word;
+        did: in word;
         we: in std_logic;
         br_addra, br_addrb: in ram_addr;
         br_doa, br_dob: out word;
@@ -49,34 +49,67 @@ architecture behav of Core is
 
 begin
 
-    GenerateRegisterFile: for i in 0 to 17 generate
-        RAM64M_inst : RAM64M
-        generic map (
-            INIT_A => X"0000000000000000", -- Initial contents of A port
-            INIT_B => X"0000000000000000", -- Initial contents of B port
-            INIT_C => X"0000000000000000", -- Initial contents of C port
-            INIT_D => X"0000000000000000") -- Initial contents of D port
-        port map (
-             DOA => doa(i), -- Read port A 1-bit output
-             DOB => dob(i), -- Read port B 1-bit output
-             DOC => doc(i), -- Read port C 1-bit output
-             DOD => dod(i), -- Read/Write port D 1-bit output
-             ADDRA => addra, -- Read port A 6-bit address input
-             ADDRB => addrb, -- Read port B 6-bit address input
-             ADDRC => addrc, -- Read port C 6-bit address input
-             ADDRD => addrd, -- Read/Write port D 6-bit address input
-             DIA => dia(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRA
-             DIB => dib(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRB
-             DIC => dic(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRC
-             DID => did(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRD
-             WCLK => clk, -- Write clock input
-             WE => we -- Write enable input
-         );
-    end generate GenerateRegisterFile;
+--    GenerateRegisterFile: for i in 0 to 17 generate
+--        RAM64M_inst : RAM64M
+--        generic map (
+--            INIT_A => X"0000000000000000", -- Initial contents of A port
+--            INIT_B => X"0000000000000000", -- Initial contents of B port
+--            INIT_C => X"0000000000000000", -- Initial contents of C port
+--            INIT_D => X"0000000000000000") -- Initial contents of D port
+--        port map (
+--             DOA => doa(i), -- Read port A 1-bit output
+--             DOB => dob(i), -- Read port B 1-bit output
+--             DOC => doc(i), -- Read port C 1-bit output
+--             DOD => dod(i), -- Read/Write port D 1-bit output
+--             ADDRA => addra, -- Read port A 6-bit address input
+--             ADDRB => addrb, -- Read port B 6-bit address input
+--             ADDRC => addrc, -- Read port C 6-bit address input
+--             ADDRD => addrd, -- Read/Write port D 6-bit address input
+--             DIA => did(i), -- RAM 1-bit data write input addressed by ADDRD,
+--                         -- read addressed by ADDRA
+--             DIB => did(i), -- RAM 1-bit data write input addressed by ADDRD,
+--                         -- read addressed by ADDRB
+--             DIC => did(i), -- RAM 1-bit data write input addressed by ADDRD,
+--                         -- read addressed by ADDRC
+--             DID => did(i), -- RAM 1-bit data write input addressed by ADDRD,
+--                         -- read addressed by ADDRD
+--             WCLK => clk, -- Write clock input
+--             WE => we -- Write enable input
+--         );
+--    end generate GenerateRegisterFile;
+
+--    GenerateRegisterFile: for i in 0 to 17 generate
+--        RegisterFile : entity QuadPortRam
+--        port map (
+--             doa => doa(i), -- Read port A 1-bit output
+--             dob => dob(i), -- Read port B 1-bit output
+--             doc => doc(i), -- Read port C 1-bit output
+--             dod => dod(i), -- Read/Write port D 1-bit output
+--             addra => addra, -- Read port A 6-bit address input
+--             addrb => addrb, -- Read port B 6-bit address input
+--             addrc => addrc, -- Read port C 6-bit address input
+--             addrd => addrd, -- Read/Write port D 6-bit address input
+--             did => did(i), -- RAM 1-bit data write input addressed by ADDRD,
+--                         -- read addressed by ADDRD
+--             clk => clk, -- Write clock input
+--             we => we -- Write enable input
+--         );
+--    end generate GenerateRegisterFile;
+
+    RegisterFile : entity QuadPortRegisterFile
+    port map (
+        clk => clk,
+        doa => doa,
+        dob => dob,
+        doc => doc,
+        dod => dod,
+        did => did,
+        addra => addra,
+        addrb => addrb,
+        addrc => addrc,
+        addrd => addrd,
+        we => we
+    );
 
     MainRam : entity BlockRam
     port map (
