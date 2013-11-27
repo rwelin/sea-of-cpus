@@ -13,7 +13,7 @@ architecture behav of CoreTest is
     signal clk: std_logic;
     signal doa, dob, doc, dod: word;
     signal addra, addrb, addrc, addrd: register_addr;
-    signal dia, dib, dic, did: word;
+    signal did: word;
     signal we: std_logic;
     signal br_addra, br_addrb: ram_addr;
     signal br_doa, br_dob: word;
@@ -22,22 +22,7 @@ architecture behav of CoreTest is
 
 begin
 
-    dia <= (others => '0');
-    dib <= (others => '0');
-    dic <= (others => '0');
-    did <= (others => '0');
-    addra <= (others => '0');
-    addrb <= (others => '0');
-    addrc <= (others => '0');
-    addrd <= (others => '0');
-    we <= '0';
 
-    br_addra <= (others => '0');
-    br_addrb <= (others => '0');
-    br_dia <= (others => '0');
-    br_dib <= (others => '0');
-    br_wea <= '0';
-    br_web <= '0';
 
     CoreInst : entity Core
     port map (
@@ -50,9 +35,6 @@ begin
         addrb => addrb,
         addrc => addrc,
         addrd => addrd,
-        dia => dia,
-        dib => dib,
-        dic => dic,
         did => did,
         we => we,
         br_addra => br_addra,
@@ -75,6 +57,44 @@ begin
 
     Test : process
     begin
+    
+        did <= (others => '0');
+        addra <= (others => '0');
+        addra(0) <= '1';
+        addrb <= (others => '0');
+        addrc <= (others => '0');
+        addrd <= (others => '0');
+        we <= '0';
+        
+        wait until clk'event and clk = '1';
+        addrd(0) <= '1';
+        we <= '1';
+        did(0) <= '1';
+        
+        wait until clk'event and clk = '1';
+        we <= '0';
+        
+        wait until clk'event and clk = '1';
+        --addra(0) <= '1';
+            
+--        br_addra <= (others => '0');
+--        br_addrb <= (others => '0');
+--        br_dia <= (others => '0');
+--        br_dib <= (others => '0');
+--        br_wea <= '0';
+--        br_web <= '0';
+        
+--        wait until clk'event and clk = '1';
+--        br_addrb(0) <= '1';
+--        br_wea <= '1';
+--        br_web <= '1';
+--        br_dia(1 downto 0) <= "11";
+--        br_dib(1) <= '1';
+        
+--        wait until clk'event and clk = '1';
+--        br_wea <= '0';
+--        br_web <= '0';
+    
         wait for 1000 ns;
         report "Done" severity failure;
     end process Test;
