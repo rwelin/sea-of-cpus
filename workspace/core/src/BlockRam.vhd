@@ -17,7 +17,7 @@ end BlockRam;
 architecture behav of BlockRam is
 
     type block_ram is array (RAM_DEPTH - 1 downto 0) of word;
-    signal mem: block_ram;
+    shared variable mem: block_ram;
     signal regA, regB: word;
     signal iaddra, iaddrb: integer;
 
@@ -30,7 +30,7 @@ begin
     begin
         wait until clk'event and clk = '1';
         if (wea = '1') then
-            mem(iaddra) <= dia;
+            mem(iaddra) := dia;
         end if;
     end process PortAWrite;
 
@@ -45,7 +45,7 @@ begin
     begin
         wait until clk'event and clk = '1';
         if (web = '1') then
-            mem(iaddrb) <= dib;
+            mem(iaddrb) := dib;
         end if;
     end process PortBWrite;
 
