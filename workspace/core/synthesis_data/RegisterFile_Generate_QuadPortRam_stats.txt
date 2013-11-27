@@ -1,0 +1,16 @@
+   Build: PlanAhead v14.6 by xbuild
+          on Wed Jun  5 11:14:03 MDT 2013
+  Report: by rw2010 on host EEWS506A-018, pid 1320
+          on Wed Nov 27 18:42:52 2013
+
+Report for instance: GenerateRegisterFile[17].RegisterFile
+
+
+Primitive Statistics
+====================
+
+Primitive type  Count  
+---------------------
+DMEM            3      
+
+
