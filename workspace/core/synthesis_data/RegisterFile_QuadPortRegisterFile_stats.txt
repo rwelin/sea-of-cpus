@@ -11,7 +11,7 @@ Primitive Statistics
 
 Primitive type  Count  
 ---------------------
-DMEM            30     
+DMEM            30     (18 RAM64X1D, 12 RAM64M)
 OTHERS          1      
 
 

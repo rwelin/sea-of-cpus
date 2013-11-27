@@ -11,6 +11,6 @@ Primitive Statistics
 
 Primitive type  Count  
 ---------------------
-DMEM            3      
+DMEM            3      (RAM64X1D)
 
 
