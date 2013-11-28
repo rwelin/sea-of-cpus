@@ -1,9 +1,11 @@
 library ieee;
 library unisim;
+library unimacro;
 library work;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use unisim.vcomponents.all;
+use unimacro.vcomponents.all;
 use work.all;
 use work.core_interface.all;
 
@@ -110,6 +112,23 @@ begin
         addrd => addrd,
         we => we
     );
+
+--    GenerateRegisterFile: for i in 0 to 17 generate
+--        RegisterFile : RAM64X1Q
+--        port map (
+--            clk => clk,
+--            doa => doa(i),
+--            dob => dob(i),
+--            doc => doc(i),
+--            dod => dod(i),
+--            did => did(i),
+--            addra => addra,
+--            addrb => addrb,
+--            addrc => addrc,
+--            addrd => addrd,
+--            we => we
+--        );
+--    end generate GenerateRegisterFile;
 
     MainRam : entity BlockRam
     port map (
