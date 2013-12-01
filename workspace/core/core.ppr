@@ -3,7 +3,8 @@
 <Project Version="4" Minor="36">
 	<FileSet Dir="sources_1" File="fileset.xml"/>
 	<FileSet Dir="constrs_1" File="fileset.xml"/>
-	<FileSet Dir="sim_1" File="fileset.xml"/>
+	<FileSet Dir="CoreTest" File="fileset.xml"/>
+	<FileSet Dir="InstructionDecodeTest" File="fileset.xml"/>
 	<RunSet Dir="runs" File="runs.xml"/>
 	<DefaultLaunch Dir="$PRUNDIR"/>
 	<DefaultPromote Dir="$PROMOTEDIR"/>
@@ -15,7 +16,7 @@
 		<Option Name="TargetSimulator" Val="ISim"/>
 		<Option Name="Board" Val="ml605"/>
 		<Option Name="SourceMgmtMode" Val="All"/>
-		<Option Name="ActiveSimSet" Val="sim_1"/>
+		<Option Name="ActiveSimSet" Val="InstructionDecodeTest"/>
 		<Option Name="CxlOverwriteLibs" Val="1"/>
 		<Option Name="CxlFuncsim" Val="1"/>
 		<Option Name="CxlTimesim" Val="1"/>

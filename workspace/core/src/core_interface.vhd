@@ -15,6 +15,15 @@ package core_interface is
     subtype register_addr is std_logic_vector(REGISTER_ADDR_LENGTH - 1 downto 0);
     subtype ram_addr is std_logic_vector(RAM_ADDR_LENGTH - 1 downto 0);
     subtype opcode is std_logic_vector(OPCODE_LENGTH - 1 downto 0);
+
+    type Instruction is
+    record
+        op: opcode;
+        addra: register_addr;
+        addrb: register_addr;
+    end record;
+
+    constant OP_ADD: opcode := "0000";
     
 end core_interface;
 
