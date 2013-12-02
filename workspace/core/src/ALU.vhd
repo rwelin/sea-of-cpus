@@ -16,7 +16,38 @@ end ALU;
 
 architecture behav of ALU is
 
+    signal accumulator: std_logic_vector(47 downto 0);
+    signal a: std_logic_vector(29 downto 0);
+    signal b: std_logic_vector(17 downto 0);
+    signal d: std_logic_vector(24 downto 0);
+
+    signal acout: std_logic_vector(29 downto 0);
+    signal bcout: std_logic_vector(17 downto 0);
+    signal carrycascout, multisignout: std_logic;
+    signal pcout: std_logic_vector(47 downto 0);
+    signal overflow, patternbdetect, patterndetect, underflow: std_logic;
+    signal carryout: std_logic_vector(3 downto 0);
+    signal acin: std_logic_vector(29 downto 0);
+    signal bcin: std_logic_vector(17 downto 0);
+    signal multisignin: std_logic;
+    signal alumode: std_logic_vector(3 downto 0);
+    signal carryinsel: std_logic_vector(2 downto 0);
+    signal inmode: std_logic_vector(4 downto 0);
+    signal opmode: std_logic_vector(6 downto 0);
+
 begin
+
+    acc <= accumulator(17 downto 0);
+    opmode <= "0000000";
+    inmode <= "0000";
+
+    -- Unused inputs with default values
+    acin <= (others => '0');
+    bcin <= (others => '0');
+    carryinsel <= "000"; -- General interconnect
+    multisignin <= '0';
+
+    d <= (others => '0');
 
     DSP48E1_inst : DSP48E1
     generic map (
@@ -51,62 +82,61 @@ begin
     )
     port map (
         -- Cascade: 30-bit (each) output: Cascade Ports
-        ACOUT => ACOUT, -- 30-bit output: A port cascade output
-        BCOUT => BCOUT, -- 18-bit output: B port cascade output
-        CARRYCASCOUT => CARRYCASCOUT, -- 1-bit output: Cascade carry output
-        MULTSIGNOUT => MULTSIGNOUT, -- 1-bit output: Multiplier sign cascade output
-        PCOUT => PCOUT, -- 48-bit output: Cascade output
+        ACOUT => acout, -- 30-bit output: A port cascade output
+        BCOUT => bcout, -- 18-bit output: B port cascade output
+        CARRYCASCOUT => carrycascout, -- 1-bit output: Cascade carry output
+        MULTSIGNOUT => multisignout, -- 1-bit output: Multiplier sign cascade output
+        PCOUT => pcout, -- 48-bit output: Cascade output
         -- Control: 1-bit (each) output: Control Inputs/Status Bits
-        OVERFLOW => OVERFLOW, -- 1-bit output: Overflow in add/acc output
-        PATTERNBDETECT => PATTERNBDETECT, -- 1-bit output: Pattern bar detect output
-        PATTERNDETECT => PATTERNDETECT, -- 1-bit output: Pattern detect output
-        UNDERFLOW => UNDERFLOW, -- 1-bit output: Underflow in add/acc output
+        OVERFLOW => overflow, -- 1-bit output: Overflow in add/acc output
+        PATTERNBDETECT => patternbdetect, -- 1-bit output: Pattern bar detect output
+        PATTERNDETECT => patterndetect, -- 1-bit output: Pattern detect output
+        UNDERFLOW => underflow, -- 1-bit output: Underflow in add/acc output
         -- Data: 4-bit (each) output: Data Ports
-        CARRYOUT => CARRYOUT, -- 4-bit output: Carry output
-        P => P, -- 48-bit output: Primary data output
+        CARRYOUT => carryout, -- 4-bit output: Carry output
+        P => accumulator, -- 48-bit output: Primary data output
         -- Cascade: 30-bit (each) input: Cascade Ports
-        ACIN => ACIN, -- 30-bit input: A cascade data input
-        BCIN => BCIN, -- 18-bit input: B cascade input
-        CARRYCASCIN => CARRYCASCIN, -- 1-bit input: Cascade carry input
-        MULTSIGNIN => MULTSIGNIN, -- 1-bit input: Multiplier sign input
-        PCIN => PCIN, -- 48-bit input: P cascade input
+        ACIN => acin, -- 30-bit input: A cascade data input
+        BCIN => bcin, -- 18-bit input: B cascade input
+        CARRYCASCIN => '0', -- 1-bit input: Cascade carry input
+        MULTSIGNIN => multisignin, -- 1-bit input: Multiplier sign input
+        PCIN => (others => '0'), -- 48-bit input: P cascade input
         -- Control: 4-bit (each) input: Control Inputs/Status Bits
-        ALUMODE => ALUMODE, -- 4-bit input: ALU control input
-        CARRYINSEL => CARRYINSEL, -- 3-bit input: Carry select input
-        CEINMODE => CEINMODE, -- 1-bit input: Clock enable input for INMODEREG
-        CLK => CLK, -- 1-bit input: Clock input
-        INMODE => INMODE, -- 5-bit input: INMODE control input
-        OPMODE => OPMODE, -- 7-bit input: Operation mode input
-        RSTINMODE => RSTINMODE, -- 1-bit input: Reset input for INMODEREG
+        ALUMODE => alumode, -- 4-bit input: ALU control input
+        CARRYINSEL => carryinsel, -- 3-bit input: Carry select input
+        CEINMODE => '1', -- 1-bit input: Clock enable input for INMODEREG
+        CLK => clk, -- 1-bit input: Clock input
+        INMODE => inmode, -- 5-bit input: INMODE control input
+        OPMODE => opmode, -- 7-bit input: Operation mode input
+        RSTINMODE => '0', -- 1-bit input: Reset input for INMODEREG
         -- Data: 30-bit (each) input: Data Ports
-        A => A, -- 30-bit input: A data input
-        B => B, -- 18-bit input: B data input
-        C => C, -- 48-bit input: C data input
-        CARRYIN => CARRYIN, -- 1-bit input: Carry input signal
-        D => D, -- 25-bit input: D data input
+        A => a, -- 30-bit input: A data input
+        B => b, -- 18-bit input: B data input
+        C => accumulator, -- 48-bit input: C data input
+        CARRYIN => '0', -- 1-bit input: Carry input signal
+        D => d, -- 25-bit input: D data input
         -- Reset/Clock Enable: 1-bit (each) input: Reset/Clock Enable Inputs
-        CEA1 => CEA1, -- 1-bit input: Clock enable input for 1st stage AREG
-        CEA2 => CEA2, -- 1-bit input: Clock enable input for 2nd stage AREG
-        CEAD => CEAD, -- 1-bit input: Clock enable input for ADREG
-        CEALUMODE => CEALUMODE, -- 1-bit input: Clock enable input for ALUMODERE
-        CEB1 => CEB1, -- 1-bit input: Clock enable input for 1st stage BREG
-        CEB2 => CEB2, -- 1-bit input: Clock enable input for 2nd stage BREG
-        CEC => CEC, -- 1-bit input: Clock enable input for CREG
-        CECARRYIN => CECARRYIN, -- 1-bit input: Clock enable input for CARRYINREG
-        CECTRL => CECTRL, -- 1-bit input: Clock enable input for OPMODEREG and CARRYINSELREG
-        CED => CED, -- 1-bit input: Clock enable input for DREG
-        CEM => CEM, -- 1-bit input: Clock enable input for MREG
-        CEP => CEP, -- 1-bit input: Clock enable input for PREG
-        RSTA => RSTA, -- 1-bit input: Reset input for AREG
-        RSTALLCARRYIN => RSTALLCARRYIN, -- 1-bit input: Reset input for CARRYINREG
-        RSTALUMODE => RSTALUMODE, -- 1-bit input: Reset input for ALUMODEREG
-        RSTB => RSTB, -- 1-bit input: Reset input for BREG
-        RSTC => RSTC, -- 1-bit input: Reset input for CREG
-        RSTCTRL => RSTCTRL, -- 1-bit input: Reset input for OPMODEREG and CARRYINSELREG
-        RSTD => RSTD, -- 1-bit input: Reset input for DREG and ADREG
-        RSTM => RSTM, -- 1-bit input: Reset input for MREG
-        RSTP => RSTP -- 1-bit input: Reset input for PREG
+        CEA1 => '1', -- 1-bit input: Clock enable input for 1st stage AREG
+        CEA2 => '1', -- 1-bit input: Clock enable input for 2nd stage AREG
+        CEAD => '1', -- 1-bit input: Clock enable input for ADREG
+        CEALUMODE => '1', -- 1-bit input: Clock enable input for ALUMODERE
+        CEB1 => '1', -- 1-bit input: Clock enable input for 1st stage BREG
+        CEB2 => '1', -- 1-bit input: Clock enable input for 2nd stage BREG
+        CEC => '1', -- 1-bit input: Clock enable input for CREG
+        CECARRYIN => '1', -- 1-bit input: Clock enable input for CARRYINREG
+        CECTRL => '1', -- 1-bit input: Clock enable input for OPMODEREG and CARRYINSELREG
+        CED => '1', -- 1-bit input: Clock enable input for DREG
+        CEM => '1', -- 1-bit input: Clock enable input for MREG
+        CEP => '1', -- 1-bit input: Clock enable input for PREG
+        RSTA => '0', -- 1-bit input: Reset input for AREG
+        RSTALLCARRYIN => '0', -- 1-bit input: Reset input for CARRYINREG
+        RSTALUMODE => '0', -- 1-bit input: Reset input for ALUMODEREG
+        RSTB => '0', -- 1-bit input: Reset input for BREG
+        RSTC => '0', -- 1-bit input: Reset input for CREG
+        RSTCTRL => '0', -- 1-bit input: Reset input for OPMODEREG and CARRYINSELREG
+        RSTD => '0', -- 1-bit input: Reset input for DREG and ADREG
+        RSTM => '0', -- 1-bit input: Reset input for MREG
+        RSTP => '0' -- 1-bit input: Reset input for PREG
     );
-    acc <= (others => '0');
 
 end behav;
