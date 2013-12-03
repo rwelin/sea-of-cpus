@@ -7,8 +7,8 @@ use work.core_interface.all;
 
 entity ALU is
     port (
-        clk: in std_logic;    
-        mode: in opcode; 
+        clk: in std_logic;
+        mode: in opcode;
         ain, bin: in word;
         acc: out word
     );
@@ -19,7 +19,6 @@ architecture behav of ALU is
     signal accumulator: std_logic_vector(47 downto 0);
     signal a: std_logic_vector(29 downto 0);
     signal b: std_logic_vector(17 downto 0);
-    signal d: std_logic_vector(24 downto 0);
 
     signal acout: std_logic_vector(29 downto 0);
     signal bcout: std_logic_vector(17 downto 0);
@@ -38,8 +37,6 @@ architecture behav of ALU is
 begin
 
     acc <= accumulator(17 downto 0);
-    opmode <= "0000000";
-    inmode <= "0000";
 
     -- Unused inputs with default values
     acin <= (others => '0');
@@ -47,7 +44,42 @@ begin
     carryinsel <= "000"; -- General interconnect
     multisignin <= '0';
 
-    d <= (others => '0');
+    DSPInputs: process(mode)
+    begin
+        a <= (others => '0');
+        b <= bin;
+        inmode <= "00000";
+        case mode is
+            when OP_ADD =>
+                if b(17) = '1' then
+                    a <= (others => '1');
+                end if;
+                alumode <= "0000";
+                opmode <= "0110011";
+
+            when OP_SUB =>
+                if b(17) = '1' then
+                    a <= (others => '1');
+                end if;
+                alumode <= "0011";
+                opmode <= "0110011";
+
+            when OP_MAC =>
+                a(17 downto 0) <= ain;
+                alumode <= "0000";
+                opmode <= "0110101";
+
+            when OP_MSC =>
+                a(17 downto 0) <= ain;
+                alumode <= "0011";
+                opmode <= "0110101";
+
+            when others =>
+                alumode <= "0000";
+                opmode <= "0000000";
+        end case;
+    end process DSPControlInputs;
+
 
     DSP48E1_inst : DSP48E1
     generic map (
@@ -64,12 +96,12 @@ begin
         SEL_PATTERN => "PATTERN", -- Select pattern value ("PATTERN" or "C")
         USE_PATTERN_DETECT => "NO_PATDET", -- Enable pattern detect ("PATDET" or "NO_PATDET")
         -- Register Control Attributes: Pipeline Register Configuration
-        ACASCREG => 1, -- Number of pipeline stages between A/ACIN and ACOUT (0, 1 or 2)
+        ACASCREG => 2, -- Number of pipeline stages between A/ACIN and ACOUT (0, 1 or 2)
         ADREG => 1, -- Number of pipeline stages for pre-adder (0 or 1)
         ALUMODEREG => 1, -- Number of pipeline stages for ALUMODE (0 or 1)
-        AREG => 1, -- Number of pipeline stages for A (0, 1 or 2)
-        BCASCREG => 1, -- Number of pipeline stages between B/BCIN and BCOUT (0, 1 or 2)
-        BREG => 1, -- Number of pipeline stages for B (0, 1 or 2)
+        AREG => 2, -- Number of pipeline stages for A (0, 1 or 2)
+        BCASCREG => 2, -- Number of pipeline stages between B/BCIN and BCOUT (0, 1 or 2)
+        BREG => 2, -- Number of pipeline stages for B (0, 1 or 2)
         CARRYINREG => 1, -- Number of pipeline stages for CARRYIN (0 or 1)
         CARRYINSELREG => 1, -- Number of pipeline stages for CARRYINSEL (0 or 1)
         CREG => 1, -- Number of pipeline stages for C (0 or 1)
@@ -114,7 +146,7 @@ begin
         B => b, -- 18-bit input: B data input
         C => accumulator, -- 48-bit input: C data input
         CARRYIN => '0', -- 1-bit input: Carry input signal
-        D => d, -- 25-bit input: D data input
+        D => (others => '0'), -- 25-bit input: D data input
         -- Reset/Clock Enable: 1-bit (each) input: Reset/Clock Enable Inputs
         CEA1 => '1', -- 1-bit input: Clock enable input for 1st stage AREG
         CEA2 => '1', -- 1-bit input: Clock enable input for 2nd stage AREG
