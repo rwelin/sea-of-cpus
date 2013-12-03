@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DARoots Version="1" Minor="26">
   <FileSet Name="InstructionDecodeTest" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/InstructionDecodeTest">
+    <Filter Type="Srcs"/>
     <File Path="$PPRDIR/test/InstructionDecodeTest.vhd">
       <FileInfo>
         <Attr Name="UsedInSynthesis" Val="1"/>
@@ -10,6 +11,7 @@
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
       <Option Name="TopModule" Val="InstructionDecodeTest"/>
+      <Option Name="SimMode" Val="post-implementation"/>
       <Option Name="SrcSet" Val="sources_1"/>
     </Config>
   </FileSet>

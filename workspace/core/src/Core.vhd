@@ -10,21 +10,22 @@ use work.core_interface.all;
 entity Core is
     port (
         clk: in std_logic;
-        doa, dob, doc, dod: out word;
+        reset: in std_logic;
         addra, addrb, addrc, addrd: in register_addr;
         did: in word;
         we: in std_logic;
         br_addra, br_addrb: in ram_addr;
-        br_doa, br_dob: out word;
         br_dia, br_dib: in word;
-        br_wea, br_web: in std_logic
+        br_wea, br_web: in std_logic;
+        acc: out word
     );
 end Core;
 
 architecture behav of Core is
 
     -- read ports of the register file
-    --signal doa, dob, doc, dod: word;
+    signal doa, dob, doc, dod: word;
+    signal rdoa, rdob, rdoc, rdod: word;
 
     -- write ports of the register file
     --signal dia, dib, dic, did: word;
@@ -39,7 +40,7 @@ architecture behav of Core is
     --signal br_addra, br_addrb: ram_addr;
 
     -- read ports of the block ram
-    --signal br_doa, br_dob: word;
+    signal br_doa, br_dob: word;
 
     -- write ports of the block ram
     --signal br_dia, br_dib: word;
@@ -47,7 +48,36 @@ architecture behav of Core is
     -- block ram write enable
     --signal br_wea, br_web: std_logic;
 
+    -- decoded instruction
+    signal instr, rinstr: Instruction;
+
 begin
+
+    PipelineRegisters: process
+    begin
+        wait until clk'event and clk = '1';
+        rdoa <= doa;
+        rdob <= dob;
+        rdoc <= doc;
+        rdod <= dod;
+        rinstr <= instr;
+    end process PipelineRegisters;
+
+    InstructionDecodeInst: entity InstructionDecode
+    port map (
+        instr_word => br_doa,
+        instr => instr
+    );
+
+    ALUInst: entity ALU
+    port map (
+        clk => clk,
+        reset => reset,
+        mode => rinstr.op,
+        ain => rdoa,
+        bin => rdob,
+        acc => acc
+    );
 
     GenerateRegisterFile: for i in 0 to 17 generate
         RAM64M_inst : RAM64M
@@ -61,8 +91,8 @@ begin
              DOB => dob(i), -- Read port B 1-bit output
              DOC => doc(i), -- Read port C 1-bit output
              DOD => dod(i), -- Read/Write port D 1-bit output
-             ADDRA => addra, -- Read port A 6-bit address input
-             ADDRB => addrb, -- Read port B 6-bit address input
+             ADDRA => rinstr.addra, -- Read port A 6-bit address input
+             ADDRB => rinstr.addrb, -- Read port B 6-bit address input
              ADDRC => addrc, -- Read port C 6-bit address input
              ADDRD => addrd, -- Read/Write port D 6-bit address input
              DIA => did(i), -- RAM 1-bit data write input addressed by ADDRD,

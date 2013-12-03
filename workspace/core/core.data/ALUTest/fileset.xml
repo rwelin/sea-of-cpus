@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DARoots Version="1" Minor="26">
   <FileSet Name="ALUTest" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/ALUTest">
+    <Filter Type="Srcs"/>
     <File Path="$PPRDIR/test/ALUTest.vhd">
       <FileInfo>
         <Attr Name="UsedInSynthesis" Val="1"/>
@@ -14,6 +15,7 @@
       <Option Name="TopArchitecture" Val="behav"/>
       <Option Name="TopRTLFile" Val="$PPRDIR/test/ALUTest.vhd"/>
       <Option Name="TopAutoSet" Val="TRUE"/>
+      <Option Name="SimMode" Val="post-implementation"/>
       <Option Name="SrcSet" Val="sources_1"/>
     </Config>
   </FileSet>

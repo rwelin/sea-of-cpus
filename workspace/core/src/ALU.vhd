@@ -8,6 +8,7 @@ use work.core_interface.all;
 entity ALU is
     port (
         clk: in std_logic;
+        reset: in std_logic;
         mode: in opcode;
         ain, bin: in word;
         acc: out word
@@ -140,7 +141,7 @@ begin
         CLK => clk, -- 1-bit input: Clock input
         INMODE => inmode, -- 5-bit input: INMODE control input
         OPMODE => opmode, -- 7-bit input: Operation mode input
-        RSTINMODE => '0', -- 1-bit input: Reset input for INMODEREG
+        RSTINMODE => reset, -- 1-bit input: Reset input for INMODEREG
         -- Data: 30-bit (each) input: Data Ports
         A => a, -- 30-bit input: A data input
         B => b, -- 18-bit input: B data input
@@ -160,15 +161,15 @@ begin
         CED => '1', -- 1-bit input: Clock enable input for DREG
         CEM => '1', -- 1-bit input: Clock enable input for MREG
         CEP => '1', -- 1-bit input: Clock enable input for PREG
-        RSTA => '0', -- 1-bit input: Reset input for AREG
-        RSTALLCARRYIN => '0', -- 1-bit input: Reset input for CARRYINREG
-        RSTALUMODE => '0', -- 1-bit input: Reset input for ALUMODEREG
-        RSTB => '0', -- 1-bit input: Reset input for BREG
-        RSTC => '0', -- 1-bit input: Reset input for CREG
-        RSTCTRL => '0', -- 1-bit input: Reset input for OPMODEREG and CARRYINSELREG
-        RSTD => '0', -- 1-bit input: Reset input for DREG and ADREG
-        RSTM => '0', -- 1-bit input: Reset input for MREG
-        RSTP => '0' -- 1-bit input: Reset input for PREG
+        RSTA => reset, -- 1-bit input: Reset input for AREG
+        RSTALLCARRYIN => reset, -- 1-bit input: Reset input for CARRYINREG
+        RSTALUMODE => reset, -- 1-bit input: Reset input for ALUMODEREG
+        RSTB => reset, -- 1-bit input: Reset input for BREG
+        RSTC => reset, -- 1-bit input: Reset input for CREG
+        RSTCTRL => reset, -- 1-bit input: Reset input for OPMODEREG and CARRYINSELREG
+        RSTD => reset, -- 1-bit input: Reset input for DREG and ADREG
+        RSTM => reset, -- 1-bit input: Reset input for MREG
+        RSTP => reset -- 1-bit input: Reset input for PREG
     );
 
 end behav;

@@ -11,6 +11,7 @@ end ALUTest;
 architecture behav of ALUTest is
 
     signal clk: std_logic;
+    signal reset: std_logic;
     signal mode: opcode;
     signal ain, bin, acc: word;
 
@@ -19,6 +20,7 @@ begin
     ALUInst : entity ALU
     port map (
         clk => clk,
+        reset => reset,
         mode => mode,
         ain => ain,
         bin => bin,
@@ -36,9 +38,13 @@ begin
     Test : process
     begin
         
-        mode <= OP_ADD;
+        mode <= OP_MAC;
         ain <= (1 => '1', others => '0');
         bin <= (2 => '1', others => '0');
+        reset <= '1';
+
+        wait until clk'event and clk = '1';
+        reset <= '0';
 
         wait for 1000 ns;
         report "Done" severity failure;
