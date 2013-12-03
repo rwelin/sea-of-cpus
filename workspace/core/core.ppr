@@ -5,6 +5,7 @@
 	<FileSet Dir="constrs_1" File="fileset.xml"/>
 	<FileSet Dir="CoreTest" File="fileset.xml"/>
 	<FileSet Dir="InstructionDecodeTest" File="fileset.xml"/>
+	<FileSet Dir="ALUTest" File="fileset.xml"/>
 	<RunSet Dir="runs" File="runs.xml"/>
 	<DefaultLaunch Dir="$PRUNDIR"/>
 	<DefaultPromote Dir="$PROMOTEDIR"/>
