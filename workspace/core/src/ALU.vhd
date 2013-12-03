@@ -78,7 +78,7 @@ begin
                 alumode <= "0000";
                 opmode <= "0000000";
         end case;
-    end process DSPControlInputs;
+    end process DSPInputs;
 
 
     DSP48E1_inst : DSP48E1
