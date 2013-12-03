@@ -31,8 +31,8 @@ package core_interface is
     constant OP_JR: opcode    := "0101"; -- | r1:6 | addr:8 |
     constant OP_BEQ: opcode   := "0110"; -- | r1:6 | offset:8 |
     constant OP_BNQ: opcode   := "0111"; -- | r1:6 | offset:8 |
-    constant OP_ADD: opcode   := "1000"; -- | r1:6 |
-    constant OP_SUB: opcode   := "1001"; -- | r1:6 |
+    constant OP_ADD: opcode   := "1000"; -- | unused:6 | r1:6 |
+    constant OP_SUB: opcode   := "1001"; -- | unused:6 | r1:6 |
     constant OP_U1: opcode    := "1010";
     constant OP_U2: opcode    := "1011";
     constant OP_MAC: opcode   := "1100"; -- | r1:6 | r2:6 |
