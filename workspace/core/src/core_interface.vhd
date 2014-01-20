@@ -9,7 +9,7 @@ package core_interface is
     constant REGISTER_FILE_DEPTH: integer := 2**REGISTER_ADDR_LENGTH;
     constant RAM_ADDR_LENGTH: integer := 11;
     constant RAM_DEPTH: integer := 2**RAM_ADDR_LENGTH;
-    constant OPCODE_LENGTH: integer := 4;
+    constant OPCODE_LENGTH: integer := 6;
 
     subtype word is std_logic_vector(WORD_LENGTH - 1 downto 0);
     subtype register_addr is std_logic_vector(REGISTER_ADDR_LENGTH - 1 downto 0);
@@ -23,22 +23,22 @@ package core_interface is
         addrb: register_addr;
     end record;
 
-    constant OP_NOP: opcode   := "0000"; --
-    constant OP_MOVE: opcode  := "0001"; -- | r1:6 | const:8 |
-    constant OP_LOAD: opcode  := "0010"; -- | r1:6 | addr:8 |
-    constant OP_STORE: opcode := "0011"; -- | r1:6 | addr:8 |
-    constant OP_J: opcode     := "0100"; -- | addr:11 |
-    constant OP_JR: opcode    := "0101"; -- | r1:6 | addr:8 |
-    constant OP_BEQ: opcode   := "0110"; -- | r1:6 | offset:8 |
-    constant OP_BNQ: opcode   := "0111"; -- | r1:6 | offset:8 |
-    constant OP_ADD: opcode   := "1000"; -- | unused:6 | r1:6 |
-    constant OP_SUB: opcode   := "1001"; -- | unused:6 | r1:6 |
-    constant OP_U1: opcode    := "1010";
-    constant OP_U2: opcode    := "1011";
-    constant OP_MAC: opcode   := "1100"; -- | r1:6 | r2:6 |
-    constant OP_MSC: opcode   := "1101"; -- | r1:6 | r2:6 |
-    constant OP_MULT: opcode  := "1110"; -- | r1:6 |
-    constant OP_U3: opcode    := "1111";
+    constant OP_NOP: opcode  := "000000";
+    constant OP_MC: opcode   := "000001"; -- | ra:6 | const:6 | -- ra := const
+    constant OP_MR: opcode   := "000010"; -- | ra:6 | rb:6 |    -- ra := rb
+    constant OP_LDA: opcode  := "000011"; -- | const:11 |       -- acc := *const
+    constant OP_STA: opcode  := "000100"; -- | const:11 |       -- *const := acc
+    constant OP_LDAR: opcode := "000101"; -- | ra:6 |           -- acc := *ra
+    constant OP_STAR: opcode := "000110"; -- | ra:6 |           -- *ra := acc
+    constant OP_LDR: opcode  := "000111"; -- | ra:6 | rb:6 |    -- ra := *rb
+    constant OP_STR: opcode  := "001000"; -- | ra:6 | rb:6 |    -- *rb := ra
+    constant OP_J: opcode    := "001001"; -- | ra:6 |           -- PC := ra
+    constant OP_BEQ: opcode  := "001010"; -- | ra:6 | rb:6 |    -- if ra = acc: PC := rb
+    constant OP_BNQ: opcode  := "001011"; -- | ra:6 | rb:6 |    -- if ra <> acc: PC := rb
+    constant OP_MA: opcode   := "001100"; -- | ra:6 |           -- acc = ra
+    constant OP_ADD: opcode  := "001101"; -- | ra:6 |           -- acc = acc + ra
+    constant OP_SUB: opcode  := "001110"; -- | ra:6 |           -- acc = acc - rb
+    constant OP_MAC: opcode  := "001111"; -- | ra:6 | rb:6 |    -- acc = acc + ra * rb
 
 end core_interface;
 

@@ -72,7 +72,7 @@ begin
 
         wait until clk'event and clk = '1';
         br_wea <= '1';
-        br_dia <= OP_ADD & "000000" & "000001" & "00";
+        br_dia <= OP_ADD & "000000" & "000001";
 
         we <= '1';
         did <= (1 => '1', others => '0');

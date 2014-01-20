@@ -70,11 +70,6 @@ begin
                 alumode <= "0000";
                 opmode <= "0110101";
 
-            when OP_MSC =>
-                a(17 downto 0) <= ain;
-                alumode <= "0011";
-                opmode <= "0110101";
-
             when others =>
                 alumode <= "0000";
                 opmode <= "0000000";

@@ -16,9 +16,9 @@ begin
 
     Decode: process(instr_word)
     begin
-        instr.op <= instr_word(17 downto 14);
-        instr.addra <= instr_word(13 downto 8);
-        instr.addrb <= instr_word(7 downto 2);
+        instr.op <= instr_word(17 downto 12);
+        instr.addra <= instr_word(11 downto 6);
+        instr.addrb <= instr_word(5 downto 0);
     end process Decode;
 
 end behav;
