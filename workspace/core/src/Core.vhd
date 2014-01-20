@@ -51,7 +51,20 @@ architecture behav of Core is
     -- decoded instruction
     signal instr, rinstr: Instruction;
 
+    signal pc: ram_addr;
+
 begin
+
+    ProgramCounter: process
+    begin
+        wait until clk'event and clk = '1';
+
+        pc <= std_logic_vector(unsigned(pc) + 1);
+
+        if reset = '1' then
+            pc <= (others => '0');
+        end if;
+    end process ProgramCounter;
 
     PipelineRegisters: process
     begin
