@@ -11,13 +11,13 @@
 	<DefaultPromote Dir="$PROMOTEDIR"/>
 	<Config>
 		<Option Name="Id" Val="6ec08cef8b4042b490336429770f59f5"/>
-		<Option Name="Part" Val="xc6vlx240tff1156-1"/>
+		<Option Name="Part" Val="xc7k70tfbg676-2"/>
 		<Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
 		<Option Name="TargetLanguage" Val="VHDL"/>
 		<Option Name="TargetSimulator" Val="ISim"/>
-		<Option Name="Board" Val="ml605"/>
+		<Option Name="Board" Val=""/>
 		<Option Name="SourceMgmtMode" Val="All"/>
-		<Option Name="ActiveSimSet" Val="InstructionDecodeTest"/>
+		<Option Name="ActiveSimSet" Val="CoreTest"/>
 		<Option Name="CxlOverwriteLibs" Val="1"/>
 		<Option Name="CxlFuncsim" Val="1"/>
 		<Option Name="CxlTimesim" Val="1"/>
