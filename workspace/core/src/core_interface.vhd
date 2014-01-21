@@ -40,7 +40,7 @@ package core_interface is
     constant OP_NOP: opcode   := "000000"; --
     constant OP_MOVA: opcode  := "000001"; -- | const:12 |       -- acc := const
     constant OP_MOVAR: opcode := "000010"; -- | ra:6 |           -- acc := ra
-    constant OP_MOVR: opcode  := "000011"; -- | ra:6 | const:6 | -- ra := const
+    constant OP_MOVRA: opcode := "000011"; -- | ra:6 |           -- ra := acc
     constant OP_MOVRR: opcode := "000100"; -- | ra:6 | rb:6 |    -- ra := rb
     constant OP_LDA: opcode   := "000101"; -- | const:12 |       -- acc := *const
     constant OP_STA: opcode   := "000110"; -- | const:12 |       -- *const := acc

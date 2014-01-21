@@ -2,6 +2,7 @@ library ieee;
 library work;
 use ieee.std_logic_1164.all;
 use work.core_interface.all;
+use work.alu_interface.all;
 
 entity InstructionDecode is
     port (
@@ -34,24 +35,29 @@ begin
 
         -- P := Z + X + Y
         instr.alumode <= "0000";
-        -- Z := C; X := 0; Y := 0
-        instr.opmode <= "0110000";
+        instr.opmode <= OPMODE_ACC_THROUGH;
 
         instr.acc_we <= '0';
 
         case op is
             when OP_NOP =>
-                -- P := Z + X + Y
-                instr.alumode <= "0000";
-                -- Z := C; X := 0; Y := 0
-                instr.opmode <= "0110000";
+                instr.opmode <= OPMODE_ACC_THROUGH;
 
             when OP_MOVA =>
-                instr.alumode <= "0000";
-                -- Z := 0; X := A:B; Y := 0
-                instr.opmode <= "0000011";
-
+                instr.opmode <= OPMODE_AB_THROUGH;
                 instr.acc_we <= '1';
+            
+            when OP_MOVAR =>
+                instr.opmode <= OPMODE_AB_THROUGH;
+                instr.acc_we <= '1';
+                
+            when OP_MOVRA =>
+                instr.opmode <= OPMODE_ACC_THROUGH;
+                instr.rwe <= '1';
+            
+            when OP_MOVRR =>
+                instr.opmode <= OPMODE_AB_THROUGH;
+                instr.rwe <= '1';
 
             when others =>
 

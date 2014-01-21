@@ -141,11 +141,22 @@ begin
                 ain <= (others => '0');
                 bin <= (others => '0');
                 bin(Instruction.data'range) <= instr(3).data;
+                
+            when OP_MOVAR =>
+                ain <= (others => '0');
+                
+            when OP_MOVRR =>
+                ain <= (others => '0');
 
             when others =>
 
         end case;
     end process ALUInputs;
+    
+    RegisterFileInput: process(alu_result)
+    begin
+        did <= alu_result;
+    end process RegisterFileInput;       
 
     ALUInst: entity ALU
     port map (
@@ -174,7 +185,7 @@ begin
              ADDRA => instr(1).addra, -- Read port A 6-bit address input
              ADDRB => instr(1).addrb, -- Read port B 6-bit address input
              ADDRC => instr(1).addrc, -- Read port C 6-bit address input
-             ADDRD => instr(1).addrd, -- Read/Write port D 6-bit address input
+             ADDRD => instr(5).addrd, -- Read/Write port D 6-bit address input
              DIA => did(i), -- RAM 1-bit data write input addressed by ADDRD,
                          -- read addressed by ADDRA
              DIB => did(i), -- RAM 1-bit data write input addressed by ADDRD,
@@ -184,7 +195,7 @@ begin
              DID => did(i), -- RAM 1-bit data write input addressed by ADDRD,
                          -- read addressed by ADDRD
              WCLK => clk, -- Write clock input
-             WE => instr(1).rwe -- Write enable input
+             WE => instr(5).rwe -- Write enable input
          );
     end generate GenerateRegisterFile;
 
