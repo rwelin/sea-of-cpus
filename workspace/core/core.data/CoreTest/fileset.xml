@@ -15,7 +15,6 @@
       <Option Name="TopArchitecture" Val="behav"/>
       <Option Name="TopRTLFile" Val="$PPRDIR/test/CoreTest.vhd"/>
       <Option Name="TopAutoSet" Val="TRUE"/>
-      <Option Name="SimMode" Val="post-implementation"/>
       <Option Name="SrcSet" Val="sources_1"/>
     </Config>
   </FileSet>

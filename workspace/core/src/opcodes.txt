@@ -1,0 +1,17 @@
+NOP
+MOVA    | const:12 |       -- acc := const
+MOVAR   | ra:6 |           -- acc := ra
+MOVRA   | ra:6 |           -- ra := acc
+MOVRR   | ra:6 | rb:6 |    -- ra := rb
+LDA     | const:12 |       -- acc := *const
+STA     | const:12 |       -- *const := acc
+LDAR    | ra:6 |           -- acc := *ra
+STAR    | ra:6 |           -- *ra := acc
+LDR     | ra:6 | rb:6 |    -- ra := *rb
+STR     | ra:6 | rb:6 |    -- *rb := ra
+J       | ra:6 |           -- PC := ra
+BEQ     | ra:6 | rb:6 |    -- if ra = acc: PC := rb
+BNQ     | ra:6 | rb:6 |    -- if ra <> acc: PC := rb
+ADD     | ra:6 |           -- acc = acc + ra
+SUB     | ra:6 |           -- acc = acc - rb
+MAC     | ra:6 | rb:6 |    -- acc = acc + ra * rb
