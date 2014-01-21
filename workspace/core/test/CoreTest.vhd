@@ -4,6 +4,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.all;
 use work.core_interface.all;
+use work.opcodes.all;
 
 entity CoreTest is
 end CoreTest;
@@ -74,7 +75,7 @@ begin
 
         we <= '0';
 
-        
+
 
         wait for 2000 ns;
 

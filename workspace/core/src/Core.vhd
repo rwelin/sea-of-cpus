@@ -6,6 +6,7 @@ use ieee.numeric_std.all;
 use unisim.vcomponents.all;
 use work.all;
 use work.core_interface.all;
+use work.opcodes.all;
 
 entity Core is
     port (
@@ -141,10 +142,10 @@ begin
                 ain <= (others => '0');
                 bin <= (others => '0');
                 bin(Instruction.data'range) <= instr(3).data;
-                
+
             when OP_MOVAR =>
                 ain <= (others => '0');
-                
+
             when OP_MOVRR =>
                 ain <= (others => '0');
 
@@ -152,11 +153,11 @@ begin
 
         end case;
     end process ALUInputs;
-    
+
     RegisterFileInput: process(alu_result)
     begin
         did <= alu_result;
-    end process RegisterFileInput;       
+    end process RegisterFileInput;
 
     ALUInst: entity ALU
     port map (

@@ -3,6 +3,7 @@ library work;
 use ieee.std_logic_1164.all;
 use work.core_interface.all;
 use work.alu_interface.all;
+use work.opcodes.all;
 
 entity InstructionDecode is
     port (
@@ -46,15 +47,15 @@ begin
             when OP_MOVA =>
                 instr.opmode <= OPMODE_AB_THROUGH;
                 instr.acc_we <= '1';
-            
+
             when OP_MOVAR =>
                 instr.opmode <= OPMODE_AB_THROUGH;
                 instr.acc_we <= '1';
-                
+
             when OP_MOVRA =>
                 instr.opmode <= OPMODE_ACC_THROUGH;
                 instr.rwe <= '1';
-            
+
             when OP_MOVRR =>
                 instr.opmode <= OPMODE_AB_THROUGH;
                 instr.rwe <= '1';
