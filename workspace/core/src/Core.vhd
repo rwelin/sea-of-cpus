@@ -139,7 +139,8 @@ begin
         case instr(3).op is
             when OP_MOVA =>
                 ain <= (others => '0');
-                bin <= instr(3).data;
+                bin <= (others => '0');
+                bin(Instruction.data'range) <= instr(3).data;
 
             when others =>
 
