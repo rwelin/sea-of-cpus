@@ -29,7 +29,7 @@ begin
     PortAWrite: process
     begin
         wait until clk'event and clk = '1';
-        if (wea = '1') then
+        if wea = '1' then
             mem(iaddra) := dia;
         end if;
     end process PortAWrite;
@@ -44,7 +44,7 @@ begin
     PortBWrite: process
     begin
         wait until clk'event and clk = '1';
-        if (web = '1') then
+        if web = '1' then
             mem(iaddrb) := dib;
         end if;
     end process PortBWrite;

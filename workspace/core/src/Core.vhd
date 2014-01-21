@@ -11,13 +11,9 @@ entity Core is
     port (
         clk: in std_logic;
         reset: in std_logic;
-        addra, addrb, addrc, addrd: in register_addr;
-        did: in word;
-        we: in std_logic;
-        br_addra, br_addrb: in ram_addr;
-        br_dia, br_dib: in word;
-        br_wea, br_web: in std_logic;
-        acc: out word
+        addr: in ram_addr;
+        data: in word;
+        we: in std_logic
     );
 end Core;
 
@@ -28,38 +24,71 @@ architecture behav of Core is
     signal rdoa, rdob, rdoc, rdod: word;
 
     -- write ports of the register file
-    --signal dia, dib, dic, did: word;
+    signal did: word;
 
-    -- address inputs of the register file
-    --signal addra, addrb, addrc, addrd: register_addr;
-
-    -- register file write enable
-    --signal we: std_logic;
-
-    -- address inputs of the block ram
-    --signal br_addra, br_addrb: ram_addr;
+    -- block ram address for port a
+    signal br_addra: ram_addr;
 
     -- read ports of the block ram
     signal br_doa, br_dob: word;
 
     -- write ports of the block ram
-    --signal br_dia, br_dib: word;
+    signal br_dib: word;
 
-    -- block ram write enable
-    --signal br_wea, br_web: std_logic;
+    -- inputs to ALU
+    signal ain, bin: word;
+
+    -- instruction word
+    signal instr_word: word;
 
     -- decoded instruction
-    signal instr, rinstr: Instruction;
+    type instr_pipeline is array (0 to 5) of Instruction;
+    signal instr: instr_pipeline;
 
+    -- program counter
     signal pc: ram_addr;
 
+    -- accumulator
+    signal acc: word;
+    signal alu_result: word;
+
 begin
+
+    Accumulator: process
+    begin
+        wait until clk'event and clk = '1';
+        if instr(5).acc_we = '1' then
+            acc <= alu_result;
+        end if;
+
+        if reset = '1' then
+            acc <= (others => '0');
+        end if;
+    end process Accumulator;
+
+    BlockRamPortAAddress: process(pc, addr, we)
+    begin
+        br_addra <= pc;
+        if we = '1' then
+            br_addra <= addr;
+        end if;
+    end process BlockRamPortAAddress;
+
+    InstructionWord: process(we, br_doa)
+    begin
+        instr_word <= br_doa;
+        if we = '1' then
+            instr_word <= (others => '0');
+        end if;
+    end process InstructionWord;
 
     ProgramCounter: process
     begin
         wait until clk'event and clk = '1';
 
-        pc <= std_logic_vector(unsigned(pc) + 1);
+        if we = '0' then
+            pc <= std_logic_vector(unsigned(pc) + 1);
+        end if;
 
         if reset = '1' then
             pc <= (others => '0');
@@ -73,23 +102,60 @@ begin
         rdob <= dob;
         rdoc <= doc;
         rdod <= dod;
-        rinstr <= instr;
+        instr(1 to 5) <= instr(0 to 4);
+
+        if reset = '1' then
+            rdoa <= (others => '0');
+            rdob <= (others => '0');
+            rdoc <= (others => '0');
+            rdod <= (others => '0');
+            instr(1 to 5) <= (others => (
+                (others => '0'),
+                (others => '0'),
+                (others => '0'),
+                (others => '0'),
+                (others => '0'),
+                (others => '0'),
+                '0',
+                (others => '0'),
+                '0',
+                (others => '0'),
+                (others => '0'),
+                '0'
+            ));
+        end if;
     end process PipelineRegisters;
 
     InstructionDecodeInst: entity InstructionDecode
     port map (
-        instr_word => br_doa,
-        instr => instr
+        instr_word => instr_word,
+        instr => instr(0)
     );
+
+    ALUInputs: process(rdoa, rdob, instr)
+    begin
+        ain <= rdoa;
+        bin <= rdob;
+        case instr(3).op is
+            when OP_MOVA =>
+                ain <= (others => '0');
+                bin <= instr(3).data;
+
+            when others =>
+
+        end case;
+    end process ALUInputs;
 
     ALUInst: entity ALU
     port map (
         clk => clk,
         reset => reset,
-        mode => rinstr.op,
-        ain => rdoa,
-        bin => rdob,
-        acc => acc
+        op => instr(3).op,
+        alumode => instr(3).alumode,
+        opmode => instr(3).opmode,
+        ain => ain,
+        bin => bin,
+        result => alu_result
     );
 
     GenerateRegisterFile: for i in 0 to 17 generate
@@ -104,10 +170,10 @@ begin
              DOB => dob(i), -- Read port B 1-bit output
              DOC => doc(i), -- Read port C 1-bit output
              DOD => dod(i), -- Read/Write port D 1-bit output
-             ADDRA => rinstr.addra, -- Read port A 6-bit address input
-             ADDRB => rinstr.addrb, -- Read port B 6-bit address input
-             ADDRC => addrc, -- Read port C 6-bit address input
-             ADDRD => addrd, -- Read/Write port D 6-bit address input
+             ADDRA => instr(1).addra, -- Read port A 6-bit address input
+             ADDRB => instr(1).addrb, -- Read port B 6-bit address input
+             ADDRC => instr(1).addrc, -- Read port C 6-bit address input
+             ADDRD => instr(1).addrd, -- Read/Write port D 6-bit address input
              DIA => did(i), -- RAM 1-bit data write input addressed by ADDRD,
                          -- read addressed by ADDRA
              DIB => did(i), -- RAM 1-bit data write input addressed by ADDRD,
@@ -117,21 +183,21 @@ begin
              DID => did(i), -- RAM 1-bit data write input addressed by ADDRD,
                          -- read addressed by ADDRD
              WCLK => clk, -- Write clock input
-             WE => we -- Write enable input
+             WE => instr(1).rwe -- Write enable input
          );
     end generate GenerateRegisterFile;
 
     MainRam : entity BlockRam
     port map (
         addra => br_addra,
-        addrb => br_addrb,
-        dia => br_dia,
+        addrb => instr(1).br_addrb,
+        dia => data,
         dib => br_dib,
         doa => br_doa,
         dob => br_dob,
         clk => clk,
-        wea => br_wea,
-        web => br_web
+        wea => we,
+        web => instr(1).br_web
     );
 
 end behav;
