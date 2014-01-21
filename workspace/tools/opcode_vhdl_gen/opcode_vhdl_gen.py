@@ -24,11 +24,11 @@ package opcodes is
             words = line.split()
             mnemonic = words[0].upper()
             comment = " ".join(words[1:])
-            print("    constant OP_%s: opcode := std_logic_vector(to_unsigned(%d, OPCODE_LENGTH)); -- %s" % (mnemonic, i, comment))
+            print("    constant OP_%s: opcode := std_logic_vector(to_unsigned(%d, OPCODE_LENGTH)); --%s" % (mnemonic, i, comment))
             i = i + 1
 
     print("""
-end package opcodes; """)
+end package opcodes;""")
 
 if __name__ == "__main__":
     main()
