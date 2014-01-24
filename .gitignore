@@ -6,3 +6,5 @@ runs/
 core.sim/
 core.runs/
 cache/
+report.pdf
+*~
