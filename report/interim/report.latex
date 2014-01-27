@@ -1,0 +1,141 @@
+\documentclass[a4paper,twoside,11pt]{IEEEtran}
+\usepackage{enumerate}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage[british]{babel}
+\usepackage{csquotes}
+\usepackage{graphicx}
+
+\linespread{1.1}
+
+\usepackage[
+  style=apa,
+  backend=biber,
+  urldate=iso8601]{biblatex}
+\addbibresource{sources.bib}
+\bibliography{sources}
+\DeclareLanguageMapping{british}{british-apa}
+
+\markboth{}{Robert Welin: \MakeLowercase{Sea-of-CPUs Interim Report}}
+\begin{document}
+\title{Sea-of-CPUs Interim Report}
+\author{Robert Welin}
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\section{Project specification}
+
+Parallel computation is very useful for a number of computational problems, such
+as image processing and cryptography. These problems have been solved using
+multi-core CPUs, general purpose graphics processing units (GPGPUs) and
+special-purpose hardware, implemented as ASICs or FPGAs. Modern FPGAs have
+become increasingly complex, with large amounts of logic gates, RAM blocks and
+dedicated DSP units. The aim of the project is to design and implement a small
+independent CPU that utilise these resources. A large number of these CPUs
+should be instantiated on a single FPGA, forming a large processor array that
+can co-operate to solve larger, parallelisable tasks.
+
+The project will specifically target the Xilinx Virtex-6 family of FPGAs. Each
+CPU should use one block RAM and one DSP slice and ideally run at the maximum
+clock frequency of the device. The instruction set architecture (ISA) of the
+CPUs will be heavily influenced by the available hardware resources.
+
+In addition to the processor array implementation, an adequate programming tool
+should be developed in the form of an assembler. This will aid in both user
+program development and testing.
+
+\section{Background}
+
+\subsection{Hardware}
+
+The general architecture CPU will be influenced by well-known RISC processors
+such as MIPS and older versions of the ARM architecture. The reason being their
+simplicity and my own familiarity with these architectures. For general
+information about computer architecture and the MIPS architecture specifically
+\textcite{comp-arch-organization} will be used.
+
+However, the instruction set architecture and implementation of the CPUs will be
+heavily influenced by the available hardware on the Virtex-6 family FPGA since
+the implementation could otherwise become poorly adapted to the target hardware.
+It will therefore be important to rely on the documentation provided by Xilinx
+that describes the resources available on the FPGA.
+
+Four major documents will be used in aid of the design and implementation of the
+CPU:
+
+\begin{enumerate}
+
+\item \textcite{dsp48e1} describes the operation of the per-cycle configurable
+    DSP48E1 slice that will form the ALU of the CPU. This hardware supports many
+    different operations including multiplication, multiply accumulate,
+    three-input addition and bit-wise logic functions. The instruction set of
+    the CPU could therefore be relatively complex without using a lot of FPGA
+    resources.
+
+\item \textcite{memory} documents the block RAM that will be used as the main
+    instruction memory and data memory of the CPU. The document describes the
+    available port configurations, various width- and depth-configurations and
+    how to properly instantiate the RAM for maximum clock frequency.
+
+\item \textcite{hdl} describes in detail how to instantiate primitives such as
+    the DSP48E1 slice and the block RAM on the FPGA using HDL. This will be
+    especially useful for instantiating the DSP slice due to its large number of
+    parameters and ports.
+
+\item \textcite{clb} describes the configurable logic blocks (CLBs) on the
+    Virtex-6 FPGA. The document provides useful information on how to implement efficient
+    memory configurations in the FPGA fabric such as a quad-port 64$\times$1-bit
+    RAM. 
+
+\end{enumerate}
+
+To achieve maximum clock frequency, the CPU will have to be heavily pipelined
+and the associated hazards will be present. To remove data hazards and achieve a
+reasonable instruction throughput, forwarding paths will have to be implemented
+in the CPU.  The classic implementation of forwarding paths uses additional
+logic to compare register identifiers at different pipeline stages and forwards
+the content of these pipeline registers if necessary. An alternative to this,
+described in \textcite{explicit-operand-forwarding}, uses explicit naming of the
+forwarding registers in the instructions. This would simplify the implementation
+of the CPU, but also make programming the device more difficult. Both ideas will
+however be considered in the design.
+
+Once the CPU has been implemented, several instances of the core should be
+instantiated and made to co-operate. This implies some kind of communication
+system which could be implemented either using shared memory as used in
+Adapteva's Epiphany architecture \parencite{adapteva} or message passing
+oriented approach as used in the Ambric massively parallel processor array
+\parencite{ambric} or in a recent processor by
+\textcite{16-core-message-passing}. \textcite{comp-arch-quantitative} also
+provides information on multi-processor communication and will be consulted if
+needed.
+
+\subsection{Software tools}
+
+Implementation of the CPU will be done with the Xilinx PlanAhead tool which
+provides functionality for behaviour simulation of HDL. It also provides
+functionality for synthesis and place and route to the target FPGA.
+
+Any tools such as the assembler will be written using Python or some other
+appropriate scripting language.
+
+\section{Implementation plan}
+
+\begin{onecolumn}
+
+%\begin{figure}[ht!]
+%\centering
+%\includegraphics[width=\textwidth]{../../workspace/doc/core.png}
+%\caption{Core}
+%\label{core}
+%\end{figure}
+
+\end{onecolumn}
+
+\section{Evaluation plan}
+
+\printbibliography
+
+\end{document}
