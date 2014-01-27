@@ -1,4 +1,9 @@
 *.log
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.run.xml
 *xmsgs
 tmp/
 wt/
