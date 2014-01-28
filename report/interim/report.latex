@@ -6,8 +6,6 @@
 \usepackage{csquotes}
 \usepackage{graphicx}
 
-\linespread{1.1}
-
 \usepackage[
   style=apa,
   backend=biber,
@@ -16,7 +14,7 @@
 \bibliography{sources}
 \DeclareLanguageMapping{british}{british-apa}
 
-\markboth{}{Robert Welin: \MakeLowercase{Sea-of-CPUs Interim Report}}
+\markboth{}{Robert Welin: Sea-of-CPUs Interim Report}
 \begin{document}
 \title{Sea-of-CPUs Interim Report}
 \author{Robert Welin}
@@ -27,20 +25,24 @@
 
 \section{Project specification}
 
-Parallel computation is very useful for a number of computational problems, such
-as image processing and cryptography. These problems have been solved using
-multi-core CPUs, general purpose graphics processing units (GPGPUs) and
-special-purpose hardware, implemented as ASICs or FPGAs. Modern FPGAs have
-become increasingly complex, with large amounts of logic gates, RAM blocks and
-dedicated DSP units. The aim of the project is to design and implement a small
-independent CPU that utilise these resources. A large number of these CPUs
-should be instantiated on a single FPGA, forming a large processor array that
-can co-operate to solve larger, parallelisable tasks.
+Modern FPGAs have become increasingly complex, with large amounts of logic
+gates, RAM blocks and dedicated DSP units. The aim of the project is to design
+and implement a small, independent CPU that utilise these resources. A large
+number of these CPUs should be instantiated on a single FPGA, forming a large
+processor array that can co-operate to solve larger, parallelisable tasks.
 
 The project will specifically target the Xilinx Virtex-6 family of FPGAs. Each
 CPU should use one block RAM and one DSP slice and ideally run at the maximum
 clock frequency of the device. The instruction set architecture (ISA) of the
-CPUs will be heavily influenced by the available hardware resources.
+CPUs will therefore be heavily influenced by the available hardware resources.
+
+The ISA should be adapted for highly parallelisable problems such as image
+processing or cryptography where the CPUs could co-operate to increase
+performance. Good support for implementing a multiply-accumulate loop is
+therefore also essential.
+
+The implementation of the design should be appropriately verified using
+behavioural simulation and test benches.
 
 In addition to the processor array implementation, an adequate programming tool
 should be developed in the form of an assembler. This will aid in both user
@@ -52,13 +54,13 @@ program development and testing.
 
 The general architecture CPU will be influenced by well-known RISC processors
 such as MIPS and older versions of the ARM architecture. The reason being their
-simplicity and my own familiarity with these architectures. For general
-information about computer architecture and the MIPS architecture specifically
+simplicity and familiarity with these architectures. For general information
+about computer architecture and the MIPS architecture specifically
 \textcite{comp-arch-organization} will be used.
 
 However, the instruction set architecture and implementation of the CPUs will be
 heavily influenced by the available hardware on the Virtex-6 family FPGA since
-the implementation could otherwise become poorly adapted to the target hardware.
+the implementation could otherwise become poorly adapted to the target device.
 It will therefore be important to rely on the documentation provided by Xilinx
 that describes the resources available on the FPGA.
 
@@ -68,14 +70,12 @@ CPU:
 \begin{enumerate}
 
 \item \textcite{dsp48e1} describes the operation of the per-cycle configurable
-    DSP48E1 slice that will form the ALU of the CPU. This hardware supports many
-    different operations including multiplication, multiply accumulate,
-    three-input addition and bit-wise logic functions. The instruction set of
-    the CPU could therefore be relatively complex without using a lot of FPGA
-    resources.
+    DSP48E1 slice. This hardware supports many different operations including
+    multiplication, multiply accumulate, three-input addition and bit-wise logic
+    functions. The instruction set of the CPU could therefore be relatively
+    complex without using a lot of FPGA resources.
 
-\item \textcite{memory} documents the block RAM that will be used as the main
-    instruction memory and data memory of the CPU. The document describes the
+\item \textcite{memory} documents the block RAM. The document describes the
     available port configurations, various width- and depth-configurations and
     how to properly instantiate the RAM for maximum clock frequency.
 
@@ -87,20 +87,20 @@ CPU:
 \item \textcite{clb} describes the configurable logic blocks (CLBs) on the
     Virtex-6 FPGA. The document provides useful information on how to implement efficient
     memory configurations in the FPGA fabric such as a quad-port 64$\times$1-bit
-    RAM. 
+    RAM.
 
 \end{enumerate}
 
 To achieve maximum clock frequency, the CPU will have to be heavily pipelined
-and the associated hazards will be present. To remove data hazards and achieve a
-reasonable instruction throughput, forwarding paths will have to be implemented
-in the CPU.  The classic implementation of forwarding paths uses additional
-logic to compare register identifiers at different pipeline stages and forwards
-the content of these pipeline registers if necessary. An alternative to this,
-described in \textcite{explicit-operand-forwarding}, uses explicit naming of the
-forwarding registers in the instructions. This would simplify the implementation
-of the CPU, but also make programming the device more difficult. Both ideas will
-however be considered in the design.
+and the associated hazards will have to be addressed. Data hazards are usually
+solved by including forwarding paths in the design that let instructions use
+operands that have not yet been written to the register file. This requires
+additional logic that detects if an instruction needs data that is still in the
+pipeline and forwards this data to previous pipeline stages if necessary. An
+alternative to this, described in \textcite{explicit-operand-forwarding}, uses
+explicit naming of the forwarding registers in the instructions. This would
+simplify the implementation of the CPU, but also make programming the device
+more difficult. Both ideas will however be considered in the design.
 
 Once the CPU has been implemented, several instances of the core should be
 instantiated and made to co-operate. This implies some kind of communication
@@ -114,27 +114,120 @@ needed.
 
 \subsection{Software tools}
 
-Implementation of the CPU will be done with the Xilinx PlanAhead tool which
-provides functionality for behaviour simulation of HDL. It also provides
-functionality for synthesis and place and route to the target FPGA.
+The CPU will be implemented using VHDL. This will be aided by the Xilinx
+PlanAhead tool which provides functionality for behaviour simulation of HDL,
+synthesis and place and route to the target FPGA along with good timing analysis
+and resource utilisation reports..
 
 Any tools such as the assembler will be written using Python or some other
 appropriate scripting language.
 
-\section{Implementation plan}
+\section{Implementation}
+
+The first step in project is to design and implement the independent CPU that
+can be instantiated on the Virtex-6 FPGA. In order to do that, I have
+familiarised myself with the resources provided by Xilinx, describing the
+available hardware resources. From that, I have implemented a far from complete
+CPU prototype with the following features:
+
+\begin{enumerate}
+
+    \item a shared instruction and data memory, implemented as a true dual-port
+        RAM with a pipeline register in VHDL. This entity is successfully
+        inferred as a single block RAM on the FPGA.
+
+    \item a program counter that is incremented by one each cycle. It is
+        connected to one of the address ports on the block RAM and fetches one
+        instruction every cycle.
+
+    \item a 64 address, 18 bit wide register file. This is implemented using 18
+        direct instantiations of the RAM64M primitive, a 64$\times$1-bit
+        quad-port RAM (three read-only ports, one read-write port), each using a
+        single SLICEM CLB and a pipeline register. \footnote{I tried making a
+            behavioural definition of the register file in VHDL, but the
+            synthesis resulted in 18 RAM64X1D primitives (64$\times$1-bit
+            dual-port RAM) and 12 RAM64M. As this was poor resource utilisation,
+            I simply instantiated RAM64M primitive directly to form the register
+            file.}
+
+    \item an ALU, supporting two-input addition and subtraction and a
+        multiply-accumulate operation. It is implemented using a DSP48E1 slice.
+        Two words from the register file are fed into two of the DSP input ports,
+        with appropriate sign-extension. A third input to the DSP is connected
+        to the output port of an accumulator. The input port of the accumulator
+        is connected to the main output of the DSP.
+
+    \item a simple instruction decode block that maps the instruction fetched
+        from the main memory to the necessary control signals to the DSP unit,
+        the register file and the data port of the main memory.
+
+\end{enumerate}
+
+This prototype was mainly implemented as an exercise to learn about the hardware
+resources on the FPGA and does not actually implement a useful instruction set.
+Jump instructions are not implemented at all for example. A design of the actual
+processor can be seen in figure \ref{core}.
 
 \begin{onecolumn}
 
-%\begin{figure}[ht!]
-%\centering
-%\includegraphics[width=\textwidth]{../../workspace/doc/core.png}
-%\caption{Core}
-%\label{core}
-%\end{figure}
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=\textwidth]{core.png}
+\caption{CPU design. Control logic and forwarding paths have been omitted for
+simplicity}
+\label{core}
+\end{figure}
 
 \end{onecolumn}
 
-\section{Evaluation plan}
+\begin{table}
+\caption{Potential instruction set}
+\label{instruction-set}
+\newcommand{\const}{\multicolumn{2}{c|}{const}}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Instruction & instr[11:6]   & instr[5:0]    & Operation                 \\
+    \hline
+    NOP         &               &               &                           \\
+    \hline
+    MOV         & \const                        & acc := const              \\
+    \hline
+    MOVAR       & ra            &               & ra := acc                 \\
+    \hline
+    MOVRA       & ra            &               & acc := ra                 \\
+    \hline
+    MOVRR       & ra            & rb            & ra := rb                  \\
+    \hline
+    J           & \const                        & pc := pc + const + 1      \\
+    \hline
+    B           & ra            &               & pc := ra                  \\
+    \hline
+    BNZ         & ra            & rb            & if ra != 0 then pc = rb   \\
+    \hline
+    BZ          & ra            & rb            & if ra = 0 then pc = rb    \\
+    \hline
+    DEC         & ra            &               & ra = ra - 1               \\
+    \hline
+    LDR         & ra            & rb            & ra := *rb                 \\
+    \hline
+    STR         & ra            & rb            & *rb := ra                 \\
+    \hline
+    ILDR        & ra            & rb            & rb := rb + 1; ra := *rb   \\
+    \hline
+    DSTR        & ra            & rb            & rb := rb - 1; *rb := ra   \\
+    \hline
+    ADD         & ra            & rb            & acc := ra + rb            \\
+    \hline
+    SUB         & ra            & rb            & acc := ra + rb            \\
+    \hline
+    MUL         & ra            & rb            & acc := ra * rb            \\
+    \hline
+    MAC         & ra            & rb            & acc := acc + ra * rb      \\
+    \hline
+\end{tabular}
+\end{table}
+
+\section{Evaluation}
 
 \printbibliography
 
