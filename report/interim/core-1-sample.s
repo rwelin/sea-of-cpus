@@ -22,7 +22,7 @@ loop:
     BNZ     r0  r1      ; if r0 = 0 then pc := r1; branch occurs 7 cycles later
     ILDR    r2  r3      ; #1; r2 := *++r3
     ILDR    r4  r5      ; #1; r4 := *++r5
-    MAC     r2  r4      ; #2; acc := acc + r2 * r4; r2 and r4 from previous iteration
+    MAC     r2  r4      ; #2; acc := acc + r2 * r4; r2, r4 from previous iteration
     ILDR    r2  r3      ; #2; r2 := *++r3; r2 used in next iteration
     ILDR    r4  r5      ; #2; r4 := *++r4; r4 used in next iteration
     MAC     r2  r4      ; #1; acc := acc + r2 * r4
