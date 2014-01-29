@@ -5,6 +5,7 @@
 \usepackage[british]{babel}
 \usepackage{csquotes}
 \usepackage{graphicx}
+\usepackage{pdflscape}
 
 \usepackage[
   style=apa,
@@ -19,9 +20,6 @@
 \title{Sea-of-CPUs Interim Report}
 \author{Robert Welin}
 \maketitle
-
-\begin{abstract}
-\end{abstract}
 
 \section{Project specification}
 
@@ -38,8 +36,8 @@ CPUs will therefore be heavily influenced by the available hardware resources.
 
 The ISA should be adapted for highly parallelisable problems such as image
 processing or cryptography where the CPUs could co-operate to increase
-performance. Good support for implementing a multiply-accumulate loop is
-therefore also essential.
+calculation throughput. Individual cores should therefore also have good support
+for implementing a multiply-accumulate loop.
 
 The implementation of the design should be appropriately verified using
 behavioural simulation and test benches.
@@ -53,7 +51,7 @@ program development and testing.
 \subsection{Hardware}
 
 The general architecture CPU will be influenced by well-known RISC processors
-such as MIPS and older versions of the ARM architecture. The reason being their
+such as MIPS and older versions of the ARM ISA. The reason being their
 simplicity and familiarity with these architectures. For general information
 about computer architecture and the MIPS architecture specifically
 \textcite{comp-arch-organization} will be used.
@@ -70,44 +68,45 @@ CPU:
 \begin{enumerate}
 
 \item \textcite{dsp48e1} describes the operation of the per-cycle configurable
-    DSP48E1 slice. This hardware supports many different operations including
-    multiplication, multiply accumulate, three-input addition and bit-wise logic
-    functions. The instruction set of the CPU could therefore be relatively
-    complex without using a lot of FPGA resources.
+  DSP48E1 slice. This hardware supports many different operations including
+  multiplication, multiply accumulate, three-input addition and bit-wise logic
+  functions. The instruction set of the CPU could therefore be relatively
+  complex without using a lot of FPGA resources. Since this hardware block is
+  completely pipelined it can calculate one multiply-accumulate at the maximum
+  clock frequency of the FPGA.
 
 \item \textcite{memory} documents the block RAM. The document describes the
-    available port configurations, various width- and depth-configurations and
-    how to properly instantiate the RAM for maximum clock frequency.
+  available port configurations, various width- and depth-configurations and how
+  to properly instantiate the RAM for maximum clock frequency.
 
 \item \textcite{hdl} describes in detail how to instantiate primitives such as
-    the DSP48E1 slice and the block RAM on the FPGA using HDL. This will be
-    especially useful for instantiating the DSP slice due to its large number of
-    parameters and ports.
+  the DSP48E1 slice and the block RAM on the FPGA using VHDL and Verilog. This
+  will be especially useful for instantiating the DSP slice due to its large
+  number of parameters and ports.
 
 \item \textcite{clb} describes the configurable logic blocks (CLBs) on the
-    Virtex-6 FPGA. The document provides useful information on how to implement efficient
-    memory configurations in the FPGA fabric such as a quad-port 64$\times$1-bit
-    RAM.
+  Virtex-6 FPGA. The document provides useful information on how to implement
+  resource efficient distributed memory configurations in the FPGA fabric.
 
 \end{enumerate}
 
 To achieve maximum clock frequency, the CPU will have to be heavily pipelined
 and the associated hazards will have to be addressed. Data hazards are usually
 solved by including forwarding paths in the design that let instructions use
-operands that have not yet been written to the register file. This requires
-additional logic that detects if an instruction needs data that is still in the
-pipeline and forwards this data to previous pipeline stages if necessary. An
-alternative to this, described in \textcite{explicit-operand-forwarding}, uses
-explicit naming of the forwarding registers in the instructions. This would
-simplify the implementation of the CPU, but also make programming the device
-more difficult. Both ideas will however be considered in the design.
+operands that have not yet been written to the register file and are still
+stored in pipeline registers. This requires additional logic that detects if an
+instruction needs data that is still in the pipeline and multiplexors that input
+this data to previous pipeline stages if necessary. An alternative to this,
+described in \textcite{explicit-operand-forwarding}, uses explicit naming of the
+forwarding registers in the instructions. This would simplify the implementation
+of the CPU and will be favoured over classic forwarding techniques if possible.
 
 Once the CPU has been implemented, several instances of the core should be
 instantiated and made to co-operate. This implies some kind of communication
 system which could be implemented either using shared memory as used in
 Adapteva's Epiphany architecture \parencite{adapteva} or message passing
 oriented approach as used in the Ambric massively parallel processor array
-\parencite{ambric} or in a recent processor by
+\parencite{ambric}\parencite{mppa} or in a recent processor by
 \textcite{16-core-message-passing}. \textcite{comp-arch-quantitative} also
 provides information on multi-processor communication and will be consulted if
 needed.
@@ -116,73 +115,111 @@ needed.
 
 The CPU will be implemented using VHDL. This will be aided by the Xilinx
 PlanAhead tool which provides functionality for behaviour simulation of HDL,
-synthesis and place and route to the target FPGA along with good timing analysis
-and resource utilisation reports..
+synthesis and place and route to the target FPGA. The tool also provides good
+timing analysis and resource utilisation reports.
 
-Any tools such as the assembler will be written using Python or some other
-appropriate scripting language.
+Any tools that I decide to create myself such as the assembler will be written
+using Python or some other appropriate scripting language.
+
+All project sources and documentation will be version controlled using Git
+source code management. The repository will be stored on at least two different
+machines in order to minimize damage caused by possible failure of the
+development machine.
 
 \section{Implementation}
 
-The first step in project is to design and implement the independent CPU that
-can be instantiated on the Virtex-6 FPGA. In order to do that, I have
-familiarised myself with the resources provided by Xilinx, describing the
-available hardware resources. From that, I have implemented a far from complete
-CPU prototype with the following features:
+The first step I plan to do for the project is to design and implement the
+independent CPU. In order to do that, I have familiarised myself with the
+resources provided by Xilinx, describing the available hardware resources. From
+that, I implemented a far from complete CPU prototype with the following
+features:
 
 \begin{enumerate}
 
-    \item a shared instruction and data memory, implemented as a true dual-port
-        RAM with a pipeline register in VHDL. This entity is successfully
-        inferred as a single block RAM on the FPGA.
+\item a shared instruction and data memory, implemented as a 2048 deep, 18 bit
+  wide, true dual-port RAM with a pipeline register at each of the outputs in
+  VHDL. This entity is successfully inferred as a single 36 Kb block RAM on the
+  FPGA by the synthesis tool.
 
-    \item a program counter that is incremented by one each cycle. It is
-        connected to one of the address ports on the block RAM and fetches one
-        instruction every cycle.
+\item a program counter that is incremented by one each cycle. It is connected
+  to one of the address ports on the block RAM and fetches one instruction every
+  cycle.
 
-    \item a 64 address, 18 bit wide register file. This is implemented using 18
-        direct instantiations of the RAM64M primitive, a 64$\times$1-bit
-        quad-port RAM (three read-only ports, one read-write port), each using a
-        single SLICEM CLB and a pipeline register. \footnote{I tried making a
-            behavioural definition of the register file in VHDL, but the
-            synthesis resulted in 18 RAM64X1D primitives (64$\times$1-bit
-            dual-port RAM) and 12 RAM64M. As this was poor resource utilisation,
-            I simply instantiated RAM64M primitive directly to form the register
-            file.}
+\item a 64 address, 18 bit wide register file. This is implemented using 18
+  direct instantiations of the RAM64M primitive \parencite[Figure 10]{clb}
+  \footnote{The primitive is named RAM64X1Q in the manual but is referred to as
+  RAM64M in the HDL library.}, This primitive is a 64$\times$1-bit quad-port RAM
+  (three read-only ports, one read-write port), each using a single SLICEM CLB.
+  \footnote{I tried making a behavioural definition of the register file in
+    VHDL, but the synthesis resulted in 18 RAM64X1D primitives (64$\times$1-bit
+    dual-port RAM) and 12 RAM64M. As this seem to be poor resource utilisation,
+  I simply instantiated the RAM64M primitive directly to form the register
+file.}
 
-    \item an ALU, supporting two-input addition and subtraction and a
-        multiply-accumulate operation. It is implemented using a DSP48E1 slice.
-        Two words from the register file are fed into two of the DSP input ports,
-        with appropriate sign-extension. A third input to the DSP is connected
-        to the output port of an accumulator. The input port of the accumulator
-        is connected to the main output of the DSP.
+\item an ALU, supporting two-input addition and subtraction and a
+  multiply-accumulate operation. It is implemented using a DSP48E1 slice with
+  two pipeline stages. Two words from the register file are fed into two of the
+  DSP input ports \parencite[Figure 1-1, input A and B]{dsp48e1}, with
+  appropriate sign-extension. A third input to the DSP \parencite[Figure 1-1,
+  input C]{dsp48e1} is connected to the output port of an accumulator. The input
+  port of the accumulator is connected to the main output of the DSP. The fourth
+  and final data input \parencite[Figure 1-1, input D]{dsp48e1} is not used.
 
-    \item a simple instruction decode block that maps the instruction fetched
-        from the main memory to the necessary control signals to the DSP unit,
-        the register file and the data port of the main memory.
+\item a simple instruction decode block that maps the instruction fetched from
+  the main memory to the necessary control signals to the DSP block, the
+  register file and the control ports of the main memory.
 
 \end{enumerate}
 
-This prototype was mainly implemented as an exercise to learn about the hardware
-resources on the FPGA and does not actually implement a useful instruction set.
-Jump instructions are not implemented at all for example. A design of the actual
-processor can be seen in figure \ref{core}.
+This prototype was mainly implemented as an exercise to learn about the
+hardware resources on the FPGA and does not actually implement a useful
+instruction set. Jump instructions are not implemented at all for example.
 
-\begin{onecolumn}
+Some of the architectural aspects of the prototype and some of the implemented
+hardware will most likely be reused in the final design, however.
 
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=\textwidth]{core.png}
+The word length of 18 bits was chosen as a decent trade-off between instruction
+length and the number of addresses in the memory. The alternatives would have
+been either a 4096 address, 9 bit word memory or a 1024 address, 36 bit word
+memory.  The former would not provide enough bits in the instruction word for an
+op-code and any operands. If a single register in the 64 address register file
+would be referenced, only three bits would have been left for the op-code, which
+would be impractical. The latter would provide a very large instruction with a
+lot of room for op-code and a large number of operands, both register addresses
+and immediate fields. However, the depth of the memory would only be 1024
+addresses, which could potentially be too small considering the memory is used
+both for the program and data. A 2048 deep, 18 bit wide memory is therefore a
+good compromise. An 18 bit instruction word allows for a six bit op-code and two
+six bit register references, for example.
+
+The block RAM implementation and the register file will therefore be used in the
+implementation of the final design.
+
+Since only two registers can be referenced in one instruction (assuming six bit
+op-code and a 64 address register file), the accumulator in the prototype will
+be kept in order to support three-input operations such as multiply-accumulate.
+
+A possible design of the actual processor can be seen in figure \ref{core-1}. This
+design is heavily inspired by the MIPS architecture and has the same execution
+stages: instruction fetch, instruction decode and register read, execution, memory
+read/write, register write-back. One possible instruction set that could be
+implemented using this architecture can be seen in table
+\ref{instruction-set-1}.
+
+\begin{landscape}
+
+\begin{figure}[hp]
+\includegraphics[width=1.33\textwidth]{core-1.png}
 \caption{CPU design. Control logic and forwarding paths have been omitted for
-simplicity}
-\label{core}
+simplicity.}
+\label{core-1}
 \end{figure}
 
-\end{onecolumn}
+\end{landscape}
 
 \begin{table}
 \caption{Potential instruction set}
-\label{instruction-set}
+\label{instruction-set-1}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l |}
     \hline
@@ -206,7 +243,7 @@ simplicity}
     \hline
     BZ          & ra            & rb            & if ra = 0 then pc = rb    \\
     \hline
-    DEC         & ra            &               & ra = ra - 1               \\
+    DEC         & ra            &               & ra := ra - 1              \\
     \hline
     LDR         & ra            & rb            & ra := *rb                 \\
     \hline
@@ -227,8 +264,105 @@ simplicity}
 \end{tabular}
 \end{table}
 
+\emph{***SHOW SAMPLE PROGRAM***}
+
+\begin{landscape}
+
+\begin{figure}[hp]
+\includegraphics[width=1.33\textwidth]{core-2.png}
+\caption{Improved CPU design. Control logic and forwarding paths have been omitted for
+simplicity.}
+\label{core-2}
+\end{figure}
+
+\end{landscape}
+
+\emph{***DESCRIBE IMPROVED ARCHITECTURE***}
+
+\emph{***SUGGEST INSTRUCTION SET***}
+
+\emph{***SHOW SAMPLE PROGRAM***}
+
+During the remainder of the time of the project, I will finalize the design of
+the CPU, implement the CPU, design and implement the CPU network, do appropriate
+functional and performance tests and write the final report. An estimated
+timeline of these tasks can be seen in figure \ref{timetable}.
+
+\begin{onecolumn}
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{timetable.png}
+\caption{Timetable}
+\label{timetable}
+\end{figure}
+\end{onecolumn}
+
+\begin{twocolumn}
+
+During the first four weeks I will implement a completely working prototype CPU.
+It might not have a large instruction set, but as long as the control logic is
+well implemented and the HDL is structured in such a way that adding
+instructions is relatively easy, expanding the instruction set will not be
+difficult. Producing a CPU of some description is critical, however.
+
+During the following four weeks, I can then focus primarily on designing the CPU
+network. However, during this design process it is likely that I will see the
+need to extend the instruction set of the CPU and will do so accordingly.
+Extending the instruction set can however be considered just an optimisation and
+if time does not permit it will not be done in favour of designing the CPU
+network.
+
+The six weeks after that, I will dedicate to implement the CPU network.
+
+During all these 14 weeks, I will continuously test all hardware blocks at the
+unit level as well as at the top system level of the CPU. Since test benches
+would otherwise take a very long time to write, I will need to create tools to
+generate test benches for low level testing and an assembler that can turn human
+readable code into machine code. I have already written a rudimentary assembler
+that can generate a VHDL package containing an array of bit strings,
+representing machine instructions that can be imported into a test bench and
+used to load the CPU with test code, but I will have to adapt the assembler as I
+work out the details of the instruction set. The tools will also have to be
+modified as the design moves from a single CPU to multiply co-operating CPUs.
+
+During the implementation phases, I will create test programs to evaluate the
+performance of the designs. In addition, as the project approaches the end, I
+will dedicate two weeks only for writing programs and testing.
+
+The last four weeks should be fully dedicated to write the final report.
+
 \section{Evaluation}
 
+Functional tests will determine if the implementation actually corresponds to
+the design. Test benches should be provided to test individual hardware blocks
+as well as system features. All instructions should be verified to work
+correctly on a single CPU. The communication between processors also needs to
+tested for correctness.
+
+Performance will be evaluated from two primary factors: speed and area usage. A
+decent metric for speed in the context of this project would be the number of
+multiply-accumulate per cycle per CPU in the network the system can compute as
+well as just the total number of multiply-accumulate per cycle to see how it
+compares with conventional digital signal processors, measuring the throughput
+of the network as a whole. Multiply-accumulate is good instruction since it is
+very useful in applications such as image processing that are very
+parallelisable. For testing the overall speed of the system, I will write an
+edge detection program and compare these to the benchmarks provided by
+\textcite{dsp-benchmarks}.
+
+As for area usage on the FPGA, the number of CPUs on one FPGA should ideally be
+limited by the number of DSP48E1 slices or 36 Kb RAM blocks on the chip. If the
+total logic elements used for the control logic of the CPUs and the
+communication network between the CPUs is less the number of logic elements per
+DSP/block RAM-pair, the resources on the FPGA can be optimally utilised.
+However, different devices in the Virtex-6 family have different ratios between
+logic elements and DSP/block RAM-pairs. From \textcite{virtex6-overview} you can
+tell that most devices have less than 100 CLBs per DSP/block RAM-pair, which
+would most likely be very difficult to achieve. Minimizing the resource usage of
+each CPU will, however, make it possible to add more CPUs to the network and
+therefore also increase the throughput of the system, which is desirable.
+
 \printbibliography
+
+\end{twocolumn}
 
 \end{document}
