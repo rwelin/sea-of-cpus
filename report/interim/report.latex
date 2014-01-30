@@ -271,7 +271,20 @@ multiply-accumulate loop using this instruction set is shown in listing
 \ref{core-1-sample}. The code performs two multiply-accumulate operations in
 eight instructions.
 
+
+\begin{landscape}
+\begin{figure}[hp]
+\includegraphics[width=1.33\textwidth]{core-1.png}
+\caption{CPU design. Control logic and forwarding paths have been omitted for
+simplicity.}
+\label{core-1}
+\end{figure}
+\end{landscape}
+
+\begin{onecolumn}
+
 \begin{table}[ht!]
+\centering
 \caption{Potential instruction set}
 \label{instruction-set-1}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
@@ -318,18 +331,9 @@ eight instructions.
 \end{tabular}
 \end{table}
 
-\begin{landscape}
-\begin{figure}[hp]
-\includegraphics[width=1.33\textwidth]{core-1.png}
-\caption{CPU design. Control logic and forwarding paths have been omitted for
-simplicity.}
-\label{core-1}
-\end{figure}
-\end{landscape}
-
-\begin{onecolumn}
   \lstinputlisting[label=core-1-sample,caption={Instruction set sample code}]
     {core-1-sample.s}
+
 \end{onecolumn}
 
 \begin{landscape}
@@ -343,18 +347,13 @@ omitted for simplicity.}
 
 \end{landscape}
 
-An alternative to this design swaps the position of the data memory and the DSP
-in the pipeline. This results in a few differences. Only register indirect
-addressing is available for both data and code. However, the design supports ALU
-instructions that operate directly on data from the block RAM. This could be
-useful for implementing FIR filters for example. Table \ref{instruction-set-2}
-shows one potential instruction set for this design. An example of a
-multiply-accumulate loop using this instruction set can be seen in listing
-\ref{core-2-sample}. As the code example of the previous design, two
-multiply-accumulate operations are performed in eight instructions.
+\begin{onecolumn}
 
 \begin{table}[ht!]
-\caption{Potential alternative instruction set}
+\centering
+\caption{Potential alternative instruction set. Note: \emph{sp} in the
+  \emph{ADDMULADD} instruction is a stack pointer accessed from the third
+register file port and \emph{*sp} is therefore the top of the stack in memory.}
 \label{instruction-set-2}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l |}
@@ -400,20 +399,10 @@ multiply-accumulate operations are performed in eight instructions.
 \end{tabular}
 \end{table}
 
-\begin{onecolumn}
   \lstinputlisting[
     label=core-2-sample,
     caption={Alternative instruction set sample code}]
     {core-2-sample.s}
-\end{onecolumn}
-
-During the remainder of the time of the project, I will finalize the design of
-the CPU from the two alternatives I have described above, implement the CPU,
-design and implement the CPU network, do appropriate functional and performance
-tests and write the final report. An estimated timeline of these tasks can be
-seen in figure \ref{timetable}.
-
-\begin{onecolumn}
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{timetable.png}
@@ -423,6 +412,22 @@ seen in figure \ref{timetable}.
 \end{onecolumn}
 
 \begin{twocolumn}
+
+An alternative to this design swaps the position of the data memory and the DSP
+in the pipeline. This results in a few differences. Only register indirect
+addressing is available for both data and code. However, the design supports ALU
+instructions that operate directly on data from the block RAM. This could be
+useful for implementing FIR filters for example. Table \ref{instruction-set-2}
+shows one potential instruction set for this design. An example of a
+multiply-accumulate loop using this instruction set can be seen in listing
+\ref{core-2-sample}. As the code example of the previous design, two
+multiply-accumulate operations are performed in eight instructions.
+
+During the remainder of the time of the project, I will finalize the design of
+the CPU from the two alternatives I have described above, implement the CPU,
+design and implement the CPU network, do appropriate functional and performance
+tests and write the final report. An estimated timeline of these tasks can be
+seen in figure \ref{timetable}.
 
 During the first four weeks I will implement a completely working prototype CPU.
 It might not have a large instruction set, but as long as the control logic is
