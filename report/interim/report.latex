@@ -268,7 +268,8 @@ address.
 One possible instruction set that could be implemented using this architecture
 can be seen in table \ref{instruction-set-1}. An implementation of a
 multiply-accumulate loop using this instruction set is shown in listing
-\ref{core-1-sample}.
+\ref{core-1-sample}. The code performs two multiply-accumulate operations in
+eight instructions.
 
 \begin{table}[ht!]
 \caption{Potential instruction set}
@@ -278,7 +279,7 @@ multiply-accumulate loop using this instruction set is shown in listing
     \hline
     Instruction & instr[11:6]   & instr[5:0]    & Operation                 \\
     \hline
-    NOOP         &               &               &                          \\
+    NOOP        &               &               &                           \\
     \hline
     MOV         & \const                        & acc := const              \\
     \hline
@@ -292,9 +293,9 @@ multiply-accumulate loop using this instruction set is shown in listing
     \hline
     B           & ra            &               & pc := ra                  \\
     \hline
-    BNZ         & ra            & rb            & if ra != 0 then pc = rb   \\
+    BNZ         & ra            & rb            & if ra != 0 then pc := rb  \\
     \hline
-    BZ          & ra            & rb            & if ra = 0 then pc = rb    \\
+    BZ          & ra            & rb            & if ra = 0 then pc := rb   \\
     \hline
     DEC         & ra            &               & ra := ra - 1              \\
     \hline
@@ -342,9 +343,15 @@ omitted for simplicity.}
 
 \end{landscape}
 
-An alternative to this design swaps the place of the data memory and the DSP in
-the pipeline. This results in a few differences. Only register indirect
-addressing is available for both data and code.
+An alternative to this design swaps the position of the data memory and the DSP
+in the pipeline. This results in a few differences. Only register indirect
+addressing is available for both data and code. However, the design supports ALU
+instructions that operate directly on data from the block RAM. This could be
+useful for implementing FIR filters for example. Table \ref{instruction-set-2}
+shows one potential instruction set for this design. An example of a
+multiply-accumulate loop using this instruction set can be seen in listing
+\ref{core-2-sample}. As the code example of the previous design, two
+multiply-accumulate operations are performed in eight instructions.
 
 \begin{table}[ht!]
 \caption{Potential alternative instruction set}
@@ -354,7 +361,7 @@ addressing is available for both data and code.
     \hline
     Instruction & instr[11:6]   & instr[5:0]    & Operation                 \\
     \hline
-    NOOP         &               &               &                          \\
+    NOOP        &               &               &                           \\
     \hline
     MOV         & \const                        & acc := const              \\
     \hline
@@ -366,9 +373,9 @@ addressing is available for both data and code.
     \hline
     B           & ra            &               & pc := ra                  \\
     \hline
-    BNZ         & ra            & rb            & if ra != 0 then pc = rb   \\
+    BNZ         & ra            & rb            & if ra != 0 then pc := rb  \\
     \hline
-    BZ          & ra            & rb            & if ra = 0 then pc = rb    \\
+    BZ          & ra            & rb            & if ra = 0 then pc := rb   \\
     \hline
     DEC         & ra            &               & ra := ra - 1              \\
     \hline
@@ -407,6 +414,7 @@ tests and write the final report. An estimated timeline of these tasks can be
 seen in figure \ref{timetable}.
 
 \begin{onecolumn}
+
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{timetable.png}
 \caption{Timetable}
