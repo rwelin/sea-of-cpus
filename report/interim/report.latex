@@ -159,7 +159,8 @@ oriented approach as used in the Ambric massively parallel processor array
 \parencite{ambric}\parencite{mppa} or in a recent processor by
 \textcite{16-core-message-passing}. \textcite{comp-arch-quantitative} also
 provides information on multi-processor communication and will be consulted if
-needed.
+needed. I have not yet read these texts in detail, but will as soon as I begin
+the design of the CPU network.
 
 \subsection{Software tools}
 
@@ -433,14 +434,16 @@ During the first four weeks I will implement a completely working prototype CPU.
 It might not have a large instruction set, but as long as the control logic is
 well implemented and the HDL is structured in such a way that adding
 instructions is relatively easy, expanding the instruction set will not be
-difficult. Producing a CPU of some description is critical, however.
+difficult. Producing a CPU of some description is critical, however and is the
+first milestone in the project.
 
 During the following four weeks, I can then focus primarily on designing the CPU
-network. However, during this design process it is likely that I will see the
-need to extend the instruction set of the CPU and will do so accordingly.
-Extending the instruction set can however be considered just an optimisation and
-if time does not permit it will not be done in favour of designing the CPU
-network. The six weeks after that, I will dedicate to implement the CPU network.
+network (second milestone). However, during this design process it is likely
+that I will see the need to extend the instruction set of the CPU and will do so
+accordingly.  Extending the instruction set can however be considered just an
+optimisation and if time does not permit it will not be done in favour of
+designing the CPU network. The six weeks after that, I will dedicate to
+implement the CPU network (third milestone).
 
 The last four weeks should be fully dedicated to write the final report.
 
