@@ -440,24 +440,7 @@ network. However, during this design process it is likely that I will see the
 need to extend the instruction set of the CPU and will do so accordingly.
 Extending the instruction set can however be considered just an optimisation and
 if time does not permit it will not be done in favour of designing the CPU
-network.
-
-The six weeks after that, I will dedicate to implement the CPU network.
-
-During all these 14 weeks, I will continuously test all hardware blocks at the
-unit level as well as at the top system level of the CPU. Since test benches
-would otherwise take a very long time to write, I will need to create tools to
-generate test benches for low level testing and an assembler that can turn human
-readable code into machine code. I have already written a rudimentary assembler
-that can generate a VHDL package containing an array of bit strings,
-representing machine instructions that can be imported into a test bench and
-used to load the CPU with test code, but I will have to adapt the assembler as I
-work out the details of the instruction set. The tools will also have to be
-modified as the design moves from a single CPU to multiply co-operating CPUs.
-
-During the implementation phases, I will create test programs to evaluate the
-performance of the designs. In addition, as the project approaches the end, I
-will dedicate two weeks only for writing programs and testing.
+network. The six weeks after that, I will dedicate to implement the CPU network.
 
 The last four weeks should be fully dedicated to write the final report.
 
@@ -469,6 +452,22 @@ as well as system features. All instructions should be verified to work
 correctly on a single CPU. The communication between processors also needs to
 tested for correctness.
 
+I will continuously test all hardware blocks at the unit level as well as at the
+top system level of the CPU as I am implementing the CPU and the network. Since
+test benches would otherwise take a very long time to write, I will need to
+create tools to generate test benches for low level testing and an assembler
+that can turn human readable code into machine code. I have already written a
+rudimentary assembler that can generate a VHDL package containing an array of
+bit strings, representing machine instructions that can be imported into a test
+bench and used to load the CPU with test code, but I will have to adapt the
+assembler as I work out the details of the instruction set. The tools will also
+have to be modified as the design moves from a single CPU to multiple
+co-operating CPUs.
+
+During the implementation phases, I will also create test programs to evaluate
+the performance of the designs. In addition, as the project approaches the end,
+I will dedicate two weeks only for writing programs and testing.
+
 Performance will be evaluated from two primary factors: speed and area usage. A
 decent metric for speed in the context of this project would be the number of
 multiply-accumulate per cycle per CPU in the network the system can compute as
@@ -478,7 +477,7 @@ of the network as a whole. Multiply-accumulate is good instruction since it is
 very useful in applications such as image processing that are very
 parallelisable. For testing the overall speed of the system, I will write an
 edge detection program and compare these to the benchmarks provided by
-\textcite{dsp-benchmarks}.
+\textcite{dsp-benchmarks} for one of their standard digital signal processors.
 
 As for area usage on the FPGA, the number of CPUs on one FPGA should ideally be
 limited by the number of DSP48E1 slices or 36 Kb RAM blocks on the chip. If the
