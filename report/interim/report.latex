@@ -246,25 +246,28 @@ Since only two registers can be referenced in one instruction (assuming six bit
 op-code and a 64 address register file), the accumulator in the prototype will
 be kept in order to support three-input operations such as multiply-accumulate.
 
-A possible design of the actual processor can be seen in figure \ref{core-1}. This
-design is heavily inspired by the MIPS architecture and has the same execution
-stages: instruction fetch, instruction decode and register read, execution, memory
-read/write, register write-back. One possible instruction set that could be
-implemented using this architecture can be seen in table
-\ref{instruction-set-1}.
+A possible design of the actual processor can be seen in figure \ref{core-1}.
+This design is heavily inspired by the MIPS architecture and has the same
+execution stages: instruction fetch, instruction decode and register read,
+execution, memory read/write, register write-back. The processor can support
+absolute immediate addressing, PC-relative addressing and register indirect
+addressing for memory accesses. A register indirect memory load with
+pre-increment is also supported since the DSP block is between the register file
+and the memory.
 
-\begin{landscape}
+The processor can do four register reads in total every cycle, three from the
+register file and one from the accumulator. However, only two of the elements in
+the register file can be addressed from the instruction word. The third register
+file read can be used to fetch some special purpose register that isn't
+explicitly addressed, for example a stack pointer or a subroutine return
+address.
 
-\begin{figure}[hp]
-\includegraphics[width=1.33\textwidth]{core-1.png}
-\caption{CPU design. Control logic and forwarding paths have been omitted for
-simplicity.}
-\label{core-1}
-\end{figure}
+One possible instruction set that could be implemented using this architecture
+can be seen in table \ref{instruction-set-1}. An implementation of a
+multiply-accumulate loop using this instruction set is shown in listing
+\ref{core-1-sample}.
 
-\end{landscape}
-
-\begin{table}
+\begin{table}[ht!]
 \caption{Potential instruction set}
 \label{instruction-set-1}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
@@ -311,31 +314,94 @@ simplicity.}
 \end{tabular}
 \end{table}
 
+\begin{landscape}
+\begin{figure}[hp]
+\includegraphics[width=1.33\textwidth]{core-1.png}
+\caption{CPU design. Control logic and forwarding paths have been omitted for
+simplicity.}
+\label{core-1}
+\end{figure}
+\end{landscape}
+
 \begin{onecolumn}
-  \lstinputlisting[caption={Instruction set sample code}]{core-1-sample.s}
+  \lstinputlisting[label=core-1-sample,caption={Instruction set sample code}]
+    {core-1-sample.s}
 \end{onecolumn}
 
 \begin{landscape}
 
 \begin{figure}[hp]
 \includegraphics[width=1.33\textwidth]{core-2.png}
-\caption{Improved CPU design. Control logic and forwarding paths have been omitted for
-simplicity.}
+\caption{Alternative CPU design. Control logic and forwarding paths have been
+omitted for simplicity.}
 \label{core-2}
 \end{figure}
 
 \end{landscape}
 
-\emph{***DESCRIBE IMPROVED ARCHITECTURE***}
+An alternative to this design swaps the place of the data memory and the DSP in
+the pipeline. This results in a few differences. Only register indirect
+addressing is available for both data and code.
 
-\emph{***SUGGEST INSTRUCTION SET***}
+\begin{table}[ht!]
+\caption{Potential alternative instruction set}
+\label{instruction-set-2}
+\newcommand{\const}{\multicolumn{2}{c|}{const}}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Instruction & instr[11:6]   & instr[5:0]    & Operation                 \\
+    \hline
+    NOOP         &               &               &                          \\
+    \hline
+    MOV         & \const                        & acc := const              \\
+    \hline
+    MOVAR       & ra            &               & ra := acc                 \\
+    \hline
+    MOVRA       & ra            &               & acc := ra                 \\
+    \hline
+    MOVRR       & ra            & rb            & ra := rb                  \\
+    \hline
+    B           & ra            &               & pc := ra                  \\
+    \hline
+    BNZ         & ra            & rb            & if ra != 0 then pc = rb   \\
+    \hline
+    BZ          & ra            & rb            & if ra = 0 then pc = rb    \\
+    \hline
+    DEC         & ra            &               & ra := ra - 1              \\
+    \hline
+    LDR         & ra            & rb            & ra := *rb                 \\
+    \hline
+    STR         & ra            & rb            & *rb := ra                 \\
+    \hline
+    LDRI        & ra            & rb            & ra := *rb; rb := rb + 1   \\
+    \hline
+    STRD        & ra            & rb            & *rb := ra; rb := rb - 1   \\
+    \hline
+    ADD         & ra            & rb            & acc := ra + rb            \\
+    \hline
+    SUB         & ra            & rb            & acc := ra + rb            \\
+    \hline
+    MUL         & ra            & rb            & acc := ra * rb            \\
+    \hline
+    MAC         & ra            & rb            & acc := acc + ra * rb      \\
+    \hline
+    ADDMULADD   & ra            & rb            & acc := acc + *sp*(ra+rb)  \\
+    \hline
+\end{tabular}
+\end{table}
 
-\emph{***SHOW SAMPLE PROGRAM***}
+\begin{onecolumn}
+  \lstinputlisting[
+    label=core-2-sample,
+    caption={Alternative instruction set sample code}]
+    {core-2-sample.s}
+\end{onecolumn}
 
 During the remainder of the time of the project, I will finalize the design of
-the CPU, implement the CPU, design and implement the CPU network, do appropriate
-functional and performance tests and write the final report. An estimated
-timeline of these tasks can be seen in figure \ref{timetable}.
+the CPU from the two alternatives I have described above, implement the CPU,
+design and implement the CPU network, do appropriate functional and performance
+tests and write the final report. An estimated timeline of these tasks can be
+seen in figure \ref{timetable}.
 
 \begin{onecolumn}
 \begin{figure}[ht!]
