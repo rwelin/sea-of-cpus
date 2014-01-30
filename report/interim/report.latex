@@ -83,11 +83,14 @@ CPUs will therefore be heavily influenced by the available hardware resources.
 
 The ISA should be adapted for highly parallelisable problems such as image
 processing or cryptography where the CPUs could co-operate to increase
-calculation throughput. Individual cores should therefore also have good support
-for implementing a multiply-accumulate loop.
+calculation throughput. Since a common operation in these domains is
+multiply-accumulate, individual cores should also have good support for
+implementing a multiply-accumulate loop.
 
 The implementation of the design should be appropriately verified using
-behavioural simulation and test benches.
+behavioural simulation and test benches. The performance of the project will be
+evaluated by metrics such as multiply-accumulate per cycle per CPU and area
+usage per CPU on the FPGA.
 
 In addition to the processor array implementation, an adequate programming tool
 should be developed in the form of an assembler. This will aid in both user
