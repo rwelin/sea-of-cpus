@@ -72,9 +72,9 @@
 
 Modern FPGAs have become increasingly complex, with large amounts of logic
 gates, RAM blocks and dedicated DSP units. The aim of the project is to design
-and implement a small, independent CPU that utilise these resources. A large
-number of these CPUs should be instantiated on a single FPGA, forming a large
-processor array that can co-operate to solve larger, parallelisable tasks.
+and implement a small, independent RISC CPU that utilise these resources. A
+large number of these CPUs should be instantiated on a single FPGA, forming a
+large processor array that can co-operate to solve larger, parallelisable tasks.
 
 The project will specifically target the Xilinx Virtex-6 family of FPGAs. Each
 CPU should use one block RAM and one DSP slice and ideally run at the maximum
@@ -118,12 +118,12 @@ CPU:
 \begin{enumerate}
 
 \item \textcite{dsp48e1} describes the operation of the per-cycle configurable
-  DSP48E1 slice. This hardware supports many different operations including
-  multiplication, multiply accumulate, three-input addition and bit-wise logic
-  functions. The instruction set of the CPU could therefore be relatively
-  complex without using a lot of FPGA resources. Since this hardware block is
-  completely pipelined it can calculate one multiply-accumulate at the maximum
-  clock frequency of the FPGA.
+    DSP48E1 slice. This hardware supports many different operations including
+    multiplication, multiply-accumulate, three-input addition and bit-wise logic
+    functions. The instruction set of the CPU could therefore be relatively
+    complex without using a lot of FPGA resources. Since this hardware block is
+    completely pipelined it can calculate one multiply-accumulate per cycle at
+    the maximum clock frequency of the FPGA.
 
 \item \textcite{memory} documents the block RAM. The document describes the
   available port configurations, various width- and depth-configurations and how
@@ -165,7 +165,7 @@ the design of the CPU network.
 \subsection{Software tools}
 
 The CPU will be implemented using VHDL. This will be aided by the Xilinx
-PlanAhead tool which provides functionality for behaviour simulation of HDL,
+PlanAhead tool which provides functionality for behavioural simulation of HDL,
 synthesis and place and route to the target FPGA. The tool also provides good
 timing analysis and resource utilisation reports.
 
@@ -272,17 +272,131 @@ multiply-accumulate loop using this instruction set is shown in listing
 \ref{core-1-sample}. The code performs two multiply-accumulate operations in
 eight instructions.
 
+An alternative to this design swaps the position of the data memory and the DSP
+in the pipeline. This results in a few differences. Only register indirect
+addressing is available for both data and code. However, the design supports ALU
+instructions that operate directly on data from the block RAM. This could be
+useful for implementing FIR filters for example. Table \ref{instruction-set-2}
+shows one potential instruction set for this design. An example of a
+multiply-accumulate loop using this instruction set can be seen in listing
+\ref{core-2-sample}. As the code example of the previous design, two
+multiply-accumulate operations are performed in eight instructions.
+
+During the remainder of the time of the project, I will finalize the design of
+the CPU from the two alternatives I have described above, implement the CPU,
+design and implement the CPU network, do appropriate functional and performance
+tests and write the final report. An estimated timeline of these tasks can be
+seen in figure \ref{timetable}.
+
+During the first four weeks I will implement a completely working prototype CPU.
+It might not have a large instruction set, but as long as the control logic is
+well implemented and the HDL is structured in such a way that adding
+instructions is relatively easy, expanding the instruction set will not be
+difficult. Producing a CPU of some description is critical, however and is the
+first milestone in the project.
+
+During the following four weeks, I can then focus primarily on designing the CPU
+network (second milestone). However, during this design process it is likely
+that I will see the need to extend the instruction set of the CPU and will do so
+accordingly.  Extending the instruction set can however be considered just an
+optimisation and if time does not permit it will not be done in favour of
+designing the CPU network. The six weeks after that, I will dedicate to
+implement the CPU network (third milestone).
+
+The last six weeks of the project should be fully dedicated for testing the
+hardware and software tools, writing programs for the device and writing the
+final report.
+
+\section{Evaluation}
+
+Functional tests will determine if the implementation actually corresponds to
+the design. Test benches should be provided to test individual hardware blocks
+as well as system features. All instructions should be verified to work
+correctly on a single CPU. The communication between processors also needs to
+tested for correctness.
+
+I will continuously test all hardware blocks at the unit level as well as at the
+top system level of the CPU as I am implementing the CPU and the network. Since
+test benches would otherwise take a very long time to write, I will need to
+create tools to generate test benches for low level testing and an assembler
+that can turn human readable code into machine code. I have already written a
+rudimentary assembler that can generate a VHDL package containing an array of
+bit strings, representing machine instructions that can be imported into a test
+bench and used to load the CPU with test code, but I will have to adapt the
+assembler as I work out the details of the instruction set. The tools will also
+have to be modified as the design moves from a single CPU to multiple
+co-operating CPUs.
+
+During the implementation phases, I will also create test programs to evaluate
+the performance of the designs. In addition, as the project approaches the end,
+I will dedicate two weeks only for writing programs and testing.
+
+Performance of the hardware will be evaluated from two primary factors: speed
+and area usage. A decent metric for speed in the context of this project would
+be the number of multiply-accumulate per cycle per CPU in the network the system
+can compute as well as just the total number of multiply-accumulate per cycle to
+see how it compares with conventional digital signal processors, measuring the
+throughput of the network as a whole. Multiply-accumulate is good instruction
+since it is very useful in applications such as image processing that are very
+parallelisable.
+
+A single CPU should be able to perform a MAC operation per four cycles. It is
+expected that the MACs per cycle per CPU will be lower in the network since the
+memory bandwidth per CPU is very limited. Pushing data to the CPUs will
+therefore most likely be the limiting performance factor rather than how quickly
+the CPU can perform the MAC. The communication overhead of more than 50\% per
+MAC is expected.
+
+For testing the overall speed of the system, I will write an
+edge detection program and compare these to the benchmarks provided by
+\textcite{dsp-benchmarks} for one of their standard digital signal processors.
+
+As for area usage on the FPGA, the number of CPUs on one FPGA should ideally be
+limited by the number of DSP48E1 slices or 36 Kb RAM blocks on the chip. If the
+total logic elements used for the control logic of the CPUs and the
+communication network between the CPUs is less the number of logic elements per
+DSP/block RAM-pair, the resources on the FPGA can be optimally utilised.
+However, different devices in the Virtex-6 family have different ratios between
+logic elements and DSP/block RAM-pairs. From \textcite{virtex6-overview} you can
+tell that most devices have less than 100 CLBs per DSP/block RAM-pair, which
+would most likely be very difficult to achieve. Minimizing the resource usage of
+each CPU will, however, make it possible to add more CPUs to the network and
+therefore also increase the throughput of the system, which is desirable.
+
+Performance of he assembler tool that is written for the hardware will be
+evaluated primarily for programmability. Programming for multiple co-operating
+CPUs needs to be reasonably easy, otherwise the performance increase from the
+hardware through parallelisation might be very difficult to achieve for a
+software developer. This is, however, a secondary objective since the assembler
+will primarily be used as a tool for testing the hardware rather than a
+full-fledged end-user tool.
+
+\section{Conclusion}
+
+A small MIPS inspired RISC CPU will be designed and implemented for a Xilinx
+Virtex-6 family FPGA. The CPU should be instantiated multiple times, forming a
+sea of CPUs that can can co-operate and increase the overall computational
+throughput. Both components should be appropriately verified through behavioural
+simulation and test benches. Performance will be measured using benchmarking
+programs in the field of image processing or other domains that benefit from
+parallel processing. These programs will be written using human readable code
+that is turned into native machine code of the device by an assembler. This will
+form a high performance computer
+
+\newpage
+\printbibliography
+
+\begin{onecolumn}
 
 \begin{landscape}
-\begin{figure}[hp]
+
+\begin{figure}[p]
 \includegraphics[width=1.33\textwidth]{core-1.png}
 \caption{CPU design. Control logic and forwarding paths have been omitted for
 simplicity.}
 \label{core-1}
 \end{figure}
 \end{landscape}
-
-\begin{onecolumn}
 
 \begin{table}[ht!]
 \centering
@@ -335,11 +449,9 @@ simplicity.}
   \lstinputlisting[label=core-1-sample,caption={Instruction set sample code}]
     {core-1-sample.s}
 
-\end{onecolumn}
-
 \begin{landscape}
 
-\begin{figure}[hp]
+\begin{figure}[p]
 \includegraphics[width=1.33\textwidth]{core-2.png}
 \caption{Alternative CPU design. Control logic and forwarding paths have been
 omitted for simplicity.}
@@ -347,8 +459,6 @@ omitted for simplicity.}
 \end{figure}
 
 \end{landscape}
-
-\begin{onecolumn}
 
 \begin{table}[ht!]
 \centering
@@ -359,43 +469,43 @@ register file port and \emph{*sp} is therefore the top of the stack in memory.}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l |}
     \hline
-    Instruction & instr[11:6]   & instr[5:0]    & Operation                 \\
+    Instruction & instr[11:6]   & instr[5:0]    & Operation                     \\
     \hline
-    NOOP        &               &               &                           \\
+    NOOP        &               &               &                               \\
     \hline
-    MOV         & \const                        & acc := const              \\
+    MOV         & \const                        & acc := const                  \\
     \hline
-    MOVAR       & ra            &               & ra := acc                 \\
+    MOVAR       & ra            &               & ra := acc                     \\
     \hline
-    MOVRA       & ra            &               & acc := ra                 \\
+    MOVRA       & ra            &               & acc := ra                     \\
     \hline
-    MOVRR       & ra            & rb            & ra := rb                  \\
+    MOVRR       & ra            & rb            & ra := rb                      \\
     \hline
-    B           & ra            &               & pc := ra                  \\
+    B           & ra            &               & pc := ra                      \\
     \hline
-    BNZ         & ra            & rb            & if ra != 0 then pc := rb  \\
+    BNZ         & ra            & rb            & if ra != 0 then pc := rb      \\
     \hline
-    BZ          & ra            & rb            & if ra = 0 then pc := rb   \\
+    BZ          & ra            & rb            & if ra = 0 then pc := rb       \\
     \hline
-    DEC         & ra            &               & ra := ra - 1              \\
+    DEC         & ra            &               & ra := ra - 1                  \\
     \hline
-    LDR         & ra            & rb            & ra := *rb                 \\
+    LDR         & ra            & rb            & ra := *rb                     \\
     \hline
-    STR         & ra            & rb            & *rb := ra                 \\
+    STR         & ra            & rb            & *rb := ra                     \\
     \hline
-    LDRI        & ra            & rb            & ra := *rb; rb := rb + 1   \\
+    LDRI        & ra            & rb            & ra := *rb; rb := rb + 1       \\
     \hline
-    STRD        & ra            & rb            & *rb := ra; rb := rb - 1   \\
+    STRD        & ra            & rb            & *rb := ra; rb := rb - 1       \\
     \hline
-    ADD         & ra            & rb            & acc := ra + rb            \\
+    ADD         & ra            & rb            & acc := ra + rb                \\
     \hline
-    SUB         & ra            & rb            & acc := ra + rb            \\
+    SUB         & ra            & rb            & acc := ra + rb                \\
     \hline
-    MUL         & ra            & rb            & acc := ra * rb            \\
+    MUL         & ra            & rb            & acc := ra * rb                \\
     \hline
-    MAC         & ra            & rb            & acc := acc + ra * rb      \\
+    MAC         & ra            & rb            & acc := acc + ra * rb          \\
     \hline
-    ADDMULADD   & ra            & rb            & acc := acc + *sp*(ra+rb)  \\
+    ADDMULADD   & ra            & rb            & acc := acc + *sp * (ra + rb)  \\
     \hline
 \end{tabular}
 \end{table}
@@ -405,97 +515,12 @@ register file port and \emph{*sp} is therefore the top of the stack in memory.}
     caption={Alternative instruction set sample code}]
     {core-2-sample.s}
 
-\begin{figure}[ht!]
+\begin{figure}[p]
 \includegraphics[width=\textwidth]{timetable.png}
 \caption{Timetable}
 \label{timetable}
 \end{figure}
+
 \end{onecolumn}
-
-\begin{twocolumn}
-
-An alternative to this design swaps the position of the data memory and the DSP
-in the pipeline. This results in a few differences. Only register indirect
-addressing is available for both data and code. However, the design supports ALU
-instructions that operate directly on data from the block RAM. This could be
-useful for implementing FIR filters for example. Table \ref{instruction-set-2}
-shows one potential instruction set for this design. An example of a
-multiply-accumulate loop using this instruction set can be seen in listing
-\ref{core-2-sample}. As the code example of the previous design, two
-multiply-accumulate operations are performed in eight instructions.
-
-During the remainder of the time of the project, I will finalize the design of
-the CPU from the two alternatives I have described above, implement the CPU,
-design and implement the CPU network, do appropriate functional and performance
-tests and write the final report. An estimated timeline of these tasks can be
-seen in figure \ref{timetable}.
-
-During the first four weeks I will implement a completely working prototype CPU.
-It might not have a large instruction set, but as long as the control logic is
-well implemented and the HDL is structured in such a way that adding
-instructions is relatively easy, expanding the instruction set will not be
-difficult. Producing a CPU of some description is critical, however and is the
-first milestone in the project.
-
-During the following four weeks, I can then focus primarily on designing the CPU
-network (second milestone). However, during this design process it is likely
-that I will see the need to extend the instruction set of the CPU and will do so
-accordingly.  Extending the instruction set can however be considered just an
-optimisation and if time does not permit it will not be done in favour of
-designing the CPU network. The six weeks after that, I will dedicate to
-implement the CPU network (third milestone).
-
-The last four weeks should be fully dedicated to write the final report.
-
-\section{Evaluation}
-
-Functional tests will determine if the implementation actually corresponds to
-the design. Test benches should be provided to test individual hardware blocks
-as well as system features. All instructions should be verified to work
-correctly on a single CPU. The communication between processors also needs to
-tested for correctness.
-
-I will continuously test all hardware blocks at the unit level as well as at the
-top system level of the CPU as I am implementing the CPU and the network. Since
-test benches would otherwise take a very long time to write, I will need to
-create tools to generate test benches for low level testing and an assembler
-that can turn human readable code into machine code. I have already written a
-rudimentary assembler that can generate a VHDL package containing an array of
-bit strings, representing machine instructions that can be imported into a test
-bench and used to load the CPU with test code, but I will have to adapt the
-assembler as I work out the details of the instruction set. The tools will also
-have to be modified as the design moves from a single CPU to multiple
-co-operating CPUs.
-
-During the implementation phases, I will also create test programs to evaluate
-the performance of the designs. In addition, as the project approaches the end,
-I will dedicate two weeks only for writing programs and testing.
-
-Performance will be evaluated from two primary factors: speed and area usage. A
-decent metric for speed in the context of this project would be the number of
-multiply-accumulate per cycle per CPU in the network the system can compute as
-well as just the total number of multiply-accumulate per cycle to see how it
-compares with conventional digital signal processors, measuring the throughput
-of the network as a whole. Multiply-accumulate is good instruction since it is
-very useful in applications such as image processing that are very
-parallelisable. For testing the overall speed of the system, I will write an
-edge detection program and compare these to the benchmarks provided by
-\textcite{dsp-benchmarks} for one of their standard digital signal processors.
-
-As for area usage on the FPGA, the number of CPUs on one FPGA should ideally be
-limited by the number of DSP48E1 slices or 36 Kb RAM blocks on the chip. If the
-total logic elements used for the control logic of the CPUs and the
-communication network between the CPUs is less the number of logic elements per
-DSP/block RAM-pair, the resources on the FPGA can be optimally utilised.
-However, different devices in the Virtex-6 family have different ratios between
-logic elements and DSP/block RAM-pairs. From \textcite{virtex6-overview} you can
-tell that most devices have less than 100 CLBs per DSP/block RAM-pair, which
-would most likely be very difficult to achieve. Minimizing the resource usage of
-each CPU will, however, make it possible to add more CPUs to the network and
-therefore also increase the throughput of the system, which is desirable.
-
-\printbibliography
-
-\end{twocolumn}
 
 \end{document}
