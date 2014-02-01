@@ -6,6 +6,7 @@
 \usepackage{csquotes}
 \usepackage{graphicx}
 \usepackage{pdflscape}
+\usepackage{tikz}
 
 \usepackage[
   style=apa,
@@ -396,11 +397,12 @@ form a high performance computer
 \begin{landscape}
 
 \begin{figure}[p]
-\includegraphics[width=1.33\textwidth]{core-1.png}
-\caption{CPU design. Control logic and forwarding paths have been omitted for
-simplicity.}
-\label{core-1}
+    \caption{CPU design. Control logic and forwarding paths have been omitted
+    for simplicity.}
+    \label{core-1}
+    \resizebox{\linewidth}{!}{\input{core-1.tex}}
 \end{figure}
+
 \end{landscape}
 
 \begin{table}[ht!]
@@ -457,10 +459,10 @@ simplicity.}
 \begin{landscape}
 
 \begin{figure}[p]
-\includegraphics[width=1.33\textwidth]{core-2.png}
-\caption{Alternative CPU design. Control logic and forwarding paths have been
-omitted for simplicity.}
-\label{core-2}
+    \caption{Alternative CPU design. Control logic and forwarding paths have been
+    omitted for simplicity.}
+    \label{core-2}
+    \resizebox{\linewidth}{!}{\input{core-2.tex}}
 \end{figure}
 
 \end{landscape}
