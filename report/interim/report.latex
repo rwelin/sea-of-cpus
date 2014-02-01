@@ -249,6 +249,9 @@ implementation of the final design.
 Since only two registers can be referenced in one instruction (assuming six bit
 op-code and a 64 address register file), the accumulator in the prototype will
 be kept in order to support three-input operations such as multiply-accumulate.
+However, this accumulator could potentially be implemented using the read-write
+input of the register file at the expense of a slightly smaller general purpose
+register space.
 
 A possible design of the actual processor can be seen in figure \ref{core-1}.
 This design is heavily inspired by the MIPS architecture and has the same
@@ -264,7 +267,9 @@ register file and one from the accumulator. However, only two of the elements in
 the register file can be addressed from the instruction word. The third register
 file read can be used to fetch some special purpose register that isn't
 explicitly addressed, for example a stack pointer or a subroutine return
-address.
+address. Just as if the accumulator was implemented using the fourth read-write
+input to the register file, this would create a smaller general purpose register
+file space, but could result in higher resource utilisation.
 
 One possible instruction set that could be implemented using this architecture
 can be seen in table \ref{instruction-set-1}. An implementation of a
