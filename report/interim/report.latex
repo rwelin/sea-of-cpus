@@ -353,9 +353,11 @@ therefore most likely be the limiting performance factor rather than how quickly
 the CPU can perform the MAC. The communication overhead of more than 50\% per
 MAC is expected.
 
-For testing the overall speed of the system, I will write an
-edge detection program and compare these to the benchmarks provided by
-\textcite{dsp-benchmarks} for one of their standard digital signal processors.
+For testing the overall speed of the system, I will write an edge detection
+program and other image processing programs. I will compare these to the
+benchmarks provided by \textcite{dsp-benchmarks} for one of their standard
+digital signal processors and results of similar applications on the Ambric MPPA
+\parencite{img-proc-mppa}.
 
 As for area usage on the FPGA, the number of CPUs on one FPGA should ideally be
 limited by the number of DSP48E1 slices or 36 Kb RAM blocks on the chip. If the
