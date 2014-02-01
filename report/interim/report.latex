@@ -383,13 +383,14 @@ full-fledged end-user tool.
 
 A small MIPS inspired RISC CPU will be designed and implemented for a Xilinx
 Virtex-6 family FPGA. The CPU should be instantiated multiple times, forming a
-sea of CPUs that can can co-operate and increase the overall computational
+CPU network that can can co-operate and increase the overall computational
 throughput. Both components should be appropriately verified through behavioural
 simulation and test benches. Performance will be measured using benchmarking
 programs in the field of image processing or other domains that benefit from
 parallel processing. These programs will be written using human readable code
-that is turned into native machine code of the device by an assembler. This will
-form a high performance computer
+that is turned into native machine code of the device by an assembler. This sea
+of CPUs will form a high performance computer that can be used to efficiently
+accelerate certain tasks.
 
 \newpage
 \printbibliography
