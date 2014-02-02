@@ -1,5 +1,6 @@
 ;
-; Example program that performs multiply-accumulate on two arrays.
+; Example program that performs multiply-accumulate on two arrays. Any code
+; except the actual loop is omitted for simplicity.
 ;
 ; (Operand forwarding is assumed.)
 ;

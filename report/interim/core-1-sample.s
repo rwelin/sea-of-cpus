@@ -1,11 +1,6 @@
 ;
-; Example program that performs multiply-accumulate on two arrays.
-;
-; The example uses software pipelining to interleave instructions and create a
-; very well utilised multiply-accumulate loop. Two MAC operations are performed
-; every iteration in order to prevent the use of NOOPs. The two MACs are marked
-; with #1 and #2 in the comments. Any code except the actual loop is omitted for
-; simplicity.
+; Example program that performs multiply-accumulate on two arrays. Any code
+; except the actual loop is omitted for simplicity.
 ;
 ; (Operand forwarding is assumed.)
 ;
