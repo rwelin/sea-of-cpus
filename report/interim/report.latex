@@ -252,16 +252,15 @@ op-code and a 64 address register file), the accumulator in the prototype will
 be kept in order to support three-input operations such as multiply-accumulate.
 However, this accumulator could potentially be implemented using the read-write
 input of the register file at the expense of a slightly smaller general purpose
-register space.
+register space. It could also result in a structural hazard since only one
+address can be read and written to from this port in one cycle.
 
 A possible design of the actual processor can be seen in figure \ref{core-1}.
 This design is heavily inspired by the MIPS architecture and has the same
 execution stages: instruction fetch, instruction decode and register read,
 execution, memory read/write, register write-back. The processor can support
 absolute immediate addressing, PC-relative addressing and register indirect
-addressing for memory accesses. A register indirect memory load with
-pre-increment is also supported since the DSP block is between the register file
-and the memory.
+addressing for memory accesses.
 
 The processor can do four register reads in total every cycle, three from the
 register file and one from the accumulator. However, only two of the elements in
@@ -275,7 +274,7 @@ file space, but could result in higher resource utilisation.
 One possible instruction set that could be implemented using this architecture
 can be seen in table \ref{instruction-set-1}. An implementation of a
 multiply-accumulate loop using this instruction set is shown in listing
-\ref{core-1-sample}. The code performs two multiply-accumulate operations in
+\ref{core-1-sample}. The code performs one multiply-accumulate operations in
 eight instructions.
 
 An alternative to this design swaps the position of the data memory and the DSP
@@ -285,7 +284,7 @@ instructions that operate directly on data from the block RAM. This could be
 useful for implementing FIR filters for example. Table \ref{instruction-set-2}
 shows one potential instruction set for this design. An example of a
 multiply-accumulate loop using this instruction set can be seen in listing
-\ref{core-2-sample}. As the code example of the previous design, two
+\ref{core-2-sample}. As the code example of the previous design, one
 multiply-accumulate operations are performed in eight instructions.
 
 During the remainder of the time of the project, I will finalize the design of
@@ -346,7 +345,7 @@ throughput of the network as a whole. Multiply-accumulate is good instruction
 since it is very useful in applications such as image processing that are very
 parallelisable.
 
-A single CPU should be able to perform a MAC operation per four cycles. It is
+A single CPU should be able to perform a MAC operation in eight cycles. It is
 expected that the MACs per cycle per CPU will be lower in the network since the
 memory bandwidth per CPU is very limited. Pushing data to the CPUs will
 therefore most likely be the limiting performance factor rather than how quickly
@@ -435,15 +434,13 @@ accelerate certain tasks.
     \hline
     BZ          & ra            & rb            & if ra = 0 then pc := rb   \\
     \hline
-    DEC         & ra            &               & ra := ra - 1              \\
+    DEC         & ra            & const         & ra := ra - const          \\
+    \hline
+    INC         & ra            & const         & ra := ra + const          \\
     \hline
     LDR         & ra            & rb            & ra := *rb                 \\
     \hline
     STR         & ra            & rb            & *rb := ra                 \\
-    \hline
-    ILDR        & ra            & rb            & rb := rb + 1; ra := *rb   \\
-    \hline
-    DSTR        & ra            & rb            & rb := rb - 1; *rb := ra   \\
     \hline
     ADD         & ra            & rb            & acc := ra + rb            \\
     \hline
@@ -497,15 +494,13 @@ register file port and \emph{*sp} is therefore the top of the stack in memory.}
     \hline
     BZ          & ra            & rb            & if ra = 0 then pc := rb       \\
     \hline
-    DEC         & ra            &               & ra := ra - 1                  \\
+    DEC         & ra            & const         & ra := ra - const              \\
+    \hline
+    INC         & ra            & const         & ra := ra + const              \\
     \hline
     LDR         & ra            & rb            & ra := *rb                     \\
     \hline
     STR         & ra            & rb            & *rb := ra                     \\
-    \hline
-    LDRI        & ra            & rb            & ra := *rb; rb := rb + 1       \\
-    \hline
-    STRD        & ra            & rb            & *rb := ra; rb := rb - 1       \\
     \hline
     ADD         & ra            & rb            & acc := ra + rb                \\
     \hline
