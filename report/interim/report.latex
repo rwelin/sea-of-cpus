@@ -444,7 +444,7 @@ accelerate certain tasks.
     \hline
     ADD         & ra            & rb            & acc := ra + rb            \\
     \hline
-    SUB         & ra            & rb            & acc := ra + rb            \\
+    SUB         & ra            & rb            & acc := ra - rb            \\
     \hline
     MUL         & ra            & rb            & acc := ra * rb            \\
     \hline
@@ -504,7 +504,7 @@ register file port and \emph{*sp} is therefore the top of the stack in memory.}
     \hline
     ADD         & ra            & rb            & acc := ra + rb                \\
     \hline
-    SUB         & ra            & rb            & acc := ra + rb                \\
+    SUB         & ra            & rb            & acc := ra - rb                \\
     \hline
     MUL         & ra            & rb            & acc := ra * rb                \\
     \hline
