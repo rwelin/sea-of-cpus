@@ -1,6 +1,5 @@
 \documentclass[a4paper,twoside,11pt]{IEEEtran}
 \usepackage{enumerate}
-\usepackage{parskip}
 \usepackage{amsmath}
 \usepackage[british]{babel}
 \usepackage{csquotes}
@@ -65,7 +64,7 @@
 % Title info
 \markboth{}{Robert Welin: Sea-of-CPUs Interim Report}
 \begin{document}
-\title{Sea-of-CPUs Interim Report}
+\title{Sea-of-CPUs on an FPGA: Interim Report}
 \author{Robert Welin}
 \maketitle
 
@@ -100,6 +99,8 @@ program development and testing.
 \section{Background}
 
 \subsection{Hardware}
+
+\subsubsection{CPU}
 
 The general architecture CPU will be influenced by well-known RISC processors
 such as MIPS and older versions of the ARM ISA. The reason being their
@@ -152,6 +153,8 @@ described in \textcite{explicit-operand-forwarding}, uses explicit naming of the
 forwarding registers in the instructions. This would simplify the implementation
 of the CPU and will be favoured over classic forwarding techniques if possible.
 
+\subsubsection{CPU network}
+
 Once the CPU has been implemented, several instances of the core should be
 instantiated and made to co-operate. This implies some kind of communication
 system which could be implemented either using shared memory as used in
@@ -179,6 +182,8 @@ machines in order to minimize damage caused by possible failure of the
 development machine.
 
 \section{Implementation}
+
+\subsection{Current implementation progress}
 
 The first step I plan to do for the project is to design and implement the
 independent CPU. In order to do that, I have familiarised myself with the
@@ -255,6 +260,8 @@ input of the register file at the expense of a slightly smaller general purpose
 register space. It could also result in a structural hazard since only one
 address can be read and written to from this port in one cycle.
 
+\subsection{Possible CPU designs}
+
 A possible design of the actual processor can be seen in figure \ref{core-1}.
 This design is heavily inspired by the MIPS architecture and has the same
 execution stages: instruction fetch, instruction decode and register read,
@@ -287,6 +294,8 @@ multiply-accumulate loop using this instruction set can be seen in listing
 \ref{core-2-sample}. As the code example of the previous design, one
 multiply-accumulate operations are performed in eight instructions.
 
+\subsection{Project plan}
+
 During the remainder of the time of the project, I will finalize the design of
 the CPU from the two alternatives I have described above, implement the CPU,
 design and implement the CPU network, do appropriate functional and performance
@@ -314,6 +323,8 @@ final report.
 
 \section{Evaluation}
 
+\subsection{Functionality}
+
 Functional tests will determine if the implementation actually corresponds to
 the design. Test benches should be provided to test individual hardware blocks
 as well as system features. All instructions should be verified to work
@@ -331,6 +342,8 @@ bench and used to load the CPU with test code, but I will have to adapt the
 assembler as I work out the details of the instruction set. The tools will also
 have to be modified as the design moves from a single CPU to multiple
 co-operating CPUs.
+
+\subsection{Performance}
 
 During the implementation phases, I will also create test programs to evaluate
 the performance of the designs. In addition, as the project approaches the end,
