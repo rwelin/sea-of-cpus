@@ -294,6 +294,15 @@ multiply-accumulate loop using this instruction set can be seen in listing
 \ref{core-2-sample}. As the code example of the previous design, one
 multiply-accumulate operations are performed in eight instructions.
 
+The main limitation of these instruction sets is that only one register write
+can occur every cycle. A register indirect memory read with post-increment is
+therefore not possible unless the accumulator, external to the register file is
+used. However, as long as the loaded values will be used shortly after they were
+read and only once, it is unnecessary to write the them to the register file.
+Using explicit operand forwarding, a register indirect load with post-increment
+is possible. This would make it possible to perform two MAC operations in one
+loop iteration as can be seen in listing \ref{core-3-sample}
+
 \subsection{Project plan}
 
 During the remainder of the time of the project, I will finalize the design of
@@ -394,7 +403,8 @@ full-fledged end-user tool.
 \section{Conclusion}
 
 A small MIPS inspired RISC CPU will be designed and implemented for a Xilinx
-Virtex-6 family FPGA. The CPU should be instantiated multiple times, forming a
+Virtex-6 family FPGA. The design should utilise the available hardware resources
+efficiently. The resulting CPU should be instantiated multiple times, forming a
 CPU network that can can co-operate and increase the overall computational
 throughput. Both components should be appropriately verified through behavioural
 simulation and test benches. Performance will be measured using benchmarking
@@ -402,7 +412,7 @@ programs in the field of image processing or other domains that benefit from
 parallel processing. These programs will be written using human readable code
 that is turned into native machine code of the device by an assembler. This sea
 of CPUs will form a high performance computer that can be used to efficiently
-accelerate certain tasks.
+accelerate parallelisable tasks.
 
 \newpage
 \printbibliography
@@ -466,7 +476,9 @@ accelerate certain tasks.
 \end{tabular}
 \end{table}
 
-  \lstinputlisting[label=core-1-sample,caption={Instruction set sample code}]
+  \lstinputlisting[
+    label=core-1-sample,
+    caption={Instruction set sample code.}]
     {core-1-sample.s}
 
 \begin{landscape}
@@ -530,8 +542,14 @@ register file port and \emph{*sp} is therefore the top of the stack in memory.}
 
   \lstinputlisting[
     label=core-2-sample,
-    caption={Alternative instruction set sample code}]
+    caption={Alternative instruction set sample code.}]
     {core-2-sample.s}
+
+    \newpage
+  \lstinputlisting[
+    label=core-3-sample,
+    caption={Sample code using explicit operand forwarding.}]
+    {core-3-sample.s}
 
 \begin{figure}[p]
 \includegraphics[width=\textwidth]{timetable.png}
