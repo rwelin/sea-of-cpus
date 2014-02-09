@@ -301,7 +301,7 @@ used. However, as long as the loaded values will be used shortly after they were
 read and only once, it is unnecessary to write the them to the register file.
 Using explicit operand forwarding, a register indirect load with post-increment
 is possible. This would make it possible to perform two MAC operations in one
-loop iteration as can be seen in listing \ref{core-3-sample}
+loop iteration as can be seen in listing \ref{core-3-sample}.
 
 \subsection{Project plan}
 
