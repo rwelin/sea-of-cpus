@@ -7,7 +7,6 @@ ${SIM}.prj : ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd
 	echo "verilog work $${XILINX}/PlanAhead/data/verilog/src/glbl.v" >> $@
 
 ${SIM}.exe : ${SIM}.prj
-	. ../../tools/mktest/setup.sh
 	fuse -incremental -prj $< -top SampleCoreTest -o $@
 
 ${SIM}.tcl :
