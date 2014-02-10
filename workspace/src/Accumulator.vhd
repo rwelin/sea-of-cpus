@@ -27,9 +27,9 @@ begin
 
         if clk_en = '1' then
 
-            --if write_enable = '1' then
+            if write_enable = '1' then
                 output <= input;
-            --end if;
+            end if;
 
             if reset = '1' then
                 output <= (others => '0');
