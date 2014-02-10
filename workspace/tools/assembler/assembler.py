@@ -3,11 +3,15 @@ import argparse
 import os
 import re
 
-class InsufficientOperandsError(Exception):
-    pass
+class OperandError(Exception):
+    def __init__(self, message):
+        super(OperandError, self).__init__(message)
+        self.message = message
 
-def fail(error, line, num):
+def fail(error, line, num, msg=''):
     print("{} error on line {}: '{}'".format(error, num, line))
+    if msg:
+        print(msg)
     exit()
 
 def to_binary(num, length):
@@ -50,7 +54,7 @@ def encode(instr, opcodes):
         data2 = encode_argument(instr[2], 6)
         return op + data1 + data2
     else:
-        raise InsufficientOperandsError
+        raise OperandError('Too many operands.')
 
 # Parse instruction set definition and produce a dictionary of opcodes.
 def parse_opcodes(filename):
@@ -77,7 +81,7 @@ def output_vhdl(filename, machine_code):
     print('    type program is array (0 to {}) of word;'.format(len(machine_code) - 1))
     print('    constant {}_code: program := {{'.format(package))
     print('        {}'.format(',\n        '.join(machine_code)))
-    print('    }};')
+    print('    };')
     print()
     print('end package {};'.format(package))
 
@@ -108,8 +112,8 @@ def main():
                     instr = encode(tokens, opcodes)
                 except KeyError:
                     fail('Instruction', line, i)
-                except InsufficientOperandsError:
-                    fail('Argument', line, i)
+                except OperandError as msg:
+                    fail('Operand', line, i, msg)
 
                 machine_instructions.append('"{}"'.format(instr))
 
