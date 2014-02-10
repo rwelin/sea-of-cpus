@@ -6,3 +6,4 @@ MOVRR   | ra:6 | rb:6 |     -- ra := rb
 DEC     | ra:6 | const:6 |  -- ra := ra - const
 BNZ     | ra:6 | rb:6 |     -- acc := acc + ra * rb
 ILDR    | ra:6 | rb:6 |     -- ra := *++rb
+MAC
