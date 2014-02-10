@@ -37,9 +37,11 @@ package body test is
     --
     procedure wait_for(constant ticks: in integer; signal clk: in std_logic) is
     begin
-        for count in 1 to ticks loop
-            wait until clk'event and clk = '1';
-        end loop;
+        if ticks > 0 then
+            for count in 1 to ticks loop
+                wait until clk'event and clk = '1';
+            end loop;
+        end if;
     end procedure wait_for;
 
 end package body test;
