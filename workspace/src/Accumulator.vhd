@@ -3,7 +3,7 @@ library work;
 use ieee.std_logic_1164.all;
 use work.core_config.all;
 
--- Defines a single word register with synchronous read and write.
+-- Single word register with synchronous read and write.
 --
 entity Accumulator is
     port (
