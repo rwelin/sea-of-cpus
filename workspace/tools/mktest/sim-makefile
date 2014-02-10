@@ -2,12 +2,11 @@ isim.log : ${SIM}.exe ${SIM}.tcl
 	./$< -gui -tclbatch $(word 2,$^)
 
 ${SIM}.prj : ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd
-	echo "vhdl work ../../test/"${SIM}".vhd" > $@
-	echo $^ | sed 's/ /\n/g' | awk '{print "vhdl work "$$1}' >> $@
+	echo $^ | sed 's/ /\n/g' | awk '{print "vhdl work "$$1}' > $@
 	echo "verilog work $${XILINX}/PlanAhead/data/verilog/src/glbl.v" >> $@
 
 ${SIM}.exe : ${SIM}.prj
-	fuse -incremental -prj $< -top SampleCoreTest -o $@
+	fuse -incremental -prj $< -top ${SIM} -o $@
 
 ${SIM}.tcl :
 	echo "run all" > $@
