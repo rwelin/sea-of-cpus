@@ -5,7 +5,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use unisim.vcomponents.all;
 use work.all;
-use work.core_interface.all;
+use work.core_config.all;
 use work.opcodes.all;
 
 entity Core is

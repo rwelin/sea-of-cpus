@@ -1,7 +1,7 @@
 library ieee;
 library work;
 use ieee.std_logic_1164.all;
-use work.core_interface.all;
+use work.core_config.all;
 use work.alu_interface.all;
 use work.opcodes.all;
 

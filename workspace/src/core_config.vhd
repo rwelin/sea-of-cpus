@@ -2,7 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-package core_interface is
+-- Contains all parameters and necessesary type defenitions for the CPU.
+--
+package core_config is
 
     constant WORD_LENGTH: integer := 18;
     constant REGISTER_ADDR_LENGTH: integer := 6;
@@ -37,7 +39,7 @@ package core_interface is
         acc_we: std_logic;
     end record;
 
-end core_interface;
+end core_config;
 
-package body core_interface is
+package body core_config is
 end package body;
