@@ -22,19 +22,24 @@ architecture behav of AccumulatorTest is
     type TestDataArray is array (0 to 4) of TestData;
     constant test_data: TestDataArray := (
         0 => -- `output' should be zero on reset
-            ('1', '1', '0', uint2slv(1, input'length), uint2slv(0, output'length), 2),
+            ('1', '1', '0', uint2slv(1, input'length),
+             uint2slv(0, output'length), 2),
 
         1 => -- `output' should be synchronously written to when `write_enable' is set
-            ('1', '0', '1', uint2slv(1, input'length), uint2slv(0, output'length), 0),
+            ('1', '0', '1', uint2slv(1, input'length),
+             uint2slv(0, output'length), 0),
 
         2 => -- ditto 
-            ('1', '0', '1', uint2slv(1, input'length), uint2slv(1, output'length), 2),
+            ('1', '0', '1', uint2slv(1, input'length),
+             uint2slv(1, output'length), 2),
 
         3 => -- accumulator should not be written to when `write_enable' is cleared
-            ('1', '0', '0', uint2slv(2, input'length), uint2slv(1, output'length), 2),
+            ('1', '0', '0', uint2slv(2, input'length),
+             uint2slv(1, output'length), 2),
 
         4 => -- accumulator should not be written to when `clk_en' is cleared
-            ('0', '0', '1', uint2slv(2, input'length), uint2slv(1, output'length), 2)
+            ('0', '0', '1', uint2slv(2, input'length),
+             uint2slv(1, output'length), 2)
     );
 
 begin
