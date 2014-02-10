@@ -1,5 +1,18 @@
 # Sea-of-CPUs
 
+## Automated testing
+
+All vhdl files in the test directory can be automatically built and executed
+using make.
+
+1. Setup the necessary environmental variables:
+
+    $ source ./tools/setup.sh
+
+2. Build and execute all tests:
+
+    $ make sim/failures
+
 ## Source directories
 
 ### doc
