@@ -24,7 +24,10 @@ package opcodes is
             words = line.split()
             mnemonic = words[0].upper()
             comment = " ".join(words[1:])
-            print("    constant OP_%s: opcode := std_logic_vector(to_unsigned(%d, OPCODE_LENGTH)); --%s" % (mnemonic, i, comment))
+            if comment:
+                print("    -- {}".format(comment))
+            machine_code = '{0:b}'.format(i).zfill(6)
+            print('    constant OP_{}: opcode := "{}";\n'.format(mnemonic, machine_code))
             i = i + 1
 
     print("""
