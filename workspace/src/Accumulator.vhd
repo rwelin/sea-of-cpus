@@ -10,8 +10,8 @@ entity Accumulator is
         clk: in std_logic;
         clk_en: in std_logic;
         reset: in std_logic;
+        write_enable: in std_logic;
         input: in word;
-        write_enable: std_logic;
         output: out word
      );
 end entity Accumulator;
