@@ -20,8 +20,7 @@ test : $(foreach t,$(TEST_SOURCES),$(call testlog,$(t)))
 
 # Produce report for all failures in all tests.
 $(SIM_DIR)/failures : test
-	grep -i -L DONE $(SIM_DIR)/**/isim.log | xargs -r grep --colour=auto -i Failure -A 2 > $@
-	cat $@
+	grep -i -L DONE $(SIM_DIR)/**/isim.log | xargs -r grep --colour=auto -i Failure -A 2
 
 # Construct simulation environment from test.
 $(SIM_DIR)/%/makefile :
