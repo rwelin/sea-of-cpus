@@ -25,26 +25,7 @@ entity RegisterFile is
 end entity RegisterFile;
 
 architecture behav of RegisterFile is
-    signal a, b, c, d: word;
 begin
-
-    -- Drives output from pipeline registers.
-    --
-    read_output: process
-    begin
-        wait until clk'event and clk = '1';
-        read_a <= a;
-        read_b <= b;
-        read_c <= c;
-        read_d <= d;
-
-        if reset = '1' then
-            read_a <= (others => '0');
-            read_b <= (others => '0');
-            read_c <= (others => '0');
-            read_d <= (others => '0');
-        end if;
-    end process read_output;
 
     -- Register file implemented using the RAM64M primitive.
     --
@@ -66,10 +47,10 @@ begin
              DIB => write_data(i), -- RAM 1-bit data write input addressed by ADDRD
              DIC => write_data(i), -- RAM 1-bit data write input addressed by ADDRD
              DID => write_data(i), -- RAM 1-bit data write input addressed by ADDRD
-             DOA => a(i), -- Read port A 1-bit output
-             DOB => b(i), -- Read port B 1-bit output
-             DOC => c(i), -- Read port C 1-bit output
-             DOD => d(i)  -- Read/Write port D 1-bit output
+             DOA => read_a(i), -- Read port A 1-bit output
+             DOB => read_b(i), -- Read port B 1-bit output
+             DOC => read_c(i), -- Read port C 1-bit output
+             DOD => read_d(i)  -- Read/Write port D 1-bit output
          );
     end generate GenerateRegisterFile;
 
