@@ -30,11 +30,27 @@ architecture behav of RegisterFileTest is
             wait_cycles: integer;
         end record;
 
-    type TestDataArray is array (0 to 0) of TestData;
+    type TestDataArray is array (0 to 4) of TestData;
     constant test_data: TestDataArray := (
         0 => -- Read ports should be set to zero on reset.
             ('1', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), (others => '0'),
-             (others => '0'), (others => '0'), (others => '0'), (others => '0'), 1)
+             (others => '0'), (others => '0'), (others => '0'), (others => '0'), 1),
+
+        1 => -- outputs should be synchronously written to when `write_enable' is set
+            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(1, write_data'length),
+             (others => '0'), (others => '0'), (others => '0'), (others => '0'), 0),
+
+        2 => -- ditto
+            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(1, write_data'length),
+             (others => '0'), (others => '0'), (others => '0'), (others => '0'), 1),
+
+        3 => -- ditto
+            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(1, write_data'length),
+             uint2slv(1, read_a'length), uint2slv(1, read_b'length), uint2slv(1, read_c'length), uint2slv(1, read_d'length), 1),
+
+        4 => -- register file should not be written to when `write_enable' is cleared
+            ('0', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(2, write_data'length),
+             uint2slv(1, read_a'length), uint2slv(1, read_b'length), uint2slv(1, read_c'length), uint2slv(1, read_d'length), 2)
     );
 
 begin
