@@ -14,22 +14,29 @@ filename=$(notdir $(basename $(1)))
 
 testlog=$(SIM_DIR)/$(call filename,$(1))/isim.log
 
+# Failures in a simulation logs.
+failures=grep -i -L DONE $(1) | xargs -r grep --colour=auto -i Failure -A 2
+
 clean :
 	rm -rf sim
 
-# Execute all tests.
+# All test logs.
 test : $(foreach t,$(TEST_SOURCES),$(call testlog,$(t)))
 
 # Produce report for all failures in all tests.
 $(SIM_DIR)/failures : test
-	grep -i -L DONE $(SIM_DIR)/**/isim.log | xargs -r grep --colour=auto -i Failure -A 2
+	$(call failures,$(SIM_DIR)/**/isim.log)
+
+# Produce report for all failures in a single testbench.
+$(SIM_DIR)/%/failures : $(SIM_DIR)/%/isim.log
+	$(call failures,$<)
 
 # Construct simulation environment from test.
 $(SIM_DIR)/%/makefile :
-	mkdir -p ${dir $@}
-	cd ${dir $@}
+	mkdir -p $(dir $@)
+	cd $(dir $@)
 	echo "SIM=$(word 2,$(subst /, ,$@))" > $@
-	cat ${SIM_MAKE_TEMPLATE} >> $@
+	cat $(SIM_MAKE_TEMPLATE) >> $@
 
 # Produce simulation reports for all tests.
 $(SIM_DIR)/%/isim.log : $(SIM_DIR)/%/makefile $(TEST_DIR)/%.vhd $(SOURCES)
