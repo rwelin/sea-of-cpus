@@ -34,7 +34,7 @@ architecture behav of AccumulatorTest is
              uint2slv(0, output'length), 1),
 
         3 => -- ditto
-            ('1', '0', '1', uint2slv(1, input'length),
+            ('1', '0', '0', uint2slv(1, input'length),
              uint2slv(1, output'length), 1),
 
         4 => -- accumulator should not be written to when `write_enable' is cleared
