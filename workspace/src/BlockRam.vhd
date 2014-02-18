@@ -17,7 +17,7 @@ entity BlockRam is
         wea: in std_logic;
         web: in std_logic
     );
-end BlockRam;
+end entity BlockRam;
 
 architecture behav of BlockRam is
 
