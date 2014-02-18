@@ -7,10 +7,15 @@ use work.core_config.all;
 entity BlockRam is
     port (
         clk: in std_logic;
-        addra, addrb: in ram_addr;
-        dia, dib: in word; 
-        doa, dob: out word;
-        wea, web: in std_logic
+        reset: in std_logic;
+        addra: in ram_addr;
+        addrb: in ram_addr;
+        dia: in word;
+        dib: in word;
+        doa: out word;
+        dob: out word;
+        wea: in std_logic;
+        web: in std_logic
     );
 end BlockRam;
 
