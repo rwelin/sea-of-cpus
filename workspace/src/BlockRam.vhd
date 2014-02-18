@@ -23,7 +23,6 @@ architecture behav of BlockRam is
 
     type block_ram is array (RAM_DEPTH - 1 downto 0) of word;
     shared variable mem: block_ram;
-    signal regA, regB: word;
     signal iaddra, iaddrb: integer;
 
 begin
@@ -42,8 +41,10 @@ begin
     PortARead: process
     begin
         wait until clk'event and clk = '1';
-        regA <= mem(iaddra);
-        doa <= regA;
+        doa <= mem(iaddra);
+        if reset = '1' then
+            doa <= (others => '0');
+        end if;
     end process PortARead;
 
     PortBWrite: process
@@ -57,8 +58,10 @@ begin
     PortBRead: process
     begin
         wait until clk'event and clk = '1';
-        regB <= mem(iaddrb);
-        dob <= regB;
+        dob <= mem(iaddrb);
+        if reset = '1' then
+            dob <= (others => '0');
+        end if;
     end process PortBRead;
 
 end behav;
