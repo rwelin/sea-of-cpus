@@ -202,6 +202,7 @@ begin
 
     MainRam : entity BlockRam
     port map (
+        reset => reset,
         addra => br_addra,
         addrb => instr(1).br_addrb,
         dia => data,
