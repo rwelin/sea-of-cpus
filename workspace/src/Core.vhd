@@ -159,17 +159,17 @@ begin
         did <= alu_result;
     end process RegisterFileInput;
 
-    ALUInst: entity ALU
-    port map (
-        clk => clk,
-        reset => reset,
-        op => instr(3).op,
-        alumode => instr(3).alumode,
-        opmode => instr(3).opmode,
-        ain => ain,
-        bin => bin,
-        result => alu_result
-    );
+    --ALUInst: entity ALU
+    --port map (
+        --clk => clk,
+        --reset => reset,
+        --op => instr(3).op,
+        --alumode => instr(3).alumode,
+        --opmode => instr(3).opmode,
+        --ain => ain,
+        --bin => bin,
+        --result => alu_result
+    --);
 
     GenerateRegisterFile: for i in 0 to 17 generate
         RAM64M_inst : RAM64M
