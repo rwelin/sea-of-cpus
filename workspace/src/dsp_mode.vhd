@@ -16,6 +16,6 @@ package dsp_mode is
             alumode: std_logic_vector(DSP_ALUMODE_LENGTH - 1 downto 0);
         end record;
 
-    constant DSP_ACCUMULATOR_THROUGH: DSPMode := ("0110000", "00000", "0000");
+    constant DSP_C_PASSTHROUGH: DSPMode := ("0110000", "00000", "0000");
 
 end package dsp_mode;
