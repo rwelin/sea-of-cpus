@@ -3,26 +3,24 @@ library unisim;
 library work;
 use ieee.std_logic_1164.all;
 use unisim.vcomponents.all;
-use work.core_config.all;
-use work.opcodes.all;
+use work.dsp_mode.all;
 
-entity ALU is
+-- Abstraction of DSP48E1 slice.
+--
+entity DSP is
     port (
         clk: in std_logic;
         reset: in std_logic;
-        op: in opcode;
-        alumode: in std_logic_vector(3 downto 0);
-        opmode: in std_logic_vector(6 downto 0);
-        ain, bin: in word;
-        result: out word
+        mode: in DSPMode; 
+        a: in std_logic_vector(29 downto 0);
+        b: in std_logic_vector(17 downto 0);
+        c: in std_logic_vector(47 downto 0);
+        d: in std_logic_vector(24 downto 0);
+        p: out std_logic_vector(47 downto 0)
     );
-end ALU;
+end entity DSP;
 
-architecture behav of ALU is
-
-    signal p: std_logic_vector(47 downto 0);
-    signal a: std_logic_vector(29 downto 0);
-    signal b: std_logic_vector(17 downto 0);
+architecture behav of DSP is
 
     signal acout: std_logic_vector(29 downto 0);
     signal bcout: std_logic_vector(17 downto 0);
@@ -38,38 +36,11 @@ architecture behav of ALU is
 
 begin
 
-    result <= p(17 downto 0);
-
     -- Unused inputs with default values
     acin <= (others => '0');
     bcin <= (others => '0');
     carryinsel <= "000"; -- General interconnect
     multisignin <= '0';
-
-    DSPInputs: process(op, ain, bin)
-    begin
-        a <= (others => '0');
-        b <= bin;
-        inmode <= "00000";
-        case op is
-            when OP_ADD =>
-                if b(17) = '1' then
-                    a <= (others => '1');
-                end if;
-
-            when OP_SUB =>
-                if b(17) = '1' then
-                    a <= (others => '1');
-                end if;
-
-            when OP_MAC =>
-                a(17 downto 0) <= ain;
-
-            when others =>
-        end case;
-
-    end process DSPInputs;
-
 
     DSP48E1_inst : DSP48E1
     generic map (
@@ -124,19 +95,19 @@ begin
         MULTSIGNIN => multisignin, -- 1-bit input: Multiplier sign input
         PCIN => (others => '0'), -- 48-bit input: P cascade input
         -- Control: 4-bit (each) input: Control Inputs/Status Bits
-        ALUMODE => alumode, -- 4-bit input: ALU control input
+        ALUMODE => mode.alumode, -- 4-bit input: ALU control input
         CARRYINSEL => carryinsel, -- 3-bit input: Carry select input
         CEINMODE => '1', -- 1-bit input: Clock enable input for INMODEREG
         CLK => clk, -- 1-bit input: Clock input
-        INMODE => inmode, -- 5-bit input: INMODE control input
-        OPMODE => opmode, -- 7-bit input: Operation mode input
+        INMODE => mode.inmode, -- 5-bit input: INMODE control input
+        OPMODE => mode.opmode, -- 7-bit input: Operation mode input
         RSTINMODE => reset, -- 1-bit input: Reset input for INMODEREG
         -- Data: 30-bit (each) input: Data Ports
         A => a, -- 30-bit input: A data input
         B => b, -- 18-bit input: B data input
-        C => p, -- 48-bit input: C data input
+        C => c, -- 48-bit input: C data input
         CARRYIN => '0', -- 1-bit input: Carry input signal
-        D => (others => '0'), -- 25-bit input: D data input
+        D => d, -- 25-bit input: D data input
         -- Reset/Clock Enable: 1-bit (each) input: Reset/Clock Enable Inputs
         CEA1 => '1', -- 1-bit input: Clock enable input for 1st stage AREG
         CEA2 => '1', -- 1-bit input: Clock enable input for 2nd stage AREG
