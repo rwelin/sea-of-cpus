@@ -68,12 +68,12 @@ def vhdl_entity_test_stub(template, filename, entity):
 
 def parse_port(text):
     """Return a Port from a line of vhdl."""
-    port_re = '\A\w+\s*:\s*(in|out)\s+\w+'
+    port_re = '\A\w+\s*:\s*(in|out)\s+\w+[^;]*'
     regex = re.compile(port_re)
     match = regex.match(text)
     if match:
         words = match.group(0).replace(':', '').split()
-        return Port(words[0], words[1], words[2])
+        return Port(words[0], words[1], ' '.join(words[2:]))
 
 def main():
     parser = argparse.ArgumentParser(prog = 'mktest')
