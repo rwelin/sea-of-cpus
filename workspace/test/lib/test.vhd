@@ -33,12 +33,14 @@ package body test is
         return std_logic_vector(to_unsigned(i, len));
     end function uint2slv;
 
+
     -- Converts a signed integer to a std_logic_vector of a given length.
     --
     function int2slv(i, len: integer) return std_logic_vector is
     begin
         return std_logic_vector(to_signed(i, len));
     end function int2slv;
+
 
     -- Waits for a given number of positive clock edges.
     --
