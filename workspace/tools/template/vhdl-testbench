@@ -3,7 +3,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.${entity_name};
 use work.core_config.all;
-use work.test.all;
+use work.test_utils.all;
 
 entity ${entity_name}Test is
 end entity ${entity_name}Test;
