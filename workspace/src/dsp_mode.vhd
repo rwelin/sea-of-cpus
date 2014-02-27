@@ -16,12 +16,22 @@ package dsp_mode is
             alumode: std_logic_vector(DSP_ALUMODE_LENGTH - 1 downto 0);
         end record;
 
+    -- P := C
     constant DSP_C_PASSTHROUGH: DSPMode := ("0110000", "00000", "0000");
 
-    constant DSP_AB_PASSTHROUGH: DSPMode := ("0000011", "00010", "0000");
+    -- P := A:B
+    constant DSP_AB_PASSTHROUGH: DSPMode := ("0000011", "00000", "0000");
 
+    -- P := C + A:B
     constant DSP_CpAB: DSPMode := ("0110011", "00000", "0000");
 
+    -- P := C*A:B
     constant DSP_CmAB: DSPMode := ("0110011", "00000", "0011");
+
+    -- P := A*B
+    constant DSP_AtB: DSPMode := ("0000101", "00000", "0000");
+
+    -- P := C + A*B
+    constant DSP_CpAtB: DSPMode := ("0110101", "00000", "0000");
 
 end package dsp_mode;

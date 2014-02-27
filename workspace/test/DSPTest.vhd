@@ -32,7 +32,7 @@ architecture behav of DSPTest is
             wait_cycles: integer;
         end record;
 
-    type TestDataArray is array (0 to 8) of TestData;
+    type TestDataArray is array (0 to 10) of TestData;
     constant test_data: TestDataArray := (
         0 => -- P should be all zero on reset.
             ('1', '1', DSP_C_PASSTHROUGH,
@@ -69,15 +69,26 @@ architecture behav of DSPTest is
              uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
              uint2slv(2*2**18+3, p'length), 3),
 
-        7 => -- P := C + A:B on DSP_CpAB
+        7 => -- P := C + A:B on DSP_CpAB.
             ('1', '0', DSP_CpAB,
              uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
              uint2slv(2*2**18+3+5, p'length), 3),
 
-        8 => -- P := C - A:B on DSP_CmAB
+        8 => -- P := C - A:B on DSP_CmAB.
             ('1', '0', DSP_CmAB,
              uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
-             int2slv(5-(2*2**18+3), p'length), 3)
+             int2slv(5-(2*2**18+3), p'length), 3),
+
+        9 => -- P:= A*B on DSP_AtB.
+            ('1', '0', DSP_AtB,
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
+             int2slv(2*3, p'length), 3),
+
+        10 => -- P:= C + A*B on DSP_CpAtB.
+            ('1', '0', DSP_CpAtB,
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
+             int2slv(5+2*3, p'length), 3)
+
     );
 
 begin
