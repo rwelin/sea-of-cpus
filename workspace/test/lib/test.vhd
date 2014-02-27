@@ -7,6 +7,7 @@ use ieee.numeric_std.all;
 package test is
     function to_string(v: std_logic_vector) return string;
     function uint2slv(i, len: integer) return std_logic_vector;
+    function int2slv(i, len: integer) return std_logic_vector;
     procedure wait_for(constant ticks: in integer; signal clk: in std_logic);
 end package test;
 
@@ -32,6 +33,12 @@ package body test is
         return std_logic_vector(to_unsigned(i, len));
     end function uint2slv;
 
+    -- Converts a signed integer to a std_logic_vector of a given length.
+    --
+    function int2slv(i, len: integer) return std_logic_vector is
+    begin
+        return std_logic_vector(to_signed(i, len));
+    end function int2slv;
 
     -- Waits for a given number of positive clock edges.
     --
