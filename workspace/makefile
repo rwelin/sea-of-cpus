@@ -7,7 +7,7 @@ SRC_DIR=src
 SIM_MAKE_TEMPLATE=tools/template/sim-makefile
 
 SOURCE_DIRS=$(TEST_LIBS) $(SRC_DIR)
-SOURCES=$(foreach d,$(SOURCE_DIRS),$(addsuffix /*.vhd,$(d)))
+SOURCES=$(foreach d,$(SOURCE_DIRS),$(d)/*.vhd)
 TEST_SOURCES=$(wildcard $(TEST_DIR)/*.vhd)
 
 filename=$(notdir $(basename $(1)))
@@ -16,6 +16,8 @@ testlog=$(SIM_DIR)/$(call filename,$(1))/isim.log
 
 # Failures in a simulation logs.
 failures=grep -i -L DONE $(1) | xargs -r grep --colour=auto -i Failure -A 2
+
+.PHONY : clean test $(SIM_DIR)/failures
 
 clean :
 	rm -rf sim
