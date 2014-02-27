@@ -32,7 +32,7 @@ architecture behav of DSPTest is
             wait_cycles: integer;
         end record;
 
-    type TestDataArray is array (0 to 5) of TestData;
+    type TestDataArray is array (0 to 8) of TestData;
     constant test_data: TestDataArray := (
         0 => -- P should be all zero on reset.
             ('1', '1', DSP_C_PASSTHROUGH,
@@ -44,26 +44,40 @@ architecture behav of DSPTest is
              uint2slv(1, a'length), uint2slv(2, b'length), uint2slv(3, c'length), uint2slv(4, d'length),
              (others => '0'), 3),
 
-        2 => -- C should synchronously be written to P on DSP_C_PASSTHROUGH
+        2 => -- C should synchronously be written to P on DSP_C_PASSTHROUGH.
             ('1', '0', DSP_C_PASSTHROUGH,
-             uint2slv(1, a'length), uint2slv(2, b'length), uint2slv(3, c'length), uint2slv(4, d'length),
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
              uint2slv(0, p'length), 0),
 
         3 => -- ditto
             ('1', '0', DSP_C_PASSTHROUGH,
-             uint2slv(1, a'length), uint2slv(2, b'length), uint2slv(3, c'length), uint2slv(4, d'length),
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
              uint2slv(0, p'length), 1),
 
         4 => -- ditto
             ('1', '0', DSP_C_PASSTHROUGH,
-             uint2slv(1, a'length), uint2slv(2, b'length), uint2slv(3, c'length), uint2slv(4, d'length),
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
              uint2slv(0, p'length), 1),
 
         5 => -- ditto
             ('1', '0', DSP_C_PASSTHROUGH,
-             uint2slv(1, a'length), uint2slv(2, b'length), uint2slv(3, c'length), uint2slv(4, d'length),
-             uint2slv(3, p'length), 1)
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
+             uint2slv(5, p'length), 1),
 
+        6 => -- A:B should be synchronously written to P on DSP_AB_PASSTHROUGH.
+            ('1', '0', DSP_AB_PASSTHROUGH,
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
+             uint2slv(2*2**18+3, p'length), 3),
+
+        7 => -- P := C + A:B on DSP_CpAB
+            ('1', '0', DSP_CpAB,
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
+             uint2slv(2*2**18+3+5, p'length), 3),
+
+        8 => -- P := C - A:B on DSP_CmAB
+            ('1', '0', DSP_CmAB,
+             uint2slv(2, a'length), uint2slv(3, b'length), uint2slv(5, c'length), uint2slv(7, d'length),
+             int2slv(5-(2*2**18+3), p'length), 3)
     );
 
 begin

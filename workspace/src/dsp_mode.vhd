@@ -18,4 +18,10 @@ package dsp_mode is
 
     constant DSP_C_PASSTHROUGH: DSPMode := ("0110000", "00000", "0000");
 
+    constant DSP_AB_PASSTHROUGH: DSPMode := ("0000011", "00010", "0000");
+
+    constant DSP_CpAB: DSPMode := ("0110011", "00000", "0000");
+
+    constant DSP_CmAB: DSPMode := ("0110011", "00000", "0011");
+
 end package dsp_mode;
