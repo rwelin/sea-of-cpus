@@ -3,7 +3,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.BlockRam;
 use work.core_config.all;
-use work.test.all;
+use work.test_utils.all;
+use work.core_utils.all;
+use work.utils.all;
 
 entity BlockRamTest is
 end entity BlockRamTest;
@@ -41,20 +43,20 @@ architecture behav of BlockRamTest is
              (others => '0'), (others => '0'), '0', '0', 2),
 
         1 => -- `output' should be synchronously written to when `wea' and `web' are set
-            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), uint2slv(1, dia'length), uint2slv(2, dib'length),
-             uint2slv(0, doa'length), uint2slv(0, dob'length), '1', '1', 0),
+            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), int2word(1), int2word(2),
+             int2word(0), int2word(0), '1', '1', 0),
 
         2 => -- ditto
-            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), uint2slv(1, dia'length), uint2slv(2, dib'length),
-             uint2slv(0, doa'length), uint2slv(0, dob'length), '1', '1', 1),
+            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), int2word(1), int2word(2),
+             int2word(0), int2word(0), '1', '1', 1),
 
         3 => -- ditto
-            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), uint2slv(1, dia'length), uint2slv(2, dib'length),
-             uint2slv(1, doa'length), uint2slv(2, dob'length), '1', '1', 1),
+            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), int2word(1), int2word(2),
+             int2word(1), int2word(2), '1', '1', 1),
 
         4 => -- the block ram should not be written to when `wea' and `web' are cleared
-            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), uint2slv(5, dia'length), uint2slv(6, dib'length),
-             uint2slv(1, doa'length), uint2slv(2, dob'length), '0', '0', 2)
+            ('0', uint2slv(1, addra'length), uint2slv(2, addrb'length), int2word(5), int2word(6),
+             int2word(1), int2word(2), '0', '0', 2)
     );
 
 begin

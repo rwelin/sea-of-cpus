@@ -4,15 +4,12 @@ use ieee.numeric_std.all;
 
 -- Contains various utility functions for testing.
 --
-package test is
+package test_utils is
     function to_string(v: std_logic_vector) return string;
-    function uint2slv(i, len: integer) return std_logic_vector;
-    function int2slv(i, len: integer) return std_logic_vector;
     procedure wait_for(constant ticks: in integer; signal clk: in std_logic);
-end package test;
+end package test_utils;
 
-package body test is
-
+package body test_utils is
 
     -- Converts a std_logic_vector to a string.
     --
@@ -26,22 +23,6 @@ package body test is
     end function to_string;
 
 
-    -- Converts an unsigned integer to a std_logic_vector of a given length.
-    --
-    function uint2slv(i, len: integer) return std_logic_vector is
-    begin
-        return std_logic_vector(to_unsigned(i, len));
-    end function uint2slv;
-
-
-    -- Converts a signed integer to a std_logic_vector of a given length.
-    --
-    function int2slv(i, len: integer) return std_logic_vector is
-    begin
-        return std_logic_vector(to_signed(i, len));
-    end function int2slv;
-
-
     -- Waits for a given number of positive clock edges.
     --
     procedure wait_for(constant ticks: in integer; signal clk: in std_logic) is
@@ -53,4 +34,4 @@ package body test is
         end if;
     end procedure wait_for;
 
-end package body test;
+end package body test_utils;

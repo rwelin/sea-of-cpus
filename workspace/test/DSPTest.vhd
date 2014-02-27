@@ -3,7 +3,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.DSP;
 use work.dsp_mode.all;
-use work.test.all;
+use work.test_utils.all;
+use work.utils.all;
 
 entity DSPTest is
 end entity DSPTest;

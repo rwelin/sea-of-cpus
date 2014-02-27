@@ -3,7 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.RegisterFile;
 use work.core_config.all;
-use work.test.all;
+use work.test_utils.all;
+use work.core_utils.all;
 
 entity RegisterFileTest is
 end entity RegisterFileTest;
@@ -37,20 +38,20 @@ architecture behav of RegisterFileTest is
              (others => '0'), (others => '0'), (others => '0'), (others => '0'), 1),
 
         1 => -- outputs should be synchronously written to when `write_enable' is set
-            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(1, write_data'length),
+            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(1),
              (others => '0'), (others => '0'), (others => '0'), (others => '0'), 0),
 
         2 => -- ditto
-            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(1, write_data'length),
+            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(1),
              (others => '0'), (others => '0'), (others => '0'), (others => '0'), 1),
 
         3 => -- ditto
-            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(1, write_data'length),
-             uint2slv(1, read_a'length), uint2slv(1, read_b'length), uint2slv(1, read_c'length), uint2slv(1, read_d'length), 1),
+            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(1),
+             int2word(1), int2word(1), int2word(1), int2word(1), 1),
 
         4 => -- register file should not be written to when `write_enable' is cleared
-            ('0', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), uint2slv(2, write_data'length),
-             uint2slv(1, read_a'length), uint2slv(1, read_b'length), uint2slv(1, read_c'length), uint2slv(1, read_d'length), 2)
+            ('0', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(2),
+             int2word(1), int2word(1), int2word(1), int2word(1), 2)
     );
 
 begin
