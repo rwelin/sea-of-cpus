@@ -1,3 +1,8 @@
+.PHONY : clean
+
+clean :
+	rm -rf isim.log ${SIM}.prj ${SIM}.exe ${SIM}.tcl fuse.log fuseRelaunch.cmd fuse.xmsgs isim isim.wdb
+
 isim.log : ${SIM}.exe ${SIM}.tcl 
 	./$< -gui -tclbatch $(word 2,$^)
 
