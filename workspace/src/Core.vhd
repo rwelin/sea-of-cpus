@@ -3,87 +3,78 @@ library unisim;
 library work;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use unisim.vcomponents.all;
 use work.all;
 use work.core_config.all;
 use work.opcodes.all;
+use work.instruction_decode.all;
 
 entity Core is
     port (
         clk: in std_logic;
+        clk_en: in std_logic;
         reset: in std_logic;
         addr: in ram_addr;
         data: in word;
-        we: in std_logic
+        we: in std_logic;
+        output: out word
     );
 end Core;
 
 architecture behav of Core is
 
-    -- read ports of the register file
-    signal doa, dob, doc, dod: word;
-    signal rdoa, rdob, rdoc, rdod: word;
-
-    -- write ports of the register file
-    signal did: word;
-
-    -- block ram address for port a
     signal br_addra: ram_addr;
-
-    -- read ports of the block ram
-    signal br_doa, br_dob: word;
-
-    -- write ports of the block ram
+    signal br_addrb: ram_addr;
+    signal br_doa: word;
+    signal br_dob: word;
     signal br_dib: word;
+    signal br_web: std_logic;
 
-    -- inputs to ALU
-    signal ain, bin: word;
-
-    -- instruction word
     signal instr_word: word;
 
-    -- decoded instruction
-    type instr_pipeline is array (0 to 5) of Instruction;
-    signal instr: instr_pipeline;
+    type opcode_sr_t is array (0 to 6) of opcode;
+    signal opcode_sr: opcode_sr_t;
 
-    -- program counter
     signal pc: ram_addr;
 
-    -- accumulator
-    signal acc: word;
-    signal alu_result: word;
+    signal rf_inputs: RegisterFileInputs;
+    signal rf_read_a: word;
+    signal rf_read_b: word;
+    signal rf_read_c: word;
+    signal rf_read_d: word;
+
+    signal dsp_inputs: DSPInputs;
+    signal dsp_p: std_logic_vector(47 downto 0);
+
+    signal a_write_enable: std_logic;
+    signal a_input: word;
+    signal a_output: word;
 
 begin
 
-    Accumulator: process
+    output <= a_input;
+    br_web <= '0';
+
+
+    shift_pipeline_opcode: process
     begin
         wait until clk'event and clk = '1';
-        if instr(5).acc_we = '1' then
-            acc <= alu_result;
-        end if;
+        opcode_sr(0) <= decode_opcode(instr_word);
+        opcode_sr(1 to 6) <= opcode_sr(0 to 5);
+    end process shift_pipeline_opcode;
 
-        if reset = '1' then
-            acc <= (others => '0');
-        end if;
-    end process Accumulator;
 
-    BlockRamPortAAddress: process(pc, addr, we)
+    fetch_instruction_word: process(pc, addr, we, br_doa)
     begin
         br_addra <= pc;
-        if we = '1' then
-            br_addra <= addr;
-        end if;
-    end process BlockRamPortAAddress;
-
-    InstructionWord: process(we, br_doa)
-    begin
         instr_word <= br_doa;
         if we = '1' then
+            br_addra <= addr;
             instr_word <= (others => '0');
         end if;
-    end process InstructionWord;
+    end process fetch_instruction_word;
 
-    ProgramCounter: process
+
+    calculate_program_counter: process
     begin
         wait until clk'event and clk = '1';
 
@@ -94,124 +85,91 @@ begin
         if reset = '1' then
             pc <= (others => '0');
         end if;
-    end process ProgramCounter;
+    end process calculate_program_counter;
 
-    PipelineRegisters: process
+
+    set_dsp_inputs: process
+        variable dsp_data_inputs: DSPDataInputs;
     begin
         wait until clk'event and clk = '1';
-        rdoa <= doa;
-        rdob <= dob;
-        rdoc <= doc;
-        rdod <= dod;
-        instr(1 to 5) <= instr(0 to 4);
 
-        if reset = '1' then
-            rdoa <= (others => '0');
-            rdob <= (others => '0');
-            rdoc <= (others => '0');
-            rdod <= (others => '0');
-            instr(1 to 5) <= (others => (
-                (others => '0'),
-                (others => '0'),
-                (others => '0'),
-                (others => '0'),
-                (others => '0'),
-                (others => '0'),
-                '0',
-                (others => '0'),
-                '0',
-                (others => '0'),
-                (others => '0'),
-                '0'
-            ));
-        end if;
-    end process PipelineRegisters;
+        dsp_data_inputs.accum := (others => '0');
+        dsp_data_inputs.reg_a := (others => '0');
+        dsp_data_inputs.reg_b := (others => '0');
+        dsp_data_inputs.mem_a := (others => '0');
+        dsp_data_inputs.const := (others => '0');
 
-    InstructionDecodeInst: entity InstructionDecode
-    port map (
-        instr_word => instr_word,
-        instr => instr(0)
-    );
+        dsp_inputs <= decode_dsp_inputs(opcode_sr(4), dsp_data_inputs);
+    end process set_dsp_inputs;
 
-    ALUInputs: process(rdoa, rdob, instr)
+
+    set_rf_inputs: process
     begin
-        ain <= rdoa;
-        bin <= rdob;
-        case instr(3).op is
-            when OP_MOVA =>
-                ain <= (others => '0');
-                bin <= (others => '0');
-                bin(Instruction.data'range) <= instr(3).data;
+        wait until clk'event and clk = '1';
 
-            when OP_MOVAR =>
-                ain <= (others => '0');
+        rf_inputs.write_enable <= '0';
+        rf_inputs.addr_a <= (others => '0');
+        rf_inputs.addr_b <= (others => '0');
+        rf_inputs.addr_c <= (others => '0');
+        rf_inputs.addr_d <= (others => '0');
+        rf_inputs.write_data <= (others => '0');
+    end process set_rf_inputs;
 
-            when OP_MOVRR =>
-                ain <= (others => '0');
 
-            when others =>
-
-        end case;
-    end process ALUInputs;
-
-    RegisterFileInput: process(alu_result)
-    begin
-        did <= alu_result;
-    end process RegisterFileInput;
-
-    --ALUInst: entity ALU
-    --port map (
-        --clk => clk,
-        --reset => reset,
-        --op => instr(3).op,
-        --alumode => instr(3).alumode,
-        --opmode => instr(3).opmode,
-        --ain => ain,
-        --bin => bin,
-        --result => alu_result
-    --);
-
-    GenerateRegisterFile: for i in 0 to 17 generate
-        RAM64M_inst : RAM64M
-        generic map (
-            INIT_A => X"0000000000000000", -- Initial contents of A port
-            INIT_B => X"0000000000000000", -- Initial contents of B port
-            INIT_C => X"0000000000000000", -- Initial contents of C port
-            INIT_D => X"0000000000000000") -- Initial contents of D port
-        port map (
-             DOA => doa(i), -- Read port A 1-bit output
-             DOB => dob(i), -- Read port B 1-bit output
-             DOC => doc(i), -- Read port C 1-bit output
-             DOD => dod(i), -- Read/Write port D 1-bit output
-             ADDRA => instr(1).addra, -- Read port A 6-bit address input
-             ADDRB => instr(1).addrb, -- Read port B 6-bit address input
-             ADDRC => instr(1).addrc, -- Read port C 6-bit address input
-             ADDRD => instr(5).addrd, -- Read/Write port D 6-bit address input
-             DIA => did(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRA
-             DIB => did(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRB
-             DIC => did(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRC
-             DID => did(i), -- RAM 1-bit data write input addressed by ADDRD,
-                         -- read addressed by ADDRD
-             WCLK => clk, -- Write clock input
-             WE => instr(5).rwe -- Write enable input
-         );
-    end generate GenerateRegisterFile;
-
-    MainRam : entity BlockRam
+    block_ram : entity BlockRam
     port map (
+        clk => clk,
         reset => reset,
         addra => br_addra,
-        addrb => instr(1).br_addrb,
+        addrb => br_addrb,
         dia => data,
         dib => br_dib,
         doa => br_doa,
         dob => br_dob,
-        clk => clk,
         wea => we,
-        web => instr(1).br_web
+        web => br_web
+    );
+
+
+    register_file: entity RegisterFile
+    port map (
+        clk => clk,
+        reset => reset,
+        write_enable => rf_inputs.write_enable,
+        addr_a => rf_inputs.addr_a,
+        addr_b => rf_inputs.addr_b,
+        addr_c => rf_inputs.addr_c,
+        addr_d => rf_inputs.addr_d,
+        write_data => rf_inputs.write_data,
+        read_a => rf_inputs.read_a,
+        read_b => rf_inputs.read_b,
+        read_c => rf_inputs.read_c,
+        read_d => rf_inputs.read_d
+    );
+
+
+    accumulator_inst: entity Accumulator
+    port map (
+        clk => clk,
+        clk_en => clk_en,
+        reset => reset,
+        write_enable => a_write_enable,
+        input => a_input,
+        output => a_output
+    );
+
+
+    dsp_inst: entity DSP
+    port map (
+        clk => clk,
+        clk_en => clk_en,
+        reset => reset,
+        mode => dsp_inputs.mode,
+        a => dsp_inputs.a,
+        b => dsp_inputs.b,
+        c => dsp_inputs.c,
+        d => dsp_inputs.d,
+        p => dsp_p
     );
 
 end behav;

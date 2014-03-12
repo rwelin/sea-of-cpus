@@ -27,8 +27,23 @@ package instruction_decode is
             d: std_logic_vector(24 downto 0);
         end record;
 
+    type RegisterFileInputs is
+        record
+            write_enable: std_logic;
+            addr_a: register_addr;
+            addr_b: register_addr;
+            addr_c: register_addr;
+            addr_d: register_addr;
+            write_data: word;
+            read_a: word;
+            read_b: word;
+            read_c: word;
+            read_d: word;
+        end record;
+
     function sign_extend(v: std_logic_vector; len: integer) return std_logic_vector;
     function decode_dsp_inputs(op: opcode; inputs: DSPDataInputs) return DSPInputs;
+    function decode_opcode(instruction: word) return opcode;
 end package instruction_decode;
 
 package body instruction_decode is
@@ -57,11 +72,19 @@ package body instruction_decode is
         output.d := (others => '0');
         case op is
             when OP_MOVA =>
-                output.c := inputs.const;
+                output.c := sign_extend(inputs.const, output.c'length);
             when others =>
         end case;
 
         return output;
     end function decode_dsp_inputs;
+
+
+    -- Returns the opcode of an instruction word.
+    --
+    function decode_opcode(instruction: word) return opcode is
+    begin
+        return instruction(opcode'range);
+    end function decode_opcode;
 
 end package body instruction_decode;
