@@ -19,11 +19,11 @@ failures=grep -i -L DONE $(1) | xargs -r grep --colour=auto -i Failure -A 2
 
 .PHONY : clean test $(SIM_DIR)/failures
 
-clean :
-	rm -rf sim
-
 # All test logs.
 test : $(foreach t,$(TEST_SOURCES),$(call testlog,$(t)))
+
+clean :
+	rm -rf sim
 
 # Produce report for all failures in all tests.
 $(SIM_DIR)/failures : test
