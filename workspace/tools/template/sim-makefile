@@ -1,17 +1,21 @@
-.PHONY : clean
+.PHONY : clean build all
+
+build : ${SIM}.exe
 
 clean :
 	rm -rf isim.log ${SIM}.prj ${SIM}.exe ${SIM}.tcl fuse.log fuseRelaunch.cmd fuse.xmsgs isim isim.wdb
 
+all : isim.log
+
 isim.log : ${SIM}.exe ${SIM}.tcl 
 	./$< -gui -tclbatch $(word 2,$^)
+
+${SIM}.exe : ${SIM}.prj
+	fuse -incremental -prj $< -top ${SIM} -o $@
 
 ${SIM}.prj : ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd
 	echo $^ | sed 's/ /\n/g' | awk '{print "vhdl work "$$1}' > $@
 	echo "verilog work $${XILINX}/PlanAhead/data/verilog/src/glbl.v" >> $@
-
-${SIM}.exe : ${SIM}.prj
-	fuse -incremental -prj $< -top ${SIM} -o $@
 
 ${SIM}.tcl :
 	echo "run all" > $@
