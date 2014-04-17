@@ -4,6 +4,7 @@ use ieee.numeric_std.all;
 use work.dsp_mode.all;
 use work.core_config.all;
 use work.opcodes.all;
+use work.utils.all;
 
 -- Functions relating to instruction decode.
 --
@@ -41,24 +42,13 @@ package instruction_decode is
             read_d: word;
         end record;
 
-    function sign_extend(v: std_logic_vector; len: integer) return std_logic_vector;
     function decode_dsp_inputs(op: opcode; inputs: DSPDataInputs) return DSPInputs;
     function decode_opcode(instruction: word) return opcode;
+
+    function decode_use_pc_next_address(op: opcode) return std_logic;
 end package instruction_decode;
 
 package body instruction_decode is
-
-    -- Sign extends a given vector to a given length.
-    --
-    function sign_extend(v: std_logic_vector; len: integer) return std_logic_vector is
-    begin
-        assert len >= v'length
-        report "sign_extend: output length must not be less than input length"
-        severity failure;
-
-        return std_logic_vector(to_signed(to_integer(signed(v)), len));
-    end function sign_extend;
-
 
     -- Maps an opcode and a set of inputs to the ports of the DSP block.
     --
@@ -86,5 +76,16 @@ package body instruction_decode is
     begin
         return instruction(opcode'range);
     end function decode_opcode;
+
+
+    -- Returns one if the next address logic should be used or if a calculated
+    -- address should be used given an opcode.
+    --
+    function decode_use_pc_next_address(op: opcode) return std_logic is
+    begin
+
+        return '1';
+
+    end function;
 
 end package body instruction_decode;

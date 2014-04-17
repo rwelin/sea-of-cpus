@@ -7,6 +7,8 @@ use work.all;
 use work.core_config.all;
 use work.opcodes.all;
 use work.instruction_decode.all;
+use work.dsp_mode.all;
+use work.utils.all;
 
 entity Core is
     port (
@@ -29,12 +31,9 @@ architecture behav of Core is
     signal br_dib: word;
     signal br_web: std_logic;
 
-    signal instr_word: word;
-
-    type opcode_sr_t is array (0 to 6) of opcode;
-    signal opcode_sr: opcode_sr_t;
-
-    signal pc: ram_addr;
+    signal pc: ram_addr; -- Program counter
+    signal stall_pc: std_logic; -- Indicates whether to hold the PC or not
+    signal next_calculated_pc: ram_addr; -- Next instruction memory address
 
     signal rf_inputs: RegisterFileInputs;
     signal rf_read_a: word;
@@ -45,75 +44,317 @@ architecture behav of Core is
     signal dsp_inputs: DSPInputs;
     signal dsp_p: std_logic_vector(47 downto 0);
 
-    signal a_write_enable: std_logic;
     signal a_input: word;
     signal a_output: word;
 
+    signal s2_instruction_word: word;
+
+    type sr_rf_read_a_t is array (0 to 5) of word;
+    signal sr_rf_read_a: sr_rf_read_a_t;
+
+    type sr_rf_read_b_t is array (0 to 2) of word;
+    signal sr_rf_read_b: sr_rf_read_b_t;
+
+    type sr_rf_read_c_t is array (0 to 2) of word;
+    signal sr_rf_read_c: sr_rf_read_c_t;
+
+    type sr_accumulator_t is array (0 to 2) of word;
+    signal sr_accumulator: sr_accumulator_t;
+
+    type sr_br_dob_t is array (0 to 0) of word;
+    signal sr_br_dob: sr_br_dob_t;
+
+    type sr_instruction_constant_t is array (0 to 3) of word;
+    signal sr_instruction_constant: sr_instruction_constant_t;
+
+    type sr_write_register_t is array (0 to 6) of register_addr;
+    signal sr_write_register: sr_write_register_t;
+
+    type sr_dsp_p_t is array (0 to 0) of word;
+    signal sr_dsp_p: sr_dsp_p_t;
+
+    -- Control flags
+    --
+
+    type sr_rf_read_a_zero_t is array (0 to 1) of std_logic;
+    signal sr_rf_read_a_zero: sr_rf_read_a_zero_t;
+
+    type sr_a_write_enable_t is array (0 to 6) of std_logic;
+    signal sr_a_write_enable: sr_a_write_enable_t;
+
+    -- Indicates whether to simply increment the PC or use `next_calculated_pc'
+    type sr_use_pc_next_address_t is array (0 to 3) of std_logic;
+    signal sr_use_pc_next_address: sr_use_pc_next_address_t;
+
 begin
 
+
     output <= a_input;
-    br_web <= '0';
+    stall_pc <= '0';
 
 
-    shift_pipeline_opcode: process
+    pipeline_stage_1: process
     begin
         wait until clk'event and clk = '1';
-        opcode_sr(0) <= decode_opcode(instr_word);
-        opcode_sr(1 to 6) <= opcode_sr(0 to 5);
-    end process shift_pipeline_opcode;
+        
+        if clk_en = '1' then
+
+            ------------
+            -- Update PC
+
+            if we = '0' and stall_pc = '0' then
+                if sr_use_pc_next_address(3) = '0' then
+                    pc <= next_calculated_pc;
+                else
+                    pc <= std_logic_vector(unsigned(pc) + 1);
+                end if;
+            end if;
+
+            if reset = '1' then
+                pc <= (others => '0');
+            end if;
+
+        end if;
+
+    end process pipeline_stage_1;
 
 
-    fetch_instruction_word: process(pc, addr, we, br_doa)
+    pipeline_stage_1_unclocked: process
+        ( pc
+        , addr
+        , we
+        )
     begin
+
+        --------------------------------
+        -- Set instruction memory address
+
         br_addra <= pc;
-        instr_word <= br_doa;
         if we = '1' then
             br_addra <= addr;
-            instr_word <= (others => '0');
         end if;
-    end process fetch_instruction_word;
+
+    end process pipeline_stage_1_unclocked;
 
 
-    calculate_program_counter: process
+    pipeline_stage_2: process
     begin
         wait until clk'event and clk = '1';
 
-        if we = '0' then
-            pc <= std_logic_vector(unsigned(pc) + 1);
+        if clk_en = '1' then
+
+            s2_instruction_word <= br_doa; 
+            if reset = '1' then
+                s2_instruction_word <= (others => '0');
+            end if;
+
         end if;
 
-        if reset = '1' then
-            pc <= (others => '0');
-        end if;
-    end process calculate_program_counter;
+    end process pipeline_stage_2;
 
 
-    set_dsp_inputs: process
-        variable dsp_data_inputs: DSPDataInputs;
+    pipeline_stage_3: process
     begin
         wait until clk'event and clk = '1';
 
-        dsp_data_inputs.accum := (others => '0');
-        dsp_data_inputs.reg_a := (others => '0');
-        dsp_data_inputs.reg_b := (others => '0');
-        dsp_data_inputs.mem_a := (others => '0');
-        dsp_data_inputs.const := (others => '0');
+        if clk_en = '1' then
 
-        dsp_inputs <= decode_dsp_inputs(opcode_sr(4), dsp_data_inputs);
-    end process set_dsp_inputs;
+            sr_instruction_constant(0) <= sign_extend(s2_instruction_word, word'length);
+            sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
+
+            sr_write_register(0) <= s2_instruction_word(11 downto 6);
+            sr_write_register(1 to 6) <= sr_write_register(0 to 5);
+
+            sr_use_pc_next_address(0) <= decode_use_pc_next_address(s2_instruction_word(17 downto 12));
+            sr_use_pc_next_address(1 to 3) <= sr_use_pc_next_address(0 to 2);
+
+            sr_a_write_enable(0) <= '0';
+            sr_a_write_enable(1 to 6) <= sr_a_write_enable(0 to 5);
+
+            if reset = '1' then
+                sr_instruction_constant <= (others => (others => '0'));
+                sr_write_register <= (others => (others => '0'));
+                sr_use_pc_next_address <= (others => '1');
+                sr_a_write_enable <= (others => '0');
+            end if;
+
+        end if;
+        
+    end process pipeline_stage_3;
 
 
-    set_rf_inputs: process
+    pipeline_stage_3_unclocked: process(s2_instruction_word)
     begin
-        wait until clk'event and clk = '1';
 
-        rf_inputs.write_enable <= '0';
         rf_inputs.addr_a <= (others => '0');
         rf_inputs.addr_b <= (others => '0');
         rf_inputs.addr_c <= (others => '0');
-        rf_inputs.addr_d <= (others => '0');
-        rf_inputs.write_data <= (others => '0');
-    end process set_rf_inputs;
+
+    end process pipeline_stage_3_unclocked;
+
+    pipeline_stage_4: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+            sr_rf_read_a(0) <= rf_read_a;
+            sr_rf_read_a(1 to 5) <= sr_rf_read_a(0 to 4);
+
+            sr_rf_read_b(0) <= rf_read_b;
+            sr_rf_read_b(1 to 2) <= sr_rf_read_b(0 to 1);
+
+            sr_rf_read_c(0) <= rf_read_c;
+            sr_rf_read_c(1 to 2) <= sr_rf_read_c(0 to 1);
+
+            sr_accumulator(0) <= a_output;
+            sr_accumulator(1 to 2) <= sr_accumulator(0 to 1);
+
+            if reset = '1' then
+                sr_rf_read_a <= (others => (others => '0'));
+                sr_rf_read_b <= (others => (others => '0'));
+                sr_rf_read_c <= (others => (others => '0'));
+                sr_accumulator <= (others => (others => '0'));
+            end if;
+
+        end if;
+
+    end process pipeline_stage_4;
+
+
+    pipeline_stage_5: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+            sr_rf_read_a_zero(0) <= '0';
+            if sr_rf_read_a(0) = (word'range => '0') then
+                sr_rf_read_a_zero(0) <= '1';
+            end if;
+
+            sr_rf_read_a_zero(1) <= sr_rf_read_a_zero(0);
+
+            if reset = '1' then
+                sr_rf_read_a_zero <= (others => '0');
+            end if;
+
+        end if;
+
+    end process pipeline_stage_5;
+
+
+    pipeline_stage_5_unclocked: process(sr_rf_read_a(0), sr_rf_read_b(0))
+    begin
+
+        br_dib <= sr_rf_read_a(0);
+        br_addrb <= sr_rf_read_b(0)(ram_addr'range);
+        br_web <= '0';
+
+    end process pipeline_stage_5_unclocked;
+
+
+    pipeline_stage_6: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+            sr_br_dob(0) <= br_dob;
+
+            if reset = '1' then
+                sr_br_dob <= (others => (others => '0'));
+            end if;
+
+        end if;
+
+    end process pipeline_stage_6;
+
+
+    pipeline_stage_7: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+        end if;
+
+    end process pipeline_stage_7;
+
+
+    pipeline_stage_7_unclocked: process
+        ( sr_rf_read_a(2)
+        , sr_rf_read_b(2)
+        , sr_rf_read_c(2)
+        , sr_accumulator(2)
+        , sr_br_dob(0)
+        , sr_instruction_constant(3)
+        )
+    begin
+
+        dsp_inputs.mode <= DSP_C_PASSTHROUGH;
+        dsp_inputs.a <= (others => '0');
+        dsp_inputs.b <= (others => '0');
+        dsp_inputs.c <= (others => '0');
+        dsp_inputs.d <= (others => '0');
+
+        next_calculated_pc <= sr_rf_read_a(2)(ram_addr'range);
+
+    end process pipeline_stage_7_unclocked;
+
+
+    pipeline_stage_8: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+        end if;
+
+    end process pipeline_stage_8;
+
+
+    pipeline_stage_9: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+            sr_dsp_p(0) <= dsp_p(word'range);
+
+            if reset = '1' then
+                sr_dsp_p <= (others => (others => '0'));
+            end if;
+
+        end if;
+
+    end process pipeline_stage_9;
+
+
+    pipeline_stage_10: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+        end if;
+
+    end process pipeline_stage_10;
+
+
+    pipeline_stage_10_unclocked: process
+        ( sr_write_register(6)
+        , sr_dsp_p(0)
+        )
+    begin
+
+        rf_inputs.write_enable <= '0';
+        rf_inputs.addr_d <= sr_write_register(6);
+        rf_inputs.write_data <= sr_dsp_p(0);
+
+        a_input <= sr_dsp_p(0);
+
+    end process pipeline_stage_10_unclocked;
 
 
     block_ram : entity BlockRam
@@ -153,7 +394,7 @@ begin
         clk => clk,
         clk_en => clk_en,
         reset => reset,
-        write_enable => a_write_enable,
+        write_enable => sr_a_write_enable(6),
         input => a_input,
         output => a_output
     );

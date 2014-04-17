@@ -6,6 +6,7 @@ use work.Core;
 use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
+use work.utils.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -31,16 +32,19 @@ architecture behav of CoreTest is
         end record;
 
 
-    type MemDataArray is array (0 to 0) of word;
+    type MemDataArray is array (0 to 1) of word;
     constant mem_data: MemDataArray := (
-        0 => OP_NOP & "000000001010"
+        0 => OP_NOP  & "000000001010",
+        1 => OP_MOVA & "001100110011"
     );
 
 
-    type TestDataArray is array (0 to 0) of TestData;
+    type TestDataArray is array (0 to 1) of TestData;
     constant test_data: TestDataArray := (
         0 =>
-            ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), 10)
+            ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), 10),
+        1 =>
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 10)
     );
 
 begin
@@ -79,7 +83,8 @@ begin
         for i in mem_data'range loop
             wait_for(1, clk);
 
-            addr <= std_logic_vector(to_unsigned(i, word'length));
+            addr <= int2slv(i, ram_addr'length);
+            report integer'image(i);
             data <= mem_data(i);
             report "Loading data '" & to_string(mem_data(i)) & "' to address " & integer'image(i);
         end loop;

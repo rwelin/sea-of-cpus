@@ -7,6 +7,7 @@ use ieee.numeric_std.all;
 package utils is
     function uint2slv(i, len: integer) return std_logic_vector;
     function int2slv(i, len: integer) return std_logic_vector;
+    function sign_extend(i: std_logic_vector; len: integer) return std_logic_vector;
 end package utils;
 
 package body utils is
@@ -25,5 +26,13 @@ package body utils is
     begin
         return std_logic_vector(to_signed(i, len));
     end function int2slv;
+
+
+    -- Interprets a SLV as a signed number and performs sign extension.
+    --
+    function sign_extend(i: std_logic_vector; len: integer) return std_logic_vector is
+    begin
+        return std_logic_vector(resize(signed(i), len));
+    end function sign_extend;
 
 end package body utils;
