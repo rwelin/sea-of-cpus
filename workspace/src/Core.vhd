@@ -88,6 +88,9 @@ architecture behav of Core is
     type sr_rf_write_enable_t is array (0 to 6) of std_logic;
     signal sr_rf_write_enable: sr_rf_write_enable_t;
 
+    type sr_br_web_t is array (0 to 1) of std_logic;
+    signal sr_br_web: sr_br_web_t;
+
     type sr_dsp_input_control_t is array (0 to 3) of DspDataInputControl;
     signal sr_dsp_input_control: sr_dsp_input_control_t;
 
@@ -187,6 +190,8 @@ begin
 
             sr_a_write_enable(0) <= '0';
 
+            sr_br_web(0) <= '0';
+
             sr_dsp_input_control(0).a <= Zero;
             sr_dsp_input_control(0).b <= Zero;
             sr_dsp_input_control(0).c <= Zero;
@@ -211,12 +216,17 @@ begin
                     sr_dsp_input_control(0).c <= Reg1;
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_LDA =>
+                    sr_dsp_input_control(0).c <= Ram;
+                    sr_a_write_enable(0) <= '1';
+
                 when others =>
 
             end case;
 
             sr_rf_write_enable(1 to 6) <= sr_rf_write_enable(0 to 5);
             sr_a_write_enable(1 to 6) <= sr_a_write_enable(0 to 5);
+            sr_br_web(1) <= sr_br_web(0);
             sr_dsp_input_control(1 to 3) <= sr_dsp_input_control(0 to 2);
             sr_dsp_mode(1 to 3) <= sr_dsp_mode(0 to 2);
 
@@ -226,6 +236,7 @@ begin
                 sr_use_pc_next_address <= (others => '1');
                 sr_rf_write_enable <= (others => '0');
                 sr_a_write_enable <= (others => '0');
+                sr_br_web <= (others => '0');
                 sr_dsp_input_control <= (others => (others => Zero));
                 sr_dsp_mode <= (others => DSP_C_PASSTHROUGH);
             end if;
@@ -296,12 +307,16 @@ begin
     end process pipeline_stage_5;
 
 
-    pipeline_stage_5_unclocked: process(sr_rf_read_a(0), sr_rf_read_b(0))
+    pipeline_stage_5_unclocked: process
+        ( sr_rf_read_a(0)
+        , sr_rf_read_b(0)
+        , sr_br_web(1)
+        )
     begin
 
         br_dib <= sr_rf_read_a(0);
         br_addrb <= sr_rf_read_b(0)(ram_addr'range);
-        br_web <= '0';
+        br_web <= sr_br_web(1);
 
     end process pipeline_stage_5_unclocked;
 

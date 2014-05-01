@@ -1,5 +1,5 @@
 
-    MOVA    3
+    MOVA    22
     NOP
     NOP
     NOP
@@ -44,4 +44,15 @@
     NOP
     NOP
     MOVRR   R1  R0
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    LDA     R1
 
