@@ -46,7 +46,9 @@ def asm_lines(text):
 def encode(instr, opcodes):
     op = opcodes[instr[0]]
 
-    if len(instr) == 2:
+    if len(instr) == 1:
+        return op + encode_argument("0", 12)
+    elif len(instr) == 2:
         arg = instr[1]
         return op + encode_argument(arg, 12)
     elif len(instr) == 3:
