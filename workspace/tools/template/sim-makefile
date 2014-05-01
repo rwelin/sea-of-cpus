@@ -1,22 +1,29 @@
-.PHONY : clean build all
 
-build : ${SIM}.exe
+.PHONY: clean build all
 
-clean :
+TEST_SOURCES=$(wildcard ../../test/programs/asm/*.s)
+TEST_PROGRAMS=$(addprefix ../../test/programs/vhdl/,$(addsuffix .vhd,$(basename $(notdir $(TEST_SOURCES)))))
+
+build: ${SIM}.exe
+
+clean:
 	rm -rf isim.log ${SIM}.prj ${SIM}.exe ${SIM}.tcl fuse.log fuseRelaunch.cmd fuse.xmsgs isim isim.wdb
 
-all : isim.log
+all: isim.log
 
-isim.log : ${SIM}.exe ${SIM}.tcl 
+isim.log: ${SIM}.exe ${SIM}.tcl
 	./$< -gui -tclbatch $(word 2,$^)
 
-${SIM}.exe : ${SIM}.prj
+${SIM}.exe: ${SIM}.prj
 	fuse -incremental -prj $< -top ${SIM} -o $@
 
-${SIM}.prj : ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd
+${SIM}.prj: ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd $(TEST_PROGRAMS)
 	echo $^ | sed 's/ /\n/g' | awk '{print "vhdl work "$$1}' > $@
 	echo "verilog work $${XILINX}/PlanAhead/data/verilog/src/glbl.v" >> $@
 
-${SIM}.tcl :
+${SIM}.tcl:
 	echo "run all" > $@
 	echo "quit -f" >> $@
+
+$(TEST_PROGRAMS): $(TEST_SOURCES)
+	cd ../../test/programs && $(MAKE) build

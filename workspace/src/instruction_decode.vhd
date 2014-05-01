@@ -36,10 +36,6 @@ package instruction_decode is
             addr_c: register_addr;
             addr_d: register_addr;
             write_data: word;
-            read_a: word;
-            read_b: word;
-            read_c: word;
-            read_d: word;
         end record;
 
     function decode_dsp_inputs(op: opcode; inputs: DSPDataInputs) return DSPInputs;

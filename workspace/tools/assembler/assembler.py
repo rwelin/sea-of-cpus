@@ -81,9 +81,9 @@ def output_vhdl(filename, machine_code):
     print('package {} is'.format(package))
     print()
     print('    type program is array (0 to {}) of word;'.format(len(machine_code) - 1))
-    print('    constant {}_code: program := {{'.format(package))
+    print('    constant {}_code: program := ('.format(package))
     print('        {}'.format(',\n        '.join(machine_code)))
-    print('    };')
+    print('    );')
     print()
     print('end package {};'.format(package))
 

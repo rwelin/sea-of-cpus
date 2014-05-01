@@ -49,6 +49,9 @@ architecture behav of Core is
 
     signal s2_instruction_word: word;
 
+    -- Data shift registers
+    --
+
     type sr_rf_read_a_t is array (0 to 5) of word;
     signal sr_rf_read_a: sr_rf_read_a_t;
 
@@ -82,15 +85,27 @@ architecture behav of Core is
     type sr_a_write_enable_t is array (0 to 6) of std_logic;
     signal sr_a_write_enable: sr_a_write_enable_t;
 
+    type sr_rf_write_enable_t is array (0 to 6) of std_logic;
+    signal sr_rf_write_enable: sr_rf_write_enable_t;
+
+    type sr_dsp_input_control_t is array (0 to 3) of DspDataInputControl;
+    signal sr_dsp_input_control: sr_dsp_input_control_t;
+
+    type sr_dsp_mode_t is array (0 to 3) of DSPMode;
+    signal sr_dsp_mode: sr_dsp_mode_t;
+
     -- Indicates whether to simply increment the PC or use `next_calculated_pc'
     type sr_use_pc_next_address_t is array (0 to 3) of std_logic;
     signal sr_use_pc_next_address: sr_use_pc_next_address_t;
 
+    signal op: opcode;
+
 begin
 
 
-    output <= a_input;
+    output <= (others => '0');
     stall_pc <= '0';
+    op <= s2_instruction_word(17 downto 12);
 
 
     pipeline_stage_1: process
@@ -126,7 +141,7 @@ begin
         )
     begin
 
-        --------------------------------
+        ---------------------------------
         -- Set instruction memory address
 
         br_addra <= pc;
@@ -159,23 +174,60 @@ begin
 
         if clk_en = '1' then
 
-            sr_instruction_constant(0) <= sign_extend(s2_instruction_word, word'length);
+            sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
 
             sr_write_register(0) <= s2_instruction_word(11 downto 6);
             sr_write_register(1 to 6) <= sr_write_register(0 to 5);
 
-            sr_use_pc_next_address(0) <= decode_use_pc_next_address(s2_instruction_word(17 downto 12));
+            sr_use_pc_next_address(0) <= decode_use_pc_next_address(op);
             sr_use_pc_next_address(1 to 3) <= sr_use_pc_next_address(0 to 2);
 
+            sr_rf_write_enable(0) <= '0';
+
             sr_a_write_enable(0) <= '0';
+
+            sr_dsp_input_control(0).a <= Zero;
+            sr_dsp_input_control(0).b <= Zero;
+            sr_dsp_input_control(0).c <= Zero;
+            sr_dsp_input_control(0).d <= Zero;
+
+            sr_dsp_mode(0) <= DSP_C_PASSTHROUGH;
+
+            case op is
+                when OP_MOVA =>
+                    sr_dsp_input_control(0).c <= Const;
+                    sr_a_write_enable(0) <= '1';
+
+                when OP_MOVAR =>
+                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_a_write_enable(0) <= '1';
+
+                when OP_MOVRA =>
+                    sr_dsp_input_control(0).c <= Acc;
+                    sr_rf_write_enable(0) <= '1';
+
+                when OP_MOVRR =>
+                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_rf_write_enable(0) <= '1';
+
+                when others =>
+
+            end case;
+
+            sr_rf_write_enable(1 to 6) <= sr_rf_write_enable(0 to 5);
             sr_a_write_enable(1 to 6) <= sr_a_write_enable(0 to 5);
+            sr_dsp_input_control(1 to 3) <= sr_dsp_input_control(0 to 2);
+            sr_dsp_mode(1 to 3) <= sr_dsp_mode(0 to 2);
 
             if reset = '1' then
                 sr_instruction_constant <= (others => (others => '0'));
                 sr_write_register <= (others => (others => '0'));
                 sr_use_pc_next_address <= (others => '1');
+                sr_rf_write_enable <= (others => '0');
                 sr_a_write_enable <= (others => '0');
+                sr_dsp_input_control <= (others => (others => Zero));
+                sr_dsp_mode <= (others => DSP_C_PASSTHROUGH);
             end if;
 
         end if;
@@ -186,8 +238,8 @@ begin
     pipeline_stage_3_unclocked: process(s2_instruction_word)
     begin
 
-        rf_inputs.addr_a <= (others => '0');
-        rf_inputs.addr_b <= (others => '0');
+        rf_inputs.addr_a <= s2_instruction_word(5 downto 0);
+        rf_inputs.addr_b <= s2_instruction_word(11 downto 6);
         rf_inputs.addr_c <= (others => '0');
 
     end process pipeline_stage_3_unclocked;
@@ -289,14 +341,45 @@ begin
         , sr_accumulator(2)
         , sr_br_dob(0)
         , sr_instruction_constant(3)
+        , sr_dsp_input_control(3)
+        , sr_dsp_mode(3)
         )
+
+        type dsp_data_input_control_array_t is array (0 to 3) of dsp_input;
+        variable dsp_data_input_control_array: dsp_data_input_control_array_t;
+
+        type dsp_input_array_t is array (0 to 3) of word;
+        variable dsp_in: dsp_input_array_t;
+
     begin
 
-        dsp_inputs.mode <= DSP_C_PASSTHROUGH;
-        dsp_inputs.a <= (others => '0');
-        dsp_inputs.b <= (others => '0');
-        dsp_inputs.c <= (others => '0');
-        dsp_inputs.d <= (others => '0');
+        dsp_inputs.mode <= sr_dsp_mode(3);
+
+        dsp_data_input_control_array(0) := sr_dsp_input_control(3).a;
+        dsp_data_input_control_array(1) := sr_dsp_input_control(3).b;
+        dsp_data_input_control_array(2) := sr_dsp_input_control(3).c;
+        dsp_data_input_control_array(3) := sr_dsp_input_control(3).d;
+
+        dsp_in := (others => (others => '0'));
+
+        for i in dsp_in'range loop
+            case dsp_data_input_control_array(i) is
+                when Zero  => dsp_in(i) := (others => '0');
+                when One   => dsp_in(i)(0) := '1';
+                when Ram   => dsp_in(i) := sr_br_dob(0);
+                when Acc   => dsp_in(i) := sr_accumulator(2);
+                when Const => dsp_in(i) := sr_instruction_constant(3);
+                when Reg1  => dsp_in(i) := sr_rf_read_a(2);
+                when Reg2  => dsp_in(i) := sr_rf_read_b(2);
+                when Reg3  => dsp_in(i) := sr_rf_read_c(2);
+                when others => dsp_in(i) := (others => '1');
+            end case;
+        end loop;
+
+        dsp_inputs.a <= sign_extend(dsp_in(0), dsp_inputs.a'length);
+        dsp_inputs.b <= sign_extend(dsp_in(1), dsp_inputs.b'length);
+        dsp_inputs.c <= sign_extend(dsp_in(2), dsp_inputs.c'length);
+        dsp_inputs.d <= sign_extend(dsp_in(3), dsp_inputs.d'length);
 
         next_calculated_pc <= sr_rf_read_a(2)(ram_addr'range);
 
@@ -348,7 +431,7 @@ begin
         )
     begin
 
-        rf_inputs.write_enable <= '0';
+        rf_inputs.write_enable <= sr_rf_write_enable(6);
         rf_inputs.addr_d <= sr_write_register(6);
         rf_inputs.write_data <= sr_dsp_p(0);
 
@@ -382,10 +465,10 @@ begin
         addr_c => rf_inputs.addr_c,
         addr_d => rf_inputs.addr_d,
         write_data => rf_inputs.write_data,
-        read_a => rf_inputs.read_a,
-        read_b => rf_inputs.read_b,
-        read_c => rf_inputs.read_c,
-        read_d => rf_inputs.read_d
+        read_a => rf_read_a,
+        read_b => rf_read_b,
+        read_c => rf_read_c,
+        read_d => rf_read_d
     );
 
 

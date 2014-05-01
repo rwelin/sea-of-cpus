@@ -7,6 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
+use work.test.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -31,20 +32,12 @@ architecture behav of CoreTest is
             wait_cycles: integer;
         end record;
 
-
-    type MemDataArray is array (0 to 1) of word;
-    constant mem_data: MemDataArray := (
-        0 => OP_NOP  & "000000001010",
-        1 => OP_MOVA & "001100110011"
-    );
-
-
     type TestDataArray is array (0 to 1) of TestData;
     constant test_data: TestDataArray := (
         0 =>
             ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), 10),
         1 =>
-            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 10)
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 100)
     );
 
 begin
@@ -80,13 +73,13 @@ begin
 
         reset <= '0';
 
-        for i in mem_data'range loop
+        for i in test_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= mem_data(i);
-            report "Loading data '" & to_string(mem_data(i)) & "' to address " & integer'image(i);
+            data <= test_code(i);
+            report "Loading data '" & to_string(test_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);

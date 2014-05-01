@@ -7,22 +7,54 @@ use work.core_config.all;
 
 package opcodes is
 
-    constant OP_NOP: opcode := std_logic_vector(to_unsigned(0, OPCODE_LENGTH)); --
-    constant OP_MOVA: opcode := std_logic_vector(to_unsigned(1, OPCODE_LENGTH)); --| const:12 | -- acc := const
-    constant OP_MOVAR: opcode := std_logic_vector(to_unsigned(2, OPCODE_LENGTH)); --| ra:6 | -- acc := ra
-    constant OP_MOVRA: opcode := std_logic_vector(to_unsigned(3, OPCODE_LENGTH)); --| ra:6 | -- ra := acc
-    constant OP_MOVRR: opcode := std_logic_vector(to_unsigned(4, OPCODE_LENGTH)); --| ra:6 | rb:6 | -- ra := rb
-    constant OP_LDA: opcode := std_logic_vector(to_unsigned(5, OPCODE_LENGTH)); --| const:12 | -- acc := *const
-    constant OP_STA: opcode := std_logic_vector(to_unsigned(6, OPCODE_LENGTH)); --| const:12 | -- *const := acc
-    constant OP_LDAR: opcode := std_logic_vector(to_unsigned(7, OPCODE_LENGTH)); --| ra:6 | -- acc := *ra
-    constant OP_STAR: opcode := std_logic_vector(to_unsigned(8, OPCODE_LENGTH)); --| ra:6 | -- *ra := acc
-    constant OP_LDR: opcode := std_logic_vector(to_unsigned(9, OPCODE_LENGTH)); --| ra:6 | rb:6 | -- ra := *rb
-    constant OP_STR: opcode := std_logic_vector(to_unsigned(10, OPCODE_LENGTH)); --| ra:6 | rb:6 | -- *rb := ra
-    constant OP_J: opcode := std_logic_vector(to_unsigned(11, OPCODE_LENGTH)); --| ra:6 | -- PC := ra
-    constant OP_BEQ: opcode := std_logic_vector(to_unsigned(12, OPCODE_LENGTH)); --| ra:6 | rb:6 | -- if ra = acc: PC := rb
-    constant OP_BNQ: opcode := std_logic_vector(to_unsigned(13, OPCODE_LENGTH)); --| ra:6 | rb:6 | -- if ra <> acc: PC := rb
-    constant OP_ADD: opcode := std_logic_vector(to_unsigned(14, OPCODE_LENGTH)); --| ra:6 | -- acc = acc + ra
-    constant OP_SUB: opcode := std_logic_vector(to_unsigned(15, OPCODE_LENGTH)); --| ra:6 | -- acc = acc - rb
-    constant OP_MAC: opcode := std_logic_vector(to_unsigned(16, OPCODE_LENGTH)); --| ra:6 | rb:6 | -- acc = acc + ra * rb
+    constant OP_NOP: opcode := "000000";
+
+    -- | const:12 | -- acc := const
+    constant OP_MOVA: opcode := "000001";
+
+    -- | ra:6 | -- acc := ra
+    constant OP_MOVAR: opcode := "000010";
+
+    -- | ra:6 | -- ra := acc
+    constant OP_MOVRA: opcode := "000011";
+
+    -- | ra:6 | rb:6 | -- ra := rb
+    constant OP_MOVRR: opcode := "000100";
+
+    -- | const:12 | -- acc := *const
+    constant OP_LDA: opcode := "000101";
+
+    -- | const:12 | -- *const := acc
+    constant OP_STA: opcode := "000110";
+
+    -- | ra:6 | -- acc := *ra
+    constant OP_LDAR: opcode := "000111";
+
+    -- | ra:6 | -- *ra := acc
+    constant OP_STAR: opcode := "001000";
+
+    -- | ra:6 | rb:6 | -- ra := *rb
+    constant OP_LDR: opcode := "001001";
+
+    -- | ra:6 | rb:6 | -- *rb := ra
+    constant OP_STR: opcode := "001010";
+
+    -- | ra:6 | -- PC := ra
+    constant OP_J: opcode := "001011";
+
+    -- | ra:6 | rb:6 | -- if ra = acc: PC := rb
+    constant OP_BEQ: opcode := "001100";
+
+    -- | ra:6 | rb:6 | -- if ra <> acc: PC := rb
+    constant OP_BNQ: opcode := "001101";
+
+    -- | ra:6 | -- acc = acc + ra
+    constant OP_ADD: opcode := "001110";
+
+    -- | ra:6 | -- acc = acc - rb
+    constant OP_SUB: opcode := "001111";
+
+    -- | ra:6 | rb:6 | -- acc = acc + ra * rb
+    constant OP_MAC: opcode := "010000";
 
 end package opcodes;

@@ -18,26 +18,11 @@ package core_config is
     subtype ram_addr is std_logic_vector(RAM_ADDR_LENGTH - 1 downto 0);
     subtype opcode is std_logic_vector(OPCODE_LENGTH - 1 downto 0);
 
-    type Instruction is
+    type dsp_input is (Ram, Zero, One, Reg1, Reg2, Reg3, Acc, Const);
+    type DspDataInputControl is
     record
-        op: opcode;
-
-        data: std_logic_vector(WORD_LENGTH - OPCODE_LENGTH - 1 downto 0);
-
-        addra: register_addr;
-        addrb: register_addr;
-        addrc: register_addr;
-        addrd: register_addr;
-        rwe: std_logic;
-
-        br_addrb: ram_addr;
-        br_web: std_logic;
-
-        alumode: std_logic_vector(3 downto 0);
-        opmode: std_logic_vector(6 downto 0);
-
-        acc_we: std_logic;
-    end record;
+        a, b, c, d: dsp_input;
+    end record DspDataInputControl;
 
 end core_config;
 
