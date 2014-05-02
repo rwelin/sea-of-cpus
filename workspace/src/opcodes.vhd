@@ -54,13 +54,16 @@ package opcodes is
     -- | ra:6 | rb:6 | -- if ra = 0: pc := rb
     constant OP_BZ: opcode := "001111";
 
+    -- | ra:6 | rb:6 | -- if ra != 0: pc := rb
+    constant OP_BNZ: opcode := "010000";
+
     -- | ra:6 | const:6 | -- ra := ra - const
-    constant OP_DECR: opcode := "010000";
+    constant OP_DECR: opcode := "010001";
 
     -- | ra:6 | rb:6 | -- acc := acc + ra * rb
-    constant OP_MAC: opcode := "010001";
+    constant OP_MAC: opcode := "010010";
 
     -- | ra:6 | rb:6 | -- ra := *++rb
-    constant OP_ILDR: opcode := "010010";
+    constant OP_ILDR: opcode := "010011";
 
 end package opcodes;

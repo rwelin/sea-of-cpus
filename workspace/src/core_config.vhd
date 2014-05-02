@@ -27,7 +27,7 @@ package core_config is
     type BlockRamDataInputControl is (Acc, Reg2, Const);
     type BlockRamAddrControl is (Reg1, Const);
 
-    type BranchOp is (NoBr, UncondBr, CondBr);
+    type BranchOp is (NoBr, UncondBr, CondBrZ, CondBrNZ);
 
 end core_config;
 

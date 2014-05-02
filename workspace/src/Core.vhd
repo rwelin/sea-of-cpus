@@ -186,7 +186,7 @@ begin
             sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
 
-            sr_write_register(0) <= s2_instruction_word(11 downto 6);
+            sr_write_register(0) <= s2_instruction_word(5 downto 0);
             sr_write_register(1 to 6) <= sr_write_register(0 to 5);
 
             sr_branch(0) <= NoBr;
@@ -270,7 +270,10 @@ begin
                     sr_branch(0) <= UncondBr;
 
                 when OP_BZ =>
-                    sr_branch(0) <= CondBr;
+                    sr_branch(0) <= CondBrZ;
+
+                when OP_BNZ =>
+                    sr_branch(0) <= CondBrNZ;
 
                 when others =>
 
@@ -350,7 +353,8 @@ begin
 
             sr_use_pc_next_address(0) <= '1';
             if sr_branch(1) = UncondBr
-            or (sr_branch(1) = CondBr and sr_rf_read_a(0) = (word'range => '0')) then
+            or (sr_branch(1) = CondBrZ and sr_rf_read_a(0) = (word'range => '0'))
+            or (sr_branch(1) = CondBrNZ and sr_rf_read_a(0) /= (word'range => '0')) then
                 sr_use_pc_next_address(0) <= '0';
             end if;
 
@@ -512,6 +516,7 @@ begin
 
     pipeline_stage_10_unclocked: process
         ( sr_write_register(6)
+        , sr_rf_write_enable(6)
         , sr_dsp_p(0)
         )
     begin

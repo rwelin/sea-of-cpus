@@ -14,6 +14,7 @@ SUBAR   | -:6 | rb:6 |      -- acc := acc - rb
 J       | const:12 |        -- pc := const
 BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if ra = 0: pc := rb
+BNZ     | ra:6 | rb:6 |     -- if ra != 0: pc := rb
 DECR    | ra:6 | const:6 |  -- ra := ra - const
 MAC     | ra:6 | rb:6 |     -- acc := acc + ra * rb
 ILDR    | ra:6 | rb:6 |     -- ra := *++rb
