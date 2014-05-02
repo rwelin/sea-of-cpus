@@ -38,41 +38,11 @@ package instruction_decode is
             write_data: word;
         end record;
 
-    function decode_dsp_inputs(op: opcode; inputs: DSPDataInputs) return DSPInputs;
-    function decode_opcode(instruction: word) return opcode;
-
     function decode_use_pc_next_address(op: opcode) return std_logic;
+
 end package instruction_decode;
 
 package body instruction_decode is
-
-    -- Maps an opcode and a set of inputs to the ports of the DSP block.
-    --
-    function decode_dsp_inputs(op: opcode; inputs: DSPDataInputs) return DSPInputs is
-        variable output: DSPInputs;
-    begin
-        output.mode := DSP_C_PASSTHROUGH;
-        output.a := (others => '0');
-        output.b := (others => '0');
-        output.c := (others => '0');
-        output.d := (others => '0');
-        case op is
-            when OP_MOVA =>
-                output.c := sign_extend(inputs.const, output.c'length);
-            when others =>
-        end case;
-
-        return output;
-    end function decode_dsp_inputs;
-
-
-    -- Returns the opcode of an instruction word.
-    --
-    function decode_opcode(instruction: word) return opcode is
-    begin
-        return instruction(opcode'range);
-    end function decode_opcode;
-
 
     -- Returns one if the next address logic should be used or if a calculated
     -- address should be used given an opcode.
@@ -80,7 +50,12 @@ package body instruction_decode is
     function decode_use_pc_next_address(op: opcode) return std_logic is
     begin
 
-        return '1';
+        if op = OP_J
+        or op = OP_BR then
+            return '0';
+        else
+            return '1';
+        end if;
 
     end function;
 

@@ -1,5 +1,5 @@
 
-    MOVA    22
+    MOVA    33
     NOP
     NOP
     NOP
@@ -21,7 +21,7 @@
     NOP
     NOP
     NOP
-    MOVA    5
+    MOVA    0
     NOP
     NOP
     NOP
@@ -32,7 +32,7 @@
     NOP
     NOP
     NOP
-    MOVAR   R0
+    ADDA    1
     NOP
     NOP
     NOP
@@ -43,7 +43,7 @@
     NOP
     NOP
     NOP
-    MOVRR   R1  R0
+    J      33
     NOP
     NOP
     NOP
@@ -54,5 +54,15 @@
     NOP
     NOP
     NOP
-    LDA     R1
-
+    MOVA    3
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    SUBAR   R0

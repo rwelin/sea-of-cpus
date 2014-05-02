@@ -1,6 +1,6 @@
 
 ASM = ../../tools/assembler/assembler.py
-OPCODES = ../../doc/isa/opcodes.txt
+OPCODES = ../../doc/isa/instruction_set.txt
 
 BIN = vhdl
 SRC = asm
