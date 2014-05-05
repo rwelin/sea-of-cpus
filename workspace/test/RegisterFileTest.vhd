@@ -31,7 +31,7 @@ architecture behav of RegisterFileTest is
             wait_cycles: integer;
         end record;
 
-    type TestDataArray is array (0 to 4) of TestData;
+    type TestDataArray is array (0 to 5) of TestData;
     constant test_data: TestDataArray := (
         0 => -- Read ports should be set to zero on reset.
             ('1', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), (others => '0'),
@@ -46,12 +46,17 @@ architecture behav of RegisterFileTest is
              (others => '0'), (others => '0'), (others => '0'), (others => '0'), 1),
 
         3 => -- ditto
-            ('0', '1', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(1),
+            ('0', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(1),
              int2word(1), int2word(1), int2word(1), int2word(1), 1),
 
         4 => -- register file should not be written to when `write_enable' is cleared
             ('0', '0', (others => '0'), (others => '0'), (others => '0'), (others => '0'), int2word(2),
-             int2word(1), int2word(1), int2word(1), int2word(1), 2)
+             int2word(1), int2word(1), int2word(1), int2word(1), 2),
+
+        5 => -- ditto
+            ('0', '0', (others => '0'), (others => '0'), (others => '0'), (2 => '1', others => '0'), int2word(1),
+             int2word(1), int2word(1), int2word(1), (others => '0'), 3)
+
     );
 
 begin

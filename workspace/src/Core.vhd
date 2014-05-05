@@ -52,16 +52,16 @@ architecture behav of Core is
     -- Data shift registers
     --
 
-    type sr_rf_read_a_t is array (0 to 5) of word;
+    type sr_rf_read_a_t is array (0 to 3) of word;
     signal sr_rf_read_a: sr_rf_read_a_t;
 
-    type sr_rf_read_b_t is array (0 to 2) of word;
+    type sr_rf_read_b_t is array (0 to 3) of word;
     signal sr_rf_read_b: sr_rf_read_b_t;
 
-    type sr_rf_read_c_t is array (0 to 2) of word;
+    type sr_rf_read_c_t is array (0 to 3) of word;
     signal sr_rf_read_c: sr_rf_read_c_t;
 
-    type sr_accumulator_t is array (0 to 2) of word;
+    type sr_accumulator_t is array (0 to 3) of word;
     signal sr_accumulator: sr_accumulator_t;
 
     type sr_br_dob_t is array (0 to 0) of word;
@@ -322,16 +322,16 @@ begin
         if clk_en = '1' then
 
             sr_rf_read_a(0) <= rf_read_a;
-            sr_rf_read_a(1 to 5) <= sr_rf_read_a(0 to 4);
+            sr_rf_read_a(1 to 3) <= sr_rf_read_a(0 to 2);
 
             sr_rf_read_b(0) <= rf_read_b;
-            sr_rf_read_b(1 to 2) <= sr_rf_read_b(0 to 1);
+            sr_rf_read_b(1 to 3) <= sr_rf_read_b(0 to 2);
 
             sr_rf_read_c(0) <= rf_read_c;
-            sr_rf_read_c(1 to 2) <= sr_rf_read_c(0 to 1);
+            sr_rf_read_c(1 to 3) <= sr_rf_read_c(0 to 2);
 
             sr_accumulator(0) <= a_output;
-            sr_accumulator(1 to 2) <= sr_accumulator(0 to 1);
+            sr_accumulator(1 to 3) <= sr_accumulator(0 to 2);
 
             if reset = '1' then
                 sr_rf_read_a <= (others => (others => '0'));
@@ -353,8 +353,8 @@ begin
 
             sr_use_pc_next_address(0) <= '1';
             if sr_branch(1) = UncondBr
-            or (sr_branch(1) = CondBrZ and sr_rf_read_a(0) = (word'range => '0'))
-            or (sr_branch(1) = CondBrNZ and sr_rf_read_a(0) /= (word'range => '0')) then
+            or (sr_branch(1) = CondBrZ and sr_rf_read_a(1) = (word'range => '0'))
+            or (sr_branch(1) = CondBrNZ and sr_rf_read_a(1) /= (word'range => '0')) then
                 sr_use_pc_next_address(0) <= '0';
             end if;
 
@@ -370,9 +370,9 @@ begin
 
 
     pipeline_stage_5_unclocked: process
-        ( sr_accumulator(0)
-        , sr_rf_read_a(0)
-        , sr_rf_read_b(0)
+        ( sr_accumulator(1)
+        , sr_rf_read_a(1)
+        , sr_rf_read_b(1)
         , sr_br_web(1)
         , sr_block_ram_input_control(1)
         , sr_block_ram_addr_control(1)
@@ -381,13 +381,13 @@ begin
     begin
 
         case sr_block_ram_input_control(1) is
-            when Acc   => br_dib <= sr_accumulator(0);
-            when Reg2  => br_dib <= sr_rf_read_b(0);
+            when Acc   => br_dib <= sr_accumulator(1);
+            when Reg2  => br_dib <= sr_rf_read_b(1);
             when Const => br_dib <= sr_instruction_constant(1);
         end case;
 
         case sr_block_ram_addr_control(1) is
-            when Reg1  => br_addrb <= sr_rf_read_a(0)(ram_addr'range);
+            when Reg1  => br_addrb <= sr_rf_read_a(1)(ram_addr'range);
             when Const => br_addrb <= sr_instruction_constant(1)(ram_addr'range);
         end case;
 
@@ -425,10 +425,10 @@ begin
 
 
     pipeline_stage_7_unclocked: process
-        ( sr_rf_read_a(2)
-        , sr_rf_read_b(2)
-        , sr_rf_read_c(2)
-        , sr_accumulator(2)
+        ( sr_rf_read_a(3)
+        , sr_rf_read_b(3)
+        , sr_rf_read_c(3)
+        , sr_accumulator(3)
         , sr_br_dob(0)
         , sr_instruction_constant(3)
         , sr_dsp_input_control(3)
@@ -457,11 +457,11 @@ begin
                 when Zero  => dsp_in(i) := (others => '0');
                 when One   => dsp_in(i)(0) := '1';
                 when Ram   => dsp_in(i) := sr_br_dob(0);
-                when Acc   => dsp_in(i) := sr_accumulator(2);
+                when Acc   => dsp_in(i) := sr_accumulator(3);
                 when Const => dsp_in(i) := sr_instruction_constant(3);
-                when Reg1  => dsp_in(i) := sr_rf_read_a(2);
-                when Reg2  => dsp_in(i) := sr_rf_read_b(2);
-                when Reg3  => dsp_in(i) := sr_rf_read_c(2);
+                when Reg1  => dsp_in(i) := sr_rf_read_a(3);
+                when Reg2  => dsp_in(i) := sr_rf_read_b(3);
+                when Reg3  => dsp_in(i) := sr_rf_read_c(3);
             end case;
         end loop;
 
@@ -470,7 +470,7 @@ begin
         dsp_inputs.c <= sign_extend(dsp_in(2), dsp_inputs.c'length);
         dsp_inputs.d <= sign_extend(dsp_in(3), dsp_inputs.d'length);
 
-        next_calculated_pc <= sr_rf_read_b(2)(ram_addr'range);
+        next_calculated_pc <= sr_rf_read_b(3)(ram_addr'range);
 
     end process pipeline_stage_7_unclocked;
 

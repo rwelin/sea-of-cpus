@@ -1,4 +1,3 @@
-
     MOVA    2
     NOP
     NOP
@@ -119,6 +118,7 @@
     NOP
     NOP
     NOP
+    NOP
     MOVRA   R2
     NOP
     NOP
@@ -129,5 +129,17 @@
     NOP
     NOP
     NOP
-    BNZ     R0  R1
+    NOP
+    BNZ     R1  R0
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
     MOVAR   R2

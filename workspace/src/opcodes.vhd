@@ -51,10 +51,10 @@ package opcodes is
     -- | -:6 | rb:6 | -- pc := rb
     constant OP_BR: opcode := "001110";
 
-    -- | ra:6 | rb:6 | -- if ra = 0: pc := rb
+    -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
     constant OP_BZ: opcode := "001111";
 
-    -- | ra:6 | rb:6 | -- if ra != 0: pc := rb
+    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
     constant OP_BNZ: opcode := "010000";
 
     -- | ra:6 | const:6 | -- ra := ra - const
