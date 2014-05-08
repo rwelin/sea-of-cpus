@@ -9,8 +9,8 @@
 tmp/
 wt/
 runs/
-core.sim/
-core.runs/
+*.sim/
+*.runs/
 cache/
 report.pdf
 *~
