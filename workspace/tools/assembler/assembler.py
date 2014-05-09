@@ -3,13 +3,22 @@ import argparse
 import os
 import re
 
+registers = [ 'R' + str(x) for x in range(0, 64) ]
+labels = dict()
+
 class OperandError(Exception):
     def __init__(self, message):
         super(OperandError, self).__init__(message)
         self.message = message
 
+class ReservedKeywordError(Exception):
+    def __init__(self, name):
+        msg = '{} is a keyword'.format(name)
+        super(ReservedKeywordError, self).__init__(msg)
+        self.message = msg
+
 def fail(error, line, num, msg=''):
-    print("{} error on line {}: '{}'".format(error, num, line))
+    print("{} error on line {}: '{}'".format(error, num+1, line))
     if msg:
         print(msg)
     exit()
@@ -17,14 +26,24 @@ def fail(error, line, num, msg=''):
 def to_binary(num, length):
     return '{0:b}'.format(num).zfill(length)
 
-def encode_argument(arg, length):
-    if arg[0] == 'R':
-        return to_binary(int(arg[1:]), length)
-    else:
-        return to_binary(int(arg), length)
-
 def is_label(word):
     return re.search(r'^\w+:$', word)
+
+def is_reserved(token):
+    return token in registers
+
+def is_number(token):
+    return re.search(r'^-?(0|[1-9][0-9]*)$', token)
+
+def encode_argument(arg, length):
+    if arg in registers:
+        return to_binary(int(arg[1:]), length)
+    elif is_number(arg):
+        return to_binary(int(arg), length)
+    elif arg in labels:
+        return to_binary(int(labels[arg]), length)
+    else:
+        raise OperandError("Argument '{}' has unknown type.".format(arg))
 
 def strip_comment(line):
     try:
@@ -96,18 +115,30 @@ def main():
     opcodes = parse_opcodes(args.opcodes)
 
     machine_instructions = []
-    labels = dict()
 
     # Parse assembly code and produce machine instructions.
     with open(args.assembly_code) as text:
         asm = asm_lines(text)
-        i = 1
-        for line in asm:
+
+        for i,line in enumerate(asm):
             tokens = line.split()
             if is_label(tokens[0]):
                 # Record label
-                labels[tokens[0][:-1]] = i-len(labels)
+                name = tokens[0][:-1]
+                if is_reserved(name):
+                    fail('Reserved keyword', line, i, "'{}' is a reserved keyword".format(name))
+                if name in labels:
+                    fail('Existing label', line, i, "Label '{}' is already defined as address {}".format(name, labels[name]))
+
+                location = i-len(labels)
+                labels[name] = location
+
+        for i,line in enumerate(asm):
+            tokens = line.split()
+
+            if is_label(tokens[0]):
                 tokens = tokens[1:]
+
             if tokens:
                 # Line contains an instruction
                 try:
@@ -118,8 +149,6 @@ def main():
                     fail('Operand', line, i, msg)
 
                 machine_instructions.append('"{}"'.format(instr))
-
-            i = i + 1
 
     output_vhdl(args.assembly_code, machine_instructions)
 

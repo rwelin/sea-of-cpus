@@ -20,7 +20,7 @@
     NOP
     NOP
     NOP
-    MOVA    66
+    MOVA    loop
     NOP
     NOP
     NOP
@@ -64,6 +64,7 @@
     NOP
     NOP
     NOP
+loop:
     MOVAR   R0
     NOP
     NOP
