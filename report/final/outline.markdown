@@ -10,6 +10,11 @@
 
 ## Background
 
+### Instruction set architecture
+
+- Register-register
+- Register-memory
+
 ### FPGA based soft processors
 
 ### Digital signal processors
@@ -32,7 +37,7 @@
 
 #### Protocol
 
-#### Arrangement
+#### Arrangement/Topologies
 
 
 ## Implementation
@@ -53,12 +58,22 @@
 
 ## Evaluation
 
+- Branching data structure (binary trees)
+- Routing
+- FIR
+- Compare with other soft-processors
+- Drystone
+
 ### Correctness
 
 ### Performance
 
+- Observed performance implications of optimizations (Hypothesis-experiment-result)
+
 
 ## Results
+
+- Qualitative
 
 ### Core
 
@@ -72,6 +87,16 @@
 #### Area
 
 #### Performance
+
+
+## Discussion
+
+### Future work
+
+- Direction
+- Useful?
+
+## Conclusion
 
 
 ## Biblography
