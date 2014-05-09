@@ -63,17 +63,18 @@ def asm_lines(text):
 
 # Returns a bit string encoded machine instruction.
 def encode(instr, opcodes):
-    op = opcodes[instr[0]]
-
     if len(instr) == 1:
-        return op + encode_argument("0", 12)
+        if is_number(instr[0]):
+            return to_binary(int(instr[0]), 18)
+        else:
+            return opcodes[instr[0]] + encode_argument('0', 12)
     elif len(instr) == 2:
         arg = instr[1]
-        return op + encode_argument(arg, 12)
+        return opcodes[instr[0]] + encode_argument(arg, 12)
     elif len(instr) == 3:
         data1 = encode_argument(instr[1], 6)
         data2 = encode_argument(instr[2], 6)
-        return op + data1 + data2
+        return opcodes[instr[0]] + data1 + data2
     else:
         raise OperandError('Too many operands.')
 
