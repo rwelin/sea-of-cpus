@@ -79,6 +79,9 @@ architecture behav of Core is
     -- Control flags
     --
 
+    type sr_core_we_t is array (0 to 1) of std_logic;
+    signal sr_core_we: sr_core_we_t;
+
     type sr_a_write_enable_t is array (0 to 6) of std_logic;
     signal sr_a_write_enable: sr_a_write_enable_t;
 
@@ -134,8 +137,12 @@ begin
                 end if;
             end if;
 
+            sr_core_we(0) <= we;
+            sr_core_we(1) <= sr_core_we(0);
+
             if reset = '1' then
                 pc <= (others => '0');
+                sr_core_we <= (others => '0');
             end if;
 
         end if;
@@ -168,7 +175,7 @@ begin
         if clk_en = '1' then
 
             s2_instruction_word <= br_doa; 
-            if reset = '1' then
+            if reset = '1' or sr_core_we(1) = '1' then
                 s2_instruction_word <= (others => '0');
             end if;
 
