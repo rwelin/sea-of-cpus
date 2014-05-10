@@ -103,14 +103,20 @@ architecture behav of Core is
     type sr_block_ram_addr_control_t is array (0 to 1) of BlockRamAddrControl;
     signal sr_block_ram_addr_control: sr_block_ram_addr_control_t;
 
-    type sr_branch_t is array (0 to 1) of BranchOp;
-    signal sr_branch: sr_branch_t;
+    type sr_branch_type_t is array (0 to 3) of BranchOp;
+    signal sr_branch_type: sr_branch_type_t;
 
     -- Indicates whether to simply increment the PC or use `next_calculated_pc'
     type sr_use_pc_next_address_t is array (0 to 1) of std_logic;
     signal sr_use_pc_next_address: sr_use_pc_next_address_t;
 
     signal op: opcode;
+
+    type dsp_data_input_control_array_t is array (0 to 3) of dsp_input;
+    signal dsp_data_input_control_array: dsp_data_input_control_array_t;
+
+    type dsp_input_array_t is array (0 to 3) of word;
+    signal dsp_in: dsp_input_array_t;
 
 begin
 
@@ -194,7 +200,7 @@ begin
 
             sr_write_register(0) <= s2_instruction_word(5 downto 0);
 
-            sr_branch(0) <= NoBr;
+            sr_branch_type(0) <= NoBr;
 
             sr_rf_write_enable(0) <= '0';
             sr_a_write_enable(0) <= '0';
@@ -215,6 +221,11 @@ begin
                 when OP_MOVAR =>
                     sr_dsp_input_control(0).c <= Reg1;
                     sr_a_write_enable(0) <= '1';
+
+                when OP_MOVR =>
+                    sr_dsp_input_control(0).c <= Const;
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 6), word'length);
+                    sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVRA =>
                     sr_dsp_input_control(0).c <= Acc;
@@ -243,6 +254,11 @@ begin
                     sr_block_ram_input_control(0) <= Acc;
                     sr_block_ram_addr_control(0) <= Reg1;
                     sr_br_web(0) <= '1';
+
+                when OP_LDRR =>
+                    sr_dsp_input_control(0).c <= Ram;
+                    sr_block_ram_addr_control(0) <= Reg2;
+                    sr_rf_write_enable(0) <= '1';
 
                 when OP_ADDA =>
                     sr_dsp_input_control(0).c <= Acc;
@@ -282,17 +298,24 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_MAC =>
+                    sr_dsp_input_control(0).c <= Acc;
+                    sr_dsp_input_control(0).a <= Reg1;
+                    sr_dsp_input_control(0).b <= Reg2;
+                    sr_dsp_mode(0) <= DSP_CpAtB;
+                    sr_a_write_enable(0) <= '1';
+
                 when OP_J =>
-                    sr_branch(0) <= UncondBr;
+                    sr_branch_type(0) <= UncondJ;
 
                 when OP_BR =>
-                    sr_branch(0) <= UncondBr;
+                    sr_branch_type(0) <= UncondBr;
 
                 when OP_BZ =>
-                    sr_branch(0) <= CondBrZ;
+                    sr_branch_type(0) <= CondBrZ;
 
                 when OP_BNZ =>
-                    sr_branch(0) <= CondBrNZ;
+                    sr_branch_type(0) <= CondBrNZ;
 
                 when others =>
 
@@ -300,7 +323,7 @@ begin
 
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
             sr_write_register(1 to 6) <= sr_write_register(0 to 5);
-            sr_branch(1) <= sr_branch(0);
+            sr_branch_type(1 to 3) <= sr_branch_type(0 to 2);
             sr_rf_write_enable(1 to 6) <= sr_rf_write_enable(0 to 5);
             sr_a_write_enable(1 to 6) <= sr_a_write_enable(0 to 5);
             sr_br_web(1) <= sr_br_web(0);
@@ -310,7 +333,7 @@ begin
             sr_dsp_mode(1 to 3) <= sr_dsp_mode(0 to 2);
 
             if reset = '1' then
-                sr_branch <= (others => NoBr);
+                sr_branch_type <= (others => NoBr);
                 sr_instruction_constant <= (others => (others => '0'));
                 sr_write_register <= (others => (others => '0'));
                 sr_rf_write_enable <= (others => '0');
@@ -373,9 +396,10 @@ begin
         if clk_en = '1' then
 
             sr_use_pc_next_address(0) <= '1';
-            if sr_branch(1) = UncondBr
-            or (sr_branch(1) = CondBrZ and sr_rf_read_a(1) = (word'range => '0'))
-            or (sr_branch(1) = CondBrNZ and sr_rf_read_a(1) /= (word'range => '0')) then
+            if sr_branch_type(1) = UncondBr
+            or sr_branch_type(1) = UncondJ
+            or (sr_branch_type(1) = CondBrZ and sr_rf_read_a(1) = (word'range => '0'))
+            or (sr_branch_type(1) = CondBrNZ and sr_rf_read_a(1) /= (word'range => '0')) then
                 sr_use_pc_next_address(0) <= '0';
             end if;
 
@@ -409,6 +433,7 @@ begin
 
         case sr_block_ram_addr_control(1) is
             when Reg1  => br_addrb <= sr_rf_read_a(1)(ram_addr'range);
+            when Reg2  => br_addrb <= sr_rf_read_b(1)(ram_addr'range);
             when Const => br_addrb <= sr_instruction_constant(1)(ram_addr'range);
         end case;
 
@@ -454,44 +479,44 @@ begin
         , sr_instruction_constant(3)
         , sr_dsp_input_control(3)
         , sr_dsp_mode(3)
+        , sr_branch_type(3)
+        , dsp_data_input_control_array
+        , dsp_in
         )
-
-        type dsp_data_input_control_array_t is array (0 to 3) of dsp_input;
-        variable dsp_data_input_control_array: dsp_data_input_control_array_t;
-
-        type dsp_input_array_t is array (0 to 3) of word;
-        variable dsp_in: dsp_input_array_t;
-
     begin
 
         dsp_inputs.mode <= sr_dsp_mode(3);
 
-        dsp_data_input_control_array(0) := sr_dsp_input_control(3).a;
-        dsp_data_input_control_array(1) := sr_dsp_input_control(3).b;
-        dsp_data_input_control_array(2) := sr_dsp_input_control(3).c;
-        dsp_data_input_control_array(3) := sr_dsp_input_control(3).d;
+        dsp_data_input_control_array(0) <= sr_dsp_input_control(3).a;
+        dsp_data_input_control_array(1) <= sr_dsp_input_control(3).b;
+        dsp_data_input_control_array(2) <= sr_dsp_input_control(3).c;
+        dsp_data_input_control_array(3) <= sr_dsp_input_control(3).d;
 
-        dsp_in := (others => (others => '0'));
+        dsp_in <= (others => (others => '0'));
 
         for i in dsp_in'range loop
             case dsp_data_input_control_array(i) is
-                when Zero  => dsp_in(i) := (others => '0');
-                when One   => dsp_in(i)(0) := '1';
-                when Ram   => dsp_in(i) := sr_br_dob(0);
-                when Acc   => dsp_in(i) := sr_accumulator(3);
-                when Const => dsp_in(i) := sr_instruction_constant(3);
-                when Reg1  => dsp_in(i) := sr_rf_read_a(3);
-                when Reg2  => dsp_in(i) := sr_rf_read_b(3);
-                when Reg3  => dsp_in(i) := sr_rf_read_c(3);
+                when Zero  => dsp_in(i) <= (others => '0');
+                when One   => dsp_in(i) <= (0 => '1', others => '0');
+                when Ram   => dsp_in(i) <= sr_br_dob(0);
+                when Acc   => dsp_in(i) <= sr_accumulator(3);
+                when Const => dsp_in(i) <= sr_instruction_constant(3);
+                when Reg1  => dsp_in(i) <= sr_rf_read_a(3);
+                when Reg2  => dsp_in(i) <= sr_rf_read_b(3);
+                when Reg3  => dsp_in(i) <= sr_rf_read_c(3);
             end case;
         end loop;
 
         dsp_inputs.a <= sign_extend(dsp_in(0), dsp_inputs.a'length);
         dsp_inputs.b <= sign_extend(dsp_in(1), dsp_inputs.b'length);
+        dsp_inputs.c <= (others => '0');
         dsp_inputs.c <= sign_extend(dsp_in(2), dsp_inputs.c'length);
         dsp_inputs.d <= sign_extend(dsp_in(3), dsp_inputs.d'length);
 
         next_calculated_pc <= sr_rf_read_b(3)(ram_addr'range);
+        if sr_branch_type(3) = UncondJ then
+            next_calculated_pc <= sr_instruction_constant(3)(ram_addr'range);
+        end if;
 
     end process pipeline_stage_7_unclocked;
 

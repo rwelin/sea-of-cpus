@@ -7,7 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
-use work.test.all;
+use work.mac.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -73,13 +73,13 @@ begin
 
         reset <= '0';
 
-        for i in test_code'range loop
+        for i in mac_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= test_code(i);
-            report "Loading data '" & to_string(test_code(i)) & "' to address " & integer'image(i);
+            data <= mac_code(i);
+            report "Loading data '" & to_string(mac_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);

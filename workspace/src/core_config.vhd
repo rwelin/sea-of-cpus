@@ -25,9 +25,9 @@ package core_config is
     end record DspDataInputControl;
 
     type BlockRamDataInputControl is (Acc, Reg2, Const);
-    type BlockRamAddrControl is (Reg1, Const);
+    type BlockRamAddrControl is (Reg1, Reg2, Const);
 
-    type BranchOp is (NoBr, UncondBr, CondBrZ, CondBrNZ);
+    type BranchOp is (NoBr, UncondJ, UncondBr, CondBrZ, CondBrNZ);
 
 end core_config;
 

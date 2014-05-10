@@ -29,7 +29,7 @@ package dsp_mode is
     constant DSP_CsAB: DSPMode := ("0110011", "00000", "0011");
 
     -- P := C*A:B
-    constant DSP_CmAB: DSPMode := ("0110011", "00000", "0011");
+    constant DSP_CtAB: DSPMode := ("0110011", "00000", "0011");
 
     -- P := A*B
     constant DSP_AtB: DSPMode := ("0000101", "00000", "0000");

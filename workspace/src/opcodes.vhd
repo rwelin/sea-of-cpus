@@ -18,55 +18,58 @@ package opcodes is
     -- | ra:6 | -- ra := acc
     constant OP_MOVRA: opcode := "000011";
 
+    -- | const:6 | rb:6 | -- rb := const
+    constant OP_MOVR: opcode := "000100";
+
     -- | ra:6 | rb:6 | -- ra := rb
-    constant OP_MOVRR: opcode := "000100";
+    constant OP_MOVRR: opcode := "000101";
 
     -- | const:12 | -- acc := *const
-    constant OP_LDA: opcode := "000101";
+    constant OP_LDA: opcode := "000110";
 
     -- | const:12 | -- *const := acc
-    constant OP_STA: opcode := "000110";
+    constant OP_STA: opcode := "000111";
 
     -- | -:6 | rb:6 | -- acc := *rb
-    constant OP_LDAR: opcode := "000111";
+    constant OP_LDAR: opcode := "001000";
 
     -- | -:6 | rb:6 | -- *rb := acc
-    constant OP_STAR: opcode := "001000";
+    constant OP_STAR: opcode := "001001";
+
+    -- | ra:6 | rb:6 | -- rb := *ra
+    constant OP_LDRR: opcode := "001010";
 
     -- | const:12 | -- acc := acc + const
-    constant OP_ADDA: opcode := "001001";
+    constant OP_ADDA: opcode := "001011";
 
     -- | const:12 | -- acc := acc - const
-    constant OP_SUBA: opcode := "001010";
+    constant OP_SUBA: opcode := "001100";
 
     -- | -:6 | rb:6 | -- acc := acc + rb
-    constant OP_ADDAR: opcode := "001011";
+    constant OP_ADDAR: opcode := "001101";
 
     -- | -:6 | rb:6 | -- acc := acc - rb
-    constant OP_SUBAR: opcode := "001100";
+    constant OP_SUBAR: opcode := "001110";
 
     -- | const:6 | rb:6 | -- rb := rb + const
-    constant OP_ADDR: opcode := "001101";
+    constant OP_ADDR: opcode := "001111";
 
     -- | const:6 | rb:6 | -- rb := rb - const
-    constant OP_SUBR: opcode := "001110";
-
-    -- | const:12 | -- pc := const
-    constant OP_J: opcode := "001111";
-
-    -- | -:6 | rb:6 | -- pc := rb
-    constant OP_BR: opcode := "010000";
-
-    -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
-    constant OP_BZ: opcode := "010001";
-
-    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
-    constant OP_BNZ: opcode := "010010";
+    constant OP_SUBR: opcode := "010000";
 
     -- | ra:6 | rb:6 | -- acc := acc + ra * rb
-    constant OP_MAC: opcode := "010011";
+    constant OP_MAC: opcode := "010001";
 
-    -- | ra:6 | rb:6 | -- ra := *++rb
-    constant OP_ILDR: opcode := "010100";
+    -- | const:12 | -- pc := const
+    constant OP_J: opcode := "010010";
+
+    -- | -:6 | rb:6 | -- pc := rb
+    constant OP_BR: opcode := "010011";
+
+    -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
+    constant OP_BZ: opcode := "010100";
+
+    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
+    constant OP_BNZ: opcode := "010101";
 
 end package opcodes;

@@ -1,14 +1,6 @@
-    MOVA    2
-    MOVA    loop
-    MOVA    0
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP
-    MOVRA   R0
-    MOVRA   R1
-    MOVRA   R2
+    MOVR   2    R0
+    MOVR   loop R1
+    MOVR   0    R2
     NOP
     NOP
     NOP
