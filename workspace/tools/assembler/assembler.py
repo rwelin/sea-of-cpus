@@ -23,8 +23,14 @@ def fail(error, line, num, msg=''):
         print(msg)
     exit()
 
+def sign_extend(num, length):
+    if num[0] == '-':
+        return '1'*(length-len(num)+1) + num[1:]
+    else:
+        return num.zfill(length)
+
 def to_binary(num, length):
-    return '{0:b}'.format(num).zfill(length)
+    return sign_extend('{0:b}'.format(num), length)
 
 def is_label(word):
     return re.search(r'^\w+:$', word)
