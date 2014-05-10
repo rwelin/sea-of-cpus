@@ -16,6 +16,7 @@
 - Register-memory
 - Accumulator-register
     - Very inefficient for some simple things like `MOVAR R0, SUBA 1, MOVRA R0` instead of `SUBR 1 R0`
+- Variable length execution
 
 ### FPGA based soft processors
 
