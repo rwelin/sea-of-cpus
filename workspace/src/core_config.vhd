@@ -29,6 +29,8 @@ package core_config is
 
     type BranchOp is (NoBr, UncondJ, UncondBr, CondBrZ, CondBrNZ);
 
+    type InstructionType is (Normal, Mult);
+
 end core_config;
 
 package body core_config is

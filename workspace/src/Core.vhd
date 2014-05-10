@@ -44,6 +44,7 @@ architecture behav of Core is
     signal dsp_inputs: DSPInputs;
     signal dsp_p: std_logic_vector(47 downto 0);
 
+    signal a_write_enable: std_logic;
     signal a_input: word;
     signal a_output: word;
 
@@ -70,7 +71,7 @@ architecture behav of Core is
     type sr_instruction_constant_t is array (0 to 3) of word;
     signal sr_instruction_constant: sr_instruction_constant_t;
 
-    type sr_write_register_t is array (0 to 6) of register_addr;
+    type sr_write_register_t is array (0 to 7) of register_addr;
     signal sr_write_register: sr_write_register_t;
 
     type sr_dsp_p_t is array (0 to 0) of word;
@@ -82,10 +83,10 @@ architecture behav of Core is
     type sr_core_we_t is array (0 to 1) of std_logic;
     signal sr_core_we: sr_core_we_t;
 
-    type sr_a_write_enable_t is array (0 to 6) of std_logic;
+    type sr_a_write_enable_t is array (0 to 7) of std_logic;
     signal sr_a_write_enable: sr_a_write_enable_t;
 
-    type sr_rf_write_enable_t is array (0 to 6) of std_logic;
+    type sr_rf_write_enable_t is array (0 to 7) of std_logic;
     signal sr_rf_write_enable: sr_rf_write_enable_t;
 
     type sr_br_web_t is array (0 to 1) of std_logic;
@@ -94,7 +95,7 @@ architecture behav of Core is
     type sr_dsp_input_control_t is array (0 to 3) of DspDataInputControl;
     signal sr_dsp_input_control: sr_dsp_input_control_t;
 
-    type sr_dsp_mode_t is array (0 to 3) of DSPMode;
+    type sr_dsp_mode_t is array (0 to 4) of DSPMode;
     signal sr_dsp_mode: sr_dsp_mode_t;
 
     type sr_block_ram_input_control_t is array (0 to 1) of BlockRamDataInputControl;
@@ -105,6 +106,9 @@ architecture behav of Core is
 
     type sr_branch_type_t is array (0 to 3) of BranchOp;
     signal sr_branch_type: sr_branch_type_t;
+
+    type sr_instruction_type_t is array(0 to 7) of InstructionType;
+    signal sr_instruction_type: sr_instruction_type_t;
 
     -- Indicates whether to simply increment the PC or use `next_calculated_pc'
     type sr_use_pc_next_address_t is array (0 to 1) of std_logic;
@@ -118,10 +122,12 @@ architecture behav of Core is
     type dsp_input_array_t is array (0 to 3) of word;
     signal dsp_in: dsp_input_array_t;
 
+    signal dsp_c_input_reg: std_logic_vector(47 downto 0);
+
 begin
 
 
-    output <= (others => '0');
+    output <= a_output;
     stall_pc <= '0';
     op <= s2_instruction_word(17 downto 12);
 
@@ -201,6 +207,8 @@ begin
             sr_write_register(0) <= s2_instruction_word(5 downto 0);
 
             sr_branch_type(0) <= NoBr;
+
+            sr_instruction_type(0) <= Normal;
 
             sr_rf_write_enable(0) <= '0';
             sr_a_write_enable(0) <= '0';
@@ -304,6 +312,7 @@ begin
                     sr_dsp_input_control(0).b <= Reg2;
                     sr_dsp_mode(0) <= DSP_CpAtB;
                     sr_a_write_enable(0) <= '1';
+                    sr_instruction_type(0) <= Mult;
 
                 when OP_J =>
                     sr_branch_type(0) <= UncondJ;
@@ -322,18 +331,20 @@ begin
             end case;
 
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
-            sr_write_register(1 to 6) <= sr_write_register(0 to 5);
+            sr_write_register(1 to 7) <= sr_write_register(0 to 6);
             sr_branch_type(1 to 3) <= sr_branch_type(0 to 2);
-            sr_rf_write_enable(1 to 6) <= sr_rf_write_enable(0 to 5);
-            sr_a_write_enable(1 to 6) <= sr_a_write_enable(0 to 5);
+            sr_instruction_type(1 to 7) <= sr_instruction_type(0 to 6);
+            sr_rf_write_enable(1 to 7) <= sr_rf_write_enable(0 to 6);
+            sr_a_write_enable(1 to 7) <= sr_a_write_enable(0 to 6);
             sr_br_web(1) <= sr_br_web(0);
             sr_block_ram_input_control(1) <= sr_block_ram_input_control(0);
             sr_block_ram_addr_control(1) <= sr_block_ram_addr_control(0);
             sr_dsp_input_control(1 to 3) <= sr_dsp_input_control(0 to 2);
-            sr_dsp_mode(1 to 3) <= sr_dsp_mode(0 to 2);
+            sr_dsp_mode(1 to 4) <= sr_dsp_mode(0 to 3);
 
             if reset = '1' then
                 sr_branch_type <= (others => NoBr);
+                sr_instruction_type <= (others => Normal);
                 sr_instruction_constant <= (others => (others => '0'));
                 sr_write_register <= (others => (others => '0'));
                 sr_rf_write_enable <= (others => '0');
@@ -465,6 +476,8 @@ begin
 
         if clk_en = '1' then
 
+            dsp_c_input_reg <= sign_extend(dsp_in(2), dsp_inputs.c'length);
+
         end if;
 
     end process pipeline_stage_7;
@@ -479,13 +492,19 @@ begin
         , sr_instruction_constant(3)
         , sr_dsp_input_control(3)
         , sr_dsp_mode(3)
+        , sr_dsp_mode(4)
+        , sr_instruction_type(4)
         , sr_branch_type(3)
+        , dsp_c_input_reg
         , dsp_data_input_control_array
         , dsp_in
         )
     begin
 
         dsp_inputs.mode <= sr_dsp_mode(3);
+        if sr_instruction_type(4) = Mult then
+            dsp_inputs.mode <= sr_dsp_mode(4);
+        end if;
 
         dsp_data_input_control_array(0) <= sr_dsp_input_control(3).a;
         dsp_data_input_control_array(1) <= sr_dsp_input_control(3).b;
@@ -509,8 +528,12 @@ begin
 
         dsp_inputs.a <= sign_extend(dsp_in(0), dsp_inputs.a'length);
         dsp_inputs.b <= sign_extend(dsp_in(1), dsp_inputs.b'length);
-        dsp_inputs.c <= (others => '0');
+
         dsp_inputs.c <= sign_extend(dsp_in(2), dsp_inputs.c'length);
+        if sr_instruction_type(4) = Mult then
+            dsp_inputs.c <= dsp_c_input_reg;
+        end if;
+
         dsp_inputs.d <= sign_extend(dsp_in(3), dsp_inputs.d'length);
 
         next_calculated_pc <= sr_rf_read_b(3)(ram_addr'range);
@@ -562,13 +585,23 @@ begin
 
     pipeline_stage_10_unclocked: process
         ( sr_write_register(6)
+        , sr_write_register(7)
         , sr_rf_write_enable(6)
+        , sr_rf_write_enable(7)
         , sr_dsp_p(0)
+        , sr_instruction_type(7)
         )
     begin
 
+        a_write_enable <= sr_a_write_enable(6);
         rf_inputs.write_enable <= sr_rf_write_enable(6);
         rf_inputs.addr_d <= sr_write_register(6);
+        if sr_instruction_type(7) = Mult then
+            a_write_enable <= sr_a_write_enable(7);
+            rf_inputs.write_enable <= sr_rf_write_enable(7);
+            rf_inputs.addr_d <= sr_write_register(7);
+        end if;
+
         rf_inputs.write_data <= sr_dsp_p(0);
 
         a_input <= sr_dsp_p(0);
@@ -613,7 +646,7 @@ begin
         clk => clk,
         clk_en => clk_en,
         reset => reset,
-        write_enable => sr_a_write_enable(6),
+        write_enable => a_write_enable,
         input => a_input,
         output => a_output
     );
