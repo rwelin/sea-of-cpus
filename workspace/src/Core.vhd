@@ -184,10 +184,8 @@ begin
         if clk_en = '1' then
 
             sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
-            sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
 
             sr_write_register(0) <= s2_instruction_word(5 downto 0);
-            sr_write_register(1 to 6) <= sr_write_register(0 to 5);
 
             sr_branch(0) <= NoBr;
 
@@ -263,6 +261,20 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB; 
                     sr_a_write_enable(0) <= '1';
 
+                when OP_ADDR =>
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 6), word'length);
+                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_dsp_input_control(0).b <= Const;
+                    sr_dsp_mode(0) <= DSP_CpAB;
+                    sr_rf_write_enable(0) <= '1';
+
+                when OP_SUBR =>
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 6), word'length);
+                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_dsp_input_control(0).b <= Const;
+                    sr_dsp_mode(0) <= DSP_CsAB;
+                    sr_rf_write_enable(0) <= '1';
+
                 when OP_J =>
                     sr_branch(0) <= UncondBr;
 
@@ -279,6 +291,8 @@ begin
 
             end case;
 
+            sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
+            sr_write_register(1 to 6) <= sr_write_register(0 to 5);
             sr_branch(1) <= sr_branch(0);
             sr_rf_write_enable(1 to 6) <= sr_rf_write_enable(0 to 5);
             sr_a_write_enable(1 to 6) <= sr_a_write_enable(0 to 5);

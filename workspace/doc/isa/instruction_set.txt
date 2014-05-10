@@ -11,10 +11,11 @@ ADDA    | const:12 |        -- acc := acc + const
 SUBA    | const:12 |        -- acc := acc - const
 ADDAR   | -:6 | rb:6 |      -- acc := acc + rb
 SUBAR   | -:6 | rb:6 |      -- acc := acc - rb
+ADDR    | const:6 | rb:6 |  -- rb := rb + const
+SUBR    | const:6 | rb:6 |  -- rb := rb - const
 J       | const:12 |        -- pc := const
 BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra
 BNZ     | ra:6 | rb:6 |     -- if rb != 0: pc := ra
-DECR    | ra:6 | const:6 |  -- ra := ra - const
 MAC     | ra:6 | rb:6 |     -- acc := acc + ra * rb
 ILDR    | ra:6 | rb:6 |     -- ra := *++rb

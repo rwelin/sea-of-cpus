@@ -45,25 +45,28 @@ package opcodes is
     -- | -:6 | rb:6 | -- acc := acc - rb
     constant OP_SUBAR: opcode := "001100";
 
+    -- | const:6 | rb:6 | -- rb := rb + const
+    constant OP_ADDR: opcode := "001101";
+
+    -- | const:6 | rb:6 | -- rb := rb - const
+    constant OP_SUBR: opcode := "001110";
+
     -- | const:12 | -- pc := const
-    constant OP_J: opcode := "001101";
+    constant OP_J: opcode := "001111";
 
     -- | -:6 | rb:6 | -- pc := rb
-    constant OP_BR: opcode := "001110";
+    constant OP_BR: opcode := "010000";
 
     -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
-    constant OP_BZ: opcode := "001111";
+    constant OP_BZ: opcode := "010001";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
-    constant OP_BNZ: opcode := "010000";
-
-    -- | ra:6 | const:6 | -- ra := ra - const
-    constant OP_DECR: opcode := "010001";
+    constant OP_BNZ: opcode := "010010";
 
     -- | ra:6 | rb:6 | -- acc := acc + ra * rb
-    constant OP_MAC: opcode := "010010";
+    constant OP_MAC: opcode := "010011";
 
     -- | ra:6 | rb:6 | -- ra := *++rb
-    constant OP_ILDR: opcode := "010011";
+    constant OP_ILDR: opcode := "010100";
 
 end package opcodes;
