@@ -17,7 +17,10 @@ isim.log: ${SIM}.exe ${SIM}.tcl
 ${SIM}.exe: ${SIM}.prj
 	fuse -incremental -prj $< -top ${SIM} -o $@
 
-${SIM}.prj: ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd $(TEST_PROGRAMS)
+../../src/opcodes.vhd: ../../tools/opcode_vhdl_gen/opcode_vhdl_gen.py ../../doc/isa/instruction_set.txt
+	$< $(word 2,$^) > ../../src/opcodes.vhd
+
+${SIM}.prj: ../../src/opcodes.vhd ../../src/*.vhd ../../test/${SIM}.vhd ../../test/lib/*.vhd $(TEST_PROGRAMS)
 	echo $^ | sed 's/ /\n/g' | awk '{print "vhdl work "$$1}' > $@
 	echo "verilog work $${XILINX}/PlanAhead/data/verilog/src/glbl.v" >> $@
 
