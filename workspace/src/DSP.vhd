@@ -4,6 +4,7 @@ library work;
 use ieee.std_logic_1164.all;
 use unisim.vcomponents.all;
 use work.dsp_mode.all;
+use work.vtypes.all;
 
 -- Abstraction of a DSP48E1 slice.
 --
@@ -13,11 +14,11 @@ entity DSP is
         clk_en: in std_logic;
         reset: in std_logic;
         mode: in DSPMode; 
-        a: in std_logic_vector(29 downto 0);
-        b: in std_logic_vector(17 downto 0);
-        c: in std_logic_vector(47 downto 0);
-        d: in std_logic_vector(24 downto 0);
-        p: out std_logic_vector(47 downto 0)
+        a: in slv30_t;
+        b: in slv18_t;
+        c: in slv48_t;
+        d: in slv25_t;
+        p: out slv48_t
     );
 end entity DSP;
 

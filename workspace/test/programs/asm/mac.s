@@ -7,9 +7,11 @@
     nop
     nop
     nop
+    nop
     movra   r2
     movra   r4
     mova    0
+    nop
     nop
     nop
     nop
@@ -26,6 +28,7 @@ loop:
     nop
     nop
     nop
+    nop
 
     bnz     r0  r6
     mac     r3  r1
@@ -35,9 +38,11 @@ loop:
     nop
     nop
     nop
+    nop
 
 end:
     J       end
+    nop
     nop
     nop
     nop

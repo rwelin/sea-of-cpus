@@ -2,6 +2,7 @@ library ieee;
 library work;
 use ieee.std_logic_1164.all;
 use work.core_config.all;
+use work.vtypes.all;
 
 -- Single word register with synchronous read and write.
 --
@@ -11,8 +12,8 @@ entity Accumulator is
         clk_en: in std_logic;
         reset: in std_logic;
         write_enable: in std_logic;
-        input: in word;
-        output: out word
+        input: in slv48_t;
+        output: out slv48_t
      );
 end entity Accumulator;
 

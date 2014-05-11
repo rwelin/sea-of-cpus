@@ -9,6 +9,7 @@ use work.opcodes.all;
 use work.instruction_decode.all;
 use work.dsp_mode.all;
 use work.utils.all;
+use work.vtypes.all;
 
 entity Core is
     port (
@@ -42,11 +43,11 @@ architecture behav of Core is
     signal rf_read_d: word;
 
     signal dsp_inputs: DSPInputs;
-    signal dsp_p: std_logic_vector(47 downto 0);
+    signal dsp_p: slv48_t;
 
     signal a_write_enable: std_logic;
-    signal a_input: word;
-    signal a_output: word;
+    signal a_input: slv48_t;
+    signal a_output: slv48_t;
 
     signal s2_instruction_word: word;
 
@@ -62,7 +63,7 @@ architecture behav of Core is
     type sr_rf_read_c_t is array (0 to 3) of word;
     signal sr_rf_read_c: sr_rf_read_c_t;
 
-    type sr_accumulator_t is array (0 to 3) of word;
+    type sr_accumulator_t is array (0 to 3) of slv48_t;
     signal sr_accumulator: sr_accumulator_t;
 
     type sr_br_dob_t is array (0 to 0) of word;
@@ -71,11 +72,23 @@ architecture behav of Core is
     type sr_instruction_constant_t is array (0 to 3) of word;
     signal sr_instruction_constant: sr_instruction_constant_t;
 
-    type sr_write_register_t is array (0 to 7) of register_addr;
+    type sr_write_register_t is array (0 to 8) of register_addr;
     signal sr_write_register: sr_write_register_t;
 
-    type sr_dsp_p_t is array (0 to 0) of word;
+    type sr_dsp_p_t is array (0 to 0) of slv48_t;
     signal sr_dsp_p: sr_dsp_p_t;
+
+    type sr_dsp_a_t is array (0 to 0) of slv30_t;
+    signal sr_dsp_a: sr_dsp_a_t;
+
+    type sr_dsp_b_t is array (0 to 0) of slv18_t;
+    signal sr_dsp_b: sr_dsp_b_t;
+
+    type sr_dsp_c_t is array (0 to 1) of slv48_t;
+    signal sr_dsp_c: sr_dsp_c_t;
+
+    type sr_dsp_d_t is array (0 to 0) of slv25_t;
+    signal sr_dsp_d: sr_dsp_d_t;
 
     -- Control flags
     --
@@ -83,10 +96,10 @@ architecture behav of Core is
     type sr_core_we_t is array (0 to 1) of std_logic;
     signal sr_core_we: sr_core_we_t;
 
-    type sr_a_write_enable_t is array (0 to 7) of std_logic;
+    type sr_a_write_enable_t is array (0 to 8) of std_logic;
     signal sr_a_write_enable: sr_a_write_enable_t;
 
-    type sr_rf_write_enable_t is array (0 to 7) of std_logic;
+    type sr_rf_write_enable_t is array (0 to 8) of std_logic;
     signal sr_rf_write_enable: sr_rf_write_enable_t;
 
     type sr_br_web_t is array (0 to 1) of std_logic;
@@ -95,7 +108,7 @@ architecture behav of Core is
     type sr_dsp_input_control_t is array (0 to 3) of DspDataInputControl;
     signal sr_dsp_input_control: sr_dsp_input_control_t;
 
-    type sr_dsp_mode_t is array (0 to 4) of DSPMode;
+    type sr_dsp_mode_t is array (0 to 5) of DSPMode;
     signal sr_dsp_mode: sr_dsp_mode_t;
 
     type sr_block_ram_input_control_t is array (0 to 1) of BlockRamDataInputControl;
@@ -107,7 +120,7 @@ architecture behav of Core is
     type sr_branch_type_t is array (0 to 3) of BranchOp;
     signal sr_branch_type: sr_branch_type_t;
 
-    type sr_instruction_type_t is array(0 to 7) of InstructionType;
+    type sr_instruction_type_t is array(0 to 8) of InstructionType;
     signal sr_instruction_type: sr_instruction_type_t;
 
     -- Indicates whether to simply increment the PC or use `next_calculated_pc'
@@ -116,18 +129,13 @@ architecture behav of Core is
 
     signal op: opcode;
 
-    type dsp_data_input_control_array_t is array (0 to 3) of dsp_input;
-    signal dsp_data_input_control_array: dsp_data_input_control_array_t;
-
-    type dsp_input_array_t is array (0 to 3) of word;
-    signal dsp_in: dsp_input_array_t;
-
-    signal dsp_c_input_reg: std_logic_vector(47 downto 0);
+    signal dsp_c_input_reg: slv48_t;
+    signal dsp_c_input: slv48_t;
 
 begin
 
 
-    output <= a_output;
+    output <= a_output(word'range);
     stall_pc <= '0';
     op <= s2_instruction_word(17 downto 12);
 
@@ -331,16 +339,16 @@ begin
             end case;
 
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
-            sr_write_register(1 to 7) <= sr_write_register(0 to 6);
+            sr_write_register(1 to 8) <= sr_write_register(0 to 7);
             sr_branch_type(1 to 3) <= sr_branch_type(0 to 2);
-            sr_instruction_type(1 to 7) <= sr_instruction_type(0 to 6);
-            sr_rf_write_enable(1 to 7) <= sr_rf_write_enable(0 to 6);
-            sr_a_write_enable(1 to 7) <= sr_a_write_enable(0 to 6);
+            sr_instruction_type(1 to 8) <= sr_instruction_type(0 to 7);
+            sr_rf_write_enable(1 to 8) <= sr_rf_write_enable(0 to 7);
+            sr_a_write_enable(1 to 8) <= sr_a_write_enable(0 to 7);
             sr_br_web(1) <= sr_br_web(0);
             sr_block_ram_input_control(1) <= sr_block_ram_input_control(0);
             sr_block_ram_addr_control(1) <= sr_block_ram_addr_control(0);
             sr_dsp_input_control(1 to 3) <= sr_dsp_input_control(0 to 2);
-            sr_dsp_mode(1 to 4) <= sr_dsp_mode(0 to 3);
+            sr_dsp_mode(1 to 5) <= sr_dsp_mode(0 to 4);
 
             if reset = '1' then
                 sr_branch_type <= (others => NoBr);
@@ -437,7 +445,7 @@ begin
     begin
 
         case sr_block_ram_input_control(1) is
-            when Acc   => br_dib <= sr_accumulator(1);
+            when Acc   => br_dib <= sr_accumulator(1)(word'range);
             when Reg2  => br_dib <= sr_rf_read_b(1);
             when Const => br_dib <= sr_instruction_constant(1);
         end case;
@@ -471,70 +479,79 @@ begin
 
 
     pipeline_stage_7: process
+
+        variable a: slv30_t;
+        variable b: slv18_t;
+        variable d: slv25_t;
+
     begin
         wait until clk'event and clk = '1';
 
         if clk_en = '1' then
 
-            dsp_c_input_reg <= sign_extend(dsp_in(2), dsp_inputs.c'length);
+            case sr_dsp_input_control(3).a is
+                when Zero  => sr_dsp_a(0) <= (others => '0');
+                when One   => sr_dsp_a(0) <= (0 => '1', others => '0');
+                when Ram   => sr_dsp_a(0) <= sign_extend(sr_br_dob(0), sr_dsp_a(0)'length);
+                when Acc   => sr_dsp_a(0) <= sr_accumulator(3)(sr_dsp_a(0)'range);
+                when Const => sr_dsp_a(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_a(0)'length);
+                when Reg1  => sr_dsp_a(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_a(0)'length);
+                when Reg2  => sr_dsp_a(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_a(0)'length);
+                when Reg3  => sr_dsp_a(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_a(0)'length);
+            end case;
+
+            case sr_dsp_input_control(3).b is
+                when Zero  => sr_dsp_b(0) <= (others => '0');
+                when One   => sr_dsp_b(0) <= (0 => '1', others => '0');
+                when Ram   => sr_dsp_b(0) <= sr_br_dob(0);
+                when Acc   => sr_dsp_b(0) <= sr_accumulator(3)(word'range);
+                when Const => sr_dsp_b(0) <= sr_instruction_constant(3);
+                when Reg1  => sr_dsp_b(0) <= sr_rf_read_a(3);
+                when Reg2  => sr_dsp_b(0) <= sr_rf_read_b(3);
+                when Reg3  => sr_dsp_b(0) <= sr_rf_read_c(3);
+            end case;
+
+            case sr_dsp_input_control(3).c is
+                when Zero  => sr_dsp_c(0) <= (others => '0');
+                when One   => sr_dsp_c(0) <= (0 => '1', others => '0');
+                when Ram   => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
+                when Acc   => sr_dsp_c(0) <= sr_accumulator(3);
+                when Const => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
+                when Reg1  => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
+                when Reg2  => sr_dsp_c(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_c(0)'length);
+                when Reg3  => sr_dsp_c(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_c(0)'length);
+            end case;
+
+            case sr_dsp_input_control(3).d is
+                when Zero  => sr_dsp_d(0) <= (others => '0');
+                when One   => sr_dsp_d(0) <= (0 => '1', others => '0');
+                when Ram   => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), d'length);
+                when Acc   => sr_dsp_d(0) <= sr_accumulator(3)(d'range);
+                when Const => sr_dsp_d(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_d(0)'length);
+                when Reg1  => sr_dsp_d(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_d(0)'length);
+                when Reg2  => sr_dsp_d(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_d(0)'length);
+                when Reg3  => sr_dsp_d(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_d(0)'length);
+            end case;
+
+            sr_dsp_c(1) <= sr_dsp_c(0);
+
+            if reset = '1' then
+                sr_dsp_a <= (others => (others => '0'));
+                sr_dsp_b <= (others => (others => '0'));
+                sr_dsp_c <= (others => (others => '0'));
+                sr_dsp_d <= (others => (others => '0'));
+            end if;
 
         end if;
 
     end process pipeline_stage_7;
 
-
     pipeline_stage_7_unclocked: process
-        ( sr_rf_read_a(3)
-        , sr_rf_read_b(3)
-        , sr_rf_read_c(3)
-        , sr_accumulator(3)
-        , sr_br_dob(0)
+        ( sr_rf_read_b(3)
         , sr_instruction_constant(3)
-        , sr_dsp_input_control(3)
-        , sr_dsp_mode(3)
-        , sr_dsp_mode(4)
-        , sr_instruction_type(4)
         , sr_branch_type(3)
-        , dsp_c_input_reg
-        , dsp_data_input_control_array
-        , dsp_in
         )
     begin
-
-        dsp_inputs.mode <= sr_dsp_mode(3);
-        if sr_instruction_type(4) = Mult then
-            dsp_inputs.mode <= sr_dsp_mode(4);
-        end if;
-
-        dsp_data_input_control_array(0) <= sr_dsp_input_control(3).a;
-        dsp_data_input_control_array(1) <= sr_dsp_input_control(3).b;
-        dsp_data_input_control_array(2) <= sr_dsp_input_control(3).c;
-        dsp_data_input_control_array(3) <= sr_dsp_input_control(3).d;
-
-        dsp_in <= (others => (others => '0'));
-
-        for i in dsp_in'range loop
-            case dsp_data_input_control_array(i) is
-                when Zero  => dsp_in(i) <= (others => '0');
-                when One   => dsp_in(i) <= (0 => '1', others => '0');
-                when Ram   => dsp_in(i) <= sr_br_dob(0);
-                when Acc   => dsp_in(i) <= sr_accumulator(3);
-                when Const => dsp_in(i) <= sr_instruction_constant(3);
-                when Reg1  => dsp_in(i) <= sr_rf_read_a(3);
-                when Reg2  => dsp_in(i) <= sr_rf_read_b(3);
-                when Reg3  => dsp_in(i) <= sr_rf_read_c(3);
-            end case;
-        end loop;
-
-        dsp_inputs.a <= sign_extend(dsp_in(0), dsp_inputs.a'length);
-        dsp_inputs.b <= sign_extend(dsp_in(1), dsp_inputs.b'length);
-
-        dsp_inputs.c <= sign_extend(dsp_in(2), dsp_inputs.c'length);
-        if sr_instruction_type(4) = Mult then
-            dsp_inputs.c <= dsp_c_input_reg;
-        end if;
-
-        dsp_inputs.d <= sign_extend(dsp_in(3), dsp_inputs.d'length);
 
         next_calculated_pc <= sr_rf_read_b(3)(ram_addr'range);
         if sr_branch_type(3) = UncondJ then
@@ -544,32 +561,34 @@ begin
     end process pipeline_stage_7_unclocked;
 
 
-    pipeline_stage_8: process
+    pipeline_stage_8_unclocked: process
+        ( sr_dsp_a(0)
+        , sr_dsp_b(0)
+        , sr_dsp_c(0)
+        , sr_dsp_c(1)
+        , sr_dsp_d(0)
+        , sr_instruction_type(5)
+        , sr_dsp_mode(4)
+        , sr_dsp_mode(5)
+        )
     begin
-        wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
-
+        dsp_inputs.mode <= sr_dsp_mode(4);
+        if sr_instruction_type(5) = Mult then
+            dsp_inputs.mode <= sr_dsp_mode(5);
         end if;
 
-    end process pipeline_stage_8;
+        dsp_inputs.a <= sr_dsp_a(0);
+        dsp_inputs.b <= sr_dsp_b(0);
 
-
-    pipeline_stage_9: process
-    begin
-        wait until clk'event and clk = '1';
-
-        if clk_en = '1' then
-
-            sr_dsp_p(0) <= dsp_p(word'range);
-
-            if reset = '1' then
-                sr_dsp_p <= (others => (others => '0'));
-            end if;
-
+        dsp_inputs.c <= sr_dsp_c(0);
+        if sr_instruction_type(5) = Mult then
+            dsp_inputs.c <= sr_dsp_c(1);
         end if;
 
-    end process pipeline_stage_9;
+        dsp_inputs.d <= sr_dsp_d(0);
+
+    end process pipeline_stage_8_unclocked;
 
 
     pipeline_stage_10: process
@@ -578,35 +597,52 @@ begin
 
         if clk_en = '1' then
 
+            sr_dsp_p(0) <= dsp_p;
+
+            if reset = '1' then
+                sr_dsp_p <= (others => (others => '0'));
+            end if;
+
         end if;
 
     end process pipeline_stage_10;
 
 
-    pipeline_stage_10_unclocked: process
-        ( sr_write_register(6)
-        , sr_write_register(7)
-        , sr_rf_write_enable(6)
+    pipeline_stage_11: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+        end if;
+
+    end process pipeline_stage_11;
+
+
+    pipeline_stage_11_unclocked: process
+        ( sr_write_register(7)
+        , sr_write_register(8)
         , sr_rf_write_enable(7)
+        , sr_rf_write_enable(8)
         , sr_dsp_p(0)
-        , sr_instruction_type(7)
+        , sr_instruction_type(8)
         )
     begin
 
-        a_write_enable <= sr_a_write_enable(6);
-        rf_inputs.write_enable <= sr_rf_write_enable(6);
-        rf_inputs.addr_d <= sr_write_register(6);
-        if sr_instruction_type(7) = Mult then
-            a_write_enable <= sr_a_write_enable(7);
-            rf_inputs.write_enable <= sr_rf_write_enable(7);
-            rf_inputs.addr_d <= sr_write_register(7);
+        a_write_enable <= sr_a_write_enable(7);
+        rf_inputs.write_enable <= sr_rf_write_enable(7);
+        rf_inputs.addr_d <= sr_write_register(7);
+        if sr_instruction_type(8) = Mult then
+            a_write_enable <= sr_a_write_enable(8);
+            rf_inputs.write_enable <= sr_rf_write_enable(8);
+            rf_inputs.addr_d <= sr_write_register(8);
         end if;
 
-        rf_inputs.write_data <= sr_dsp_p(0);
+        rf_inputs.write_data <= sr_dsp_p(0)(word'range);
 
         a_input <= sr_dsp_p(0);
 
-    end process pipeline_stage_10_unclocked;
+    end process pipeline_stage_11_unclocked;
 
 
     block_ram : entity BlockRam
