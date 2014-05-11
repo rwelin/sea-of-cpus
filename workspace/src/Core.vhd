@@ -204,7 +204,7 @@ begin
 
             sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
 
-            sr_write_register(0) <= s2_instruction_word(5 downto 0);
+            sr_write_register(0) <= s2_instruction_word(11 downto 6);
 
             sr_branch_type(0) <= NoBr;
 
@@ -232,7 +232,7 @@ begin
 
                 when OP_MOVR =>
                     sr_dsp_input_control(0).c <= Const;
-                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 6), word'length);
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVRA =>
@@ -293,14 +293,14 @@ begin
                     sr_a_write_enable(0) <= '1';
 
                 when OP_ADDR =>
-                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 6), word'length);
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_dsp_input_control(0).c <= Reg1;
                     sr_dsp_input_control(0).b <= Const;
                     sr_dsp_mode(0) <= DSP_CpAB;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_SUBR =>
-                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 6), word'length);
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_dsp_input_control(0).c <= Reg1;
                     sr_dsp_input_control(0).b <= Const;
                     sr_dsp_mode(0) <= DSP_CsAB;
@@ -364,8 +364,8 @@ begin
     pipeline_stage_3_unclocked: process(s2_instruction_word)
     begin
 
-        rf_inputs.addr_a <= s2_instruction_word(5 downto 0);
-        rf_inputs.addr_b <= s2_instruction_word(11 downto 6);
+        rf_inputs.addr_a <= s2_instruction_word(11 downto 6);
+        rf_inputs.addr_b <= s2_instruction_word(5 downto 0);
         rf_inputs.addr_c <= (others => '0');
 
     end process pipeline_stage_3_unclocked;

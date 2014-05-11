@@ -43,7 +43,7 @@ def is_number(token):
 
 def encode_argument(arg, length):
     if arg in registers:
-        return to_binary(int(arg[1:]), length)
+        return to_binary(int(arg[1:]), 6) + '0'*(length-6)
     elif is_number(arg):
         return to_binary(int(arg), length)
     elif arg in labels:

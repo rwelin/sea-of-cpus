@@ -1,8 +1,8 @@
 
     mova    as
     mova    bs
-    movr    8   r0
-    movr    loop    r6
+    movr    r0  8
+    movr    r6  loop
     nop
     nop
     nop
@@ -16,19 +16,19 @@
     nop
 
 loop:
-    subr    1   r0
-    ldrr    r2  r1
-    ldrr    r4  r3
-    addr    1   r2
-    addr    1   r4
+    subr    r0  1
+    ldrr    r1  r2
+    ldrr    r3  r4
+    addr    r2  1
+    addr    r4  1
 
     nop
     nop
     nop
     nop
 
-    bnz     r6  r0
-    mac     r1  r3
+    bnz     r0  r6
+    mac     r3  r1
 
     nop
     nop
@@ -37,7 +37,7 @@ loop:
     nop
 
 end:
-    J end
+    J       end
     nop
     nop
     nop
@@ -56,10 +56,10 @@ as:
     8
 bs:
     1
+    -2
+    6
+    -1
+    5
     -1
     1
-    -1
-    1
-    -1
-    1
-    -1
+    -3
