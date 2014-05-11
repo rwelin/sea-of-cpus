@@ -56,6 +56,11 @@
 
 ### Core
 
+#### Optimizations
+
+- Adding extra pipeline stage before DSP block for higher clock frequency.
+
+
 ### System
 
 
