@@ -129,9 +129,6 @@ architecture behav of Core is
 
     signal op: opcode;
 
-    signal dsp_c_input_reg: slv48_t;
-    signal dsp_c_input: slv48_t;
-
 begin
 
 
@@ -143,7 +140,7 @@ begin
     pipeline_stage_1: process
     begin
         wait until clk'event and clk = '1';
-        
+
         if clk_en = '1' then
 
             ------------
@@ -194,7 +191,7 @@ begin
 
         if clk_en = '1' then
 
-            s2_instruction_word <= br_doa; 
+            s2_instruction_word <= br_doa;
             if reset = '1' or sr_core_we(1) = '1' then
                 s2_instruction_word <= (others => '0');
             end if;
@@ -279,25 +276,25 @@ begin
                 when OP_ADDA =>
                     sr_dsp_input_control(0).c <= Acc;
                     sr_dsp_input_control(0).b <= Const;
-                    sr_dsp_mode(0) <= DSP_CpAB; 
+                    sr_dsp_mode(0) <= DSP_CpAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_SUBA =>
                     sr_dsp_input_control(0).c <= Acc;
                     sr_dsp_input_control(0).b <= Const;
-                    sr_dsp_mode(0) <= DSP_CsAB; 
+                    sr_dsp_mode(0) <= DSP_CsAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_ADDAR =>
                     sr_dsp_input_control(0).c <= Acc;
                     sr_dsp_input_control(0).b <= Reg1;
-                    sr_dsp_mode(0) <= DSP_CpAB; 
+                    sr_dsp_mode(0) <= DSP_CpAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_SUBAR =>
                     sr_dsp_input_control(0).c <= Acc;
                     sr_dsp_input_control(0).b <= Reg1;
-                    sr_dsp_mode(0) <= DSP_CsAB; 
+                    sr_dsp_mode(0) <= DSP_CsAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_ADDR =>
@@ -365,7 +362,7 @@ begin
             end if;
 
         end if;
-        
+
     end process pipeline_stage_3;
 
 
@@ -377,6 +374,7 @@ begin
         rf_inputs.addr_c <= (others => '0');
 
     end process pipeline_stage_3_unclocked;
+
 
     pipeline_stage_4: process
     begin
@@ -479,11 +477,6 @@ begin
 
 
     pipeline_stage_7: process
-
-        variable a: slv30_t;
-        variable b: slv18_t;
-        variable d: slv25_t;
-
     begin
         wait until clk'event and clk = '1';
 
@@ -525,8 +518,8 @@ begin
             case sr_dsp_input_control(3).d is
                 when Zero  => sr_dsp_d(0) <= (others => '0');
                 when One   => sr_dsp_d(0) <= (0 => '1', others => '0');
-                when Ram   => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), d'length);
-                when Acc   => sr_dsp_d(0) <= sr_accumulator(3)(d'range);
+                when Ram   => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), sr_dsp_d(0)'length);
+                when Acc   => sr_dsp_d(0) <= sr_accumulator(3)(sr_dsp_d(0)'range);
                 when Const => sr_dsp_d(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_d(0)'length);
                 when Reg1  => sr_dsp_d(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_d(0)'length);
                 when Reg2  => sr_dsp_d(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_d(0)'length);
