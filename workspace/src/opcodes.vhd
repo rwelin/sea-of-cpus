@@ -72,4 +72,7 @@ package opcodes is
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
     constant OP_BNZ: opcode := "010101";
 
+    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
+    constant OP_BNZD: opcode := "010110";
+
 end package opcodes;

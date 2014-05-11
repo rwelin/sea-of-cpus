@@ -331,6 +331,13 @@ begin
                 when OP_BNZ =>
                     sr_branch_type(0) <= CondBrNZ;
 
+                when OP_BNZD =>
+                    sr_branch_type(0) <= CondBrNZ;
+                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_dsp_input_control(0).b <= One;
+                    sr_dsp_mode(0) <= DSP_CsAB;
+                    sr_rf_write_enable(0) <= '1';
+
                 when others =>
 
             end case;
