@@ -1,7 +1,7 @@
 
     mova    as
     mova    bs
-    movr    r0  7
+    movr    r0  6
     movr    r6  loop
 
     nop
@@ -21,6 +21,7 @@
     nop
     nop
 
+setup:
     ldrr    r1  r2
     ldrr    r3  r4
     addr    r2  1
@@ -47,6 +48,17 @@ loop:
     mac     r3  r1
     nop
 
+teardown:
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    mac     r3  r1
+    
 end:
     J       end
     nop
