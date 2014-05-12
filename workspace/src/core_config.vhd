@@ -18,7 +18,7 @@ package core_config is
     subtype ram_addr is std_logic_vector(RAM_ADDR_LENGTH - 1 downto 0);
     subtype opcode is std_logic_vector(OPCODE_LENGTH - 1 downto 0);
 
-    type dsp_input is (Ram, Zero, One, Reg1, Reg2, Reg3, Acc, Const);
+    type dsp_input is (Ram, Zero, One, Reg1, Reg2, Reg3, Acc, Const, DspOut);
     type DspDataInputControl is
     record
         a, b, c, d: dsp_input;

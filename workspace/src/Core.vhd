@@ -493,47 +493,51 @@ begin
         if clk_en = '1' then
 
             case sr_dsp_input_control(3).a is
-                when Zero  => sr_dsp_a(0) <= (others => '0');
-                when One   => sr_dsp_a(0) <= (0 => '1', others => '0');
-                when Ram   => sr_dsp_a(0) <= sign_extend(sr_br_dob(0), sr_dsp_a(0)'length);
-                when Acc   => sr_dsp_a(0) <= sr_accumulator(3)(sr_dsp_a(0)'range);
-                when Const => sr_dsp_a(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_a(0)'length);
-                when Reg1  => sr_dsp_a(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_a(0)'length);
-                when Reg2  => sr_dsp_a(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_a(0)'length);
-                when Reg3  => sr_dsp_a(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_a(0)'length);
+                when Zero   => sr_dsp_a(0) <= (others => '0');
+                when One    => sr_dsp_a(0) <= (0 => '1', others => '0');
+                when Ram    => sr_dsp_a(0) <= sign_extend(sr_br_dob(0), sr_dsp_a(0)'length);
+                when Acc    => sr_dsp_a(0) <= sr_accumulator(3)(sr_dsp_a(0)'range);
+                when Const  => sr_dsp_a(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_a(0)'length);
+                when Reg1   => sr_dsp_a(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_a(0)'length);
+                when Reg2   => sr_dsp_a(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_a(0)'length);
+                when Reg3   => sr_dsp_a(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_a(0)'length);
+                when DspOut => sr_dsp_a(0) <= sr_dsp_p(0)(sr_dsp_a(0)'range);
             end case;
 
             case sr_dsp_input_control(3).b is
-                when Zero  => sr_dsp_b(0) <= (others => '0');
-                when One   => sr_dsp_b(0) <= (0 => '1', others => '0');
-                when Ram   => sr_dsp_b(0) <= sr_br_dob(0);
-                when Acc   => sr_dsp_b(0) <= sr_accumulator(3)(word'range);
-                when Const => sr_dsp_b(0) <= sr_instruction_constant(3);
-                when Reg1  => sr_dsp_b(0) <= sr_rf_read_a(3);
-                when Reg2  => sr_dsp_b(0) <= sr_rf_read_b(3);
-                when Reg3  => sr_dsp_b(0) <= sr_rf_read_c(3);
+                when Zero   => sr_dsp_b(0) <= (others => '0');
+                when One    => sr_dsp_b(0) <= (0 => '1', others => '0');
+                when Ram    => sr_dsp_b(0) <= sr_br_dob(0);
+                when Acc    => sr_dsp_b(0) <= sr_accumulator(3)(word'range);
+                when Const  => sr_dsp_b(0) <= sr_instruction_constant(3);
+                when Reg1   => sr_dsp_b(0) <= sr_rf_read_a(3);
+                when Reg2   => sr_dsp_b(0) <= sr_rf_read_b(3);
+                when Reg3   => sr_dsp_b(0) <= sr_rf_read_c(3);
+                when DspOut => sr_dsp_b(0) <= sr_dsp_p(0)(sr_dsp_b(0)'range);
             end case;
 
             case sr_dsp_input_control(3).c is
-                when Zero  => sr_dsp_c(0) <= (others => '0');
-                when One   => sr_dsp_c(0) <= (0 => '1', others => '0');
-                when Ram   => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
-                when Acc   => sr_dsp_c(0) <= sr_accumulator(3);
-                when Const => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
-                when Reg1  => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
-                when Reg2  => sr_dsp_c(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_c(0)'length);
-                when Reg3  => sr_dsp_c(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_c(0)'length);
+                when Zero   => sr_dsp_c(0) <= (others => '0');
+                when One    => sr_dsp_c(0) <= (0 => '1', others => '0');
+                when Ram    => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
+                when Acc    => sr_dsp_c(0) <= sr_accumulator(3);
+                when Const  => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
+                when Reg1   => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
+                when Reg2   => sr_dsp_c(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_c(0)'length);
+                when Reg3   => sr_dsp_c(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_c(0)'length);
+                when DspOut => sr_dsp_c(0) <= sr_dsp_p(0);
             end case;
 
             case sr_dsp_input_control(3).d is
-                when Zero  => sr_dsp_d(0) <= (others => '0');
-                when One   => sr_dsp_d(0) <= (0 => '1', others => '0');
-                when Ram   => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), sr_dsp_d(0)'length);
-                when Acc   => sr_dsp_d(0) <= sr_accumulator(3)(sr_dsp_d(0)'range);
-                when Const => sr_dsp_d(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_d(0)'length);
-                when Reg1  => sr_dsp_d(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_d(0)'length);
-                when Reg2  => sr_dsp_d(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_d(0)'length);
-                when Reg3  => sr_dsp_d(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_d(0)'length);
+                when Zero   => sr_dsp_d(0) <= (others => '0');
+                when One    => sr_dsp_d(0) <= (0 => '1', others => '0');
+                when Ram    => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), sr_dsp_d(0)'length);
+                when Acc    => sr_dsp_d(0) <= sr_accumulator(3)(sr_dsp_d(0)'range);
+                when Const  => sr_dsp_d(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_d(0)'length);
+                when Reg1   => sr_dsp_d(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_d(0)'length);
+                when Reg2   => sr_dsp_d(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_d(0)'length);
+                when Reg3   => sr_dsp_d(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_d(0)'length);
+                when DspOut => sr_dsp_d(0) <= sr_dsp_p(0)(sr_dsp_d(0)'range);
             end case;
 
             sr_dsp_c(1) <= sr_dsp_c(0);
