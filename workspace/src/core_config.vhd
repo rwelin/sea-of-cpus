@@ -18,14 +18,15 @@ package core_config is
     subtype ram_addr is std_logic_vector(RAM_ADDR_LENGTH - 1 downto 0);
     subtype opcode is std_logic_vector(OPCODE_LENGTH - 1 downto 0);
 
-    type dsp_input is (Ram, Zero, One, Reg1, Reg2, Reg3, Acc, Const, DspOut);
+    type dsp_input is (Ram1, Ram2, Zero, One, Reg1, Reg2, Reg3, Acc, Const, DspOut);
     type DspDataInputControl is
     record
         a, b, c, d: dsp_input;
     end record DspDataInputControl;
 
-    type BlockRamDataInputControl is (Acc, Reg2, Const);
-    type BlockRamAddrControl is (Reg1, Reg2, Const);
+    type BlockRamAddrControlA is (PC, CmacCoef);
+    type BlockRamDataInputControlB is (Acc, Reg2, Const);
+    type BlockRamAddrControlB is (Reg1, Reg2, Const, CmacData);
 
     type BranchOp is (NoBr, UncondJ, UncondBr, CondBrZ, CondBrNZ);
 

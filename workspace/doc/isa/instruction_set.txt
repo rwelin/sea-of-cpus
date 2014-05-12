@@ -18,6 +18,11 @@ SUBR    | const:6 | rb:6 |  -- rb := rb - const
 MAC     | ra:6 | rb:6 |     -- acc := acc + ra * rb
 MACP    | ra:6 | rb:6 |     -- acc := p + ra * rb
 MACPM   | ra:6 | rb:6 |     -- acc := p + *rb * ra
+COEFA   | const:12 |        -- coefa := const
+DATAA   | const:12 |        -- dataa := const
+DATAO   | const:12 |        -- datao := const
+DATAM   | const:12 |        -- datam := const
+CMAC    | -:12 |            -- acc := p + (*coef++) * (*data++)
 J       | const:12 |        -- pc := const
 BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra

@@ -32,8 +32,8 @@ architecture behav of Core is
     signal br_dib: word;
     signal br_web: std_logic;
 
-    signal pc: ram_addr; -- Program counter
-    signal stall_pc: std_logic; -- Indicates whether to hold the PC or not
+    signal program_counter: ram_addr; -- Program counter
+    signal sr_stall_pc: std_logic_vector(0 to 1); -- Indicates whether to hold the PC or not
     signal next_calculated_pc: ram_addr; -- Next instruction memory address
 
     signal rf_inputs: RegisterFileInputs;
@@ -50,6 +50,8 @@ architecture behav of Core is
     signal a_output: slv48_t;
 
     signal s2_instruction_word: word;
+    signal resume_instruction_word: word;
+    signal repeat_instruction: std_logic;
 
     -- Data shift registers
     --
@@ -68,6 +70,9 @@ architecture behav of Core is
 
     type sr_br_dob_t is array (0 to 0) of word;
     signal sr_br_dob: sr_br_dob_t;
+
+    type sr_br_doa_t is array (0 to 0) of word;
+    signal sr_br_doa: sr_br_doa_t;
 
     type sr_instruction_constant_t is array (0 to 3) of word;
     signal sr_instruction_constant: sr_instruction_constant_t;
@@ -111,11 +116,14 @@ architecture behav of Core is
     type sr_dsp_mode_t is array (0 to 5) of DSPMode;
     signal sr_dsp_mode: sr_dsp_mode_t;
 
-    type sr_block_ram_input_control_t is array (0 to 1) of BlockRamDataInputControl;
+    type sr_block_ram_input_control_t is array (0 to 1) of BlockRamDataInputControlB;
     signal sr_block_ram_input_control: sr_block_ram_input_control_t;
 
-    type sr_block_ram_addr_control_t is array (0 to 1) of BlockRamAddrControl;
-    signal sr_block_ram_addr_control: sr_block_ram_addr_control_t;
+    type sr_block_ram_addr_control_a_t is array (0 to 1) of BlockRamAddrControlA;
+    signal sr_block_ram_addr_control_a: sr_block_ram_addr_control_a_t;
+
+    type sr_block_ram_addr_control_b_t is array (0 to 1) of BlockRamAddrControlB;
+    signal sr_block_ram_addr_control_b: sr_block_ram_addr_control_b_t;
 
     type sr_branch_type_t is array (0 to 3) of BranchOp;
     signal sr_branch_type: sr_branch_type_t;
@@ -123,17 +131,32 @@ architecture behav of Core is
     type sr_instruction_type_t is array(0 to 8) of InstructionType;
     signal sr_instruction_type: sr_instruction_type_t;
 
+    type sr_increment_cmac_registers_t is array (0 to 1) of std_logic;
+    signal sr_increment_cmac_registers: sr_increment_cmac_registers_t;
+
     -- Indicates whether to simply increment the PC or use `next_calculated_pc'
     type sr_use_pc_next_address_t is array (0 to 1) of std_logic;
     signal sr_use_pc_next_address: sr_use_pc_next_address_t;
 
     signal op: opcode;
 
+
+    -- CMAC registers
+    --
+
+    signal coefa: ram_addr; -- Base address of coefficients
+    signal dataa: ram_addr; -- Base address of data
+    signal datao: ram_addr; -- Offset in circular buffer starting from dataa
+    signal datam: ram_addr; -- Bitmask for circular buffer
+    signal cmac_counter: ram_addr; -- Index variable during the multiply accumulate
+
+    signal cmac_coef_addr: ram_addr;
+    signal cmac_data_addr: ram_addr;
+
 begin
 
 
     output <= a_output(word'range);
-    stall_pc <= '0';
     op <= s2_instruction_word(17 downto 12);
 
 
@@ -146,11 +169,11 @@ begin
             ------------
             -- Update PC
 
-            if we = '0' and stall_pc = '0' then
+            if we = '0' and sr_stall_pc(0) = '0' then
                 if sr_use_pc_next_address(1) = '0' then
-                    pc <= next_calculated_pc;
+                    program_counter <= next_calculated_pc;
                 else
-                    pc <= std_logic_vector(unsigned(pc) + 1);
+                    program_counter <= std_logic_vector(unsigned(program_counter) + 1);
                 end if;
             end if;
 
@@ -158,7 +181,7 @@ begin
             sr_core_we(1) <= sr_core_we(0);
 
             if reset = '1' then
-                pc <= (others => '0');
+                program_counter <= (others => '0');
                 sr_core_we <= (others => '0');
             end if;
 
@@ -168,16 +191,22 @@ begin
 
 
     pipeline_stage_1_unclocked: process
-        ( pc
+        ( program_counter
         , addr
         , we
+        , sr_block_ram_addr_control_a(1)
+        , cmac_coef_addr
         )
     begin
 
         ---------------------------------
         -- Set instruction memory address
 
-        br_addra <= pc;
+        case sr_block_ram_addr_control_a(1) is
+            when PC => br_addra <= program_counter;
+            when CmacCoef => br_addra <= cmac_coef_addr;
+        end case;
+
         if we = '1' then
             br_addra <= addr;
         end if;
@@ -191,9 +220,36 @@ begin
 
         if clk_en = '1' then
 
-            s2_instruction_word <= br_doa;
+            if repeat_instruction = '0' then
+                s2_instruction_word <= br_doa;
+                if sr_stall_pc(0) = '1' then
+                    s2_instruction_word <= (others => '0');
+                end if;
+            end if;
+
+            if repeat_instruction = '1' and sr_stall_pc(0) = '0' then
+                resume_instruction_word <= br_doa;
+            end if;
+
+            if sr_stall_pc(0) = '0' and sr_stall_pc(1) = '1' then
+                s2_instruction_word <= resume_instruction_word;
+            end if;
+
+            repeat_instruction <= '0';
+            if (repeat_instruction = '0'
+               and br_doa(17 downto 12) = OP_CMAC
+               )
+            or (repeat_instruction = '1'
+               and s2_instruction_word(17 downto 12) = OP_CMAC
+               and unsigned(cmac_counter) > 3
+               ) then
+                repeat_instruction <= '1';
+            end if;
+
             if reset = '1' or sr_core_we(1) = '1' then
                 s2_instruction_word <= (others => '0');
+                repeat_instruction <= '0';
+                resume_instruction_word <= (others => '0');
             end if;
 
         end if;
@@ -207,6 +263,11 @@ begin
 
         if clk_en = '1' then
 
+            sr_stall_pc(0) <= '0';
+            sr_stall_pc(1) <= sr_stall_pc(0);
+
+            sr_increment_cmac_registers(0) <= '0';
+
             sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
 
             sr_write_register(0) <= s2_instruction_word(11 downto 6);
@@ -214,7 +275,8 @@ begin
             sr_branch_type(0) <= NoBr;
 
             sr_block_ram_input_control(0) <= Acc;
-            sr_block_ram_addr_control(0) <= Const;
+            sr_block_ram_addr_control_b(0) <= Const;
+            sr_block_ram_addr_control_a(0) <= PC;
 
             sr_instruction_type(0) <= Normal;
 
@@ -252,28 +314,28 @@ begin
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_LDA =>
-                    sr_dsp_input_control(0).c <= Ram;
-                    sr_block_ram_addr_control(0) <= Const;
+                    sr_dsp_input_control(0).c <= Ram2;
+                    sr_block_ram_addr_control_b(0) <= Const;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_STA =>
                     sr_block_ram_input_control(0) <= Acc;
-                    sr_block_ram_addr_control(0) <= Const;
+                    sr_block_ram_addr_control_b(0) <= Const;
                     sr_br_web(0) <= '1';
 
                 when OP_LDAR =>
-                    sr_dsp_input_control(0).c <= Ram;
-                    sr_block_ram_addr_control(0) <= Reg1;
+                    sr_dsp_input_control(0).c <= Ram2;
+                    sr_block_ram_addr_control_b(0) <= Reg1;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_STAR =>
                     sr_block_ram_input_control(0) <= Acc;
-                    sr_block_ram_addr_control(0) <= Reg1;
+                    sr_block_ram_addr_control_b(0) <= Reg1;
                     sr_br_web(0) <= '1';
 
                 when OP_LDRR =>
-                    sr_dsp_input_control(0).c <= Ram;
-                    sr_block_ram_addr_control(0) <= Reg2;
+                    sr_dsp_input_control(0).c <= Ram2;
+                    sr_block_ram_addr_control_b(0) <= Reg2;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_ADDA =>
@@ -332,12 +394,38 @@ begin
 
                 when OP_MACPM =>
                     sr_dsp_input_control(0).c <= DspOut;
-                    sr_dsp_input_control(0).a <= Ram;
+                    sr_dsp_input_control(0).a <= Ram2;
                     sr_dsp_input_control(0).b <= Reg2;
-                    sr_block_ram_addr_control(0) <= Reg1;
+                    sr_block_ram_addr_control_b(0) <= Reg1;
                     sr_dsp_mode(0) <= DSP_CpAtB;
                     sr_a_write_enable(0) <= '1';
                     sr_instruction_type(0) <= Mult;
+
+                when OP_COEFA =>
+                    coefa <= s2_instruction_word(ram_addr'range);
+
+                when OP_DATAA =>
+                    dataa <= s2_instruction_word(ram_addr'range);
+
+                when OP_DATAO =>
+                    datao <= s2_instruction_word(ram_addr'range);
+
+                when OP_DATAM =>
+                    datam <= s2_instruction_word(ram_addr'range);
+
+                when OP_CMAC =>
+                    sr_instruction_type(0) <= Mult;
+                    sr_increment_cmac_registers(0) <= '1';
+                    if signed(cmac_counter) > 1 then
+                        sr_stall_pc(0) <= '1';
+                        sr_a_write_enable(0) <= '1';
+                        sr_block_ram_addr_control_a(0) <= CmacCoef;
+                        sr_block_ram_addr_control_b(0) <= CmacData;
+                        sr_dsp_mode(0) <= DSP_PpAtB;
+                        sr_dsp_input_control(0).c <= Zero;
+                        sr_dsp_input_control(0).a <= Ram2;
+                        sr_dsp_input_control(0).b <= Ram1;
+                    end if;
 
                 when OP_J =>
                     sr_branch_type(0) <= UncondJ;
@@ -370,11 +458,18 @@ begin
             sr_a_write_enable(1 to 8) <= sr_a_write_enable(0 to 7);
             sr_br_web(1) <= sr_br_web(0);
             sr_block_ram_input_control(1) <= sr_block_ram_input_control(0);
-            sr_block_ram_addr_control(1) <= sr_block_ram_addr_control(0);
+            sr_block_ram_addr_control_a(1) <= sr_block_ram_addr_control_a(0);
+            sr_block_ram_addr_control_b(1) <= sr_block_ram_addr_control_b(0);
+            sr_increment_cmac_registers(1) <= sr_increment_cmac_registers(0);
             sr_dsp_input_control(1 to 3) <= sr_dsp_input_control(0 to 2);
             sr_dsp_mode(1 to 5) <= sr_dsp_mode(0 to 4);
 
             if reset = '1' then
+                coefa <= (others => '0');
+                dataa <= (others => '0');
+                datao <= (others => '0');
+                datam <= (others => '0');
+                sr_stall_pc <= (others => '0');
                 sr_branch_type <= (others => NoBr);
                 sr_instruction_type <= (others => Normal);
                 sr_instruction_constant <= (others => (others => '0'));
@@ -383,7 +478,9 @@ begin
                 sr_a_write_enable <= (others => '0');
                 sr_br_web <= (others => '0');
                 sr_block_ram_input_control <= (others => Reg2);
-                sr_block_ram_addr_control <= (others => Reg1);
+                sr_block_ram_addr_control_b <= (others => Reg1);
+                sr_block_ram_addr_control_a <= (others => PC);
+                sr_increment_cmac_registers <= (others => '0');
                 sr_dsp_input_control <= (others => (others => Zero));
                 sr_dsp_mode <= (others => DSP_C_PASSTHROUGH);
             end if;
@@ -421,7 +518,18 @@ begin
             sr_accumulator(0) <= a_output;
             sr_accumulator(1 to 3) <= sr_accumulator(0 to 2);
 
+            cmac_counter <= datam;
+            cmac_data_addr <= dataa;
+            cmac_coef_addr <= coefa;
+            if sr_increment_cmac_registers(1) = '1' then
+                cmac_counter <= std_logic_vector(unsigned(cmac_counter)-1);
+                cmac_data_addr <= std_logic_vector(unsigned(cmac_data_addr)+1);
+                cmac_coef_addr <= std_logic_vector(unsigned(cmac_coef_addr)+1);
+            end if;
+
             if reset = '1' then
+                cmac_data_addr <= (others => '0');
+                cmac_coef_addr <= (others => '0');
                 sr_rf_read_a <= (others => (others => '0'));
                 sr_rf_read_b <= (others => (others => '0'));
                 sr_rf_read_c <= (others => (others => '0'));
@@ -464,8 +572,9 @@ begin
         , sr_rf_read_b(1)
         , sr_br_web(1)
         , sr_block_ram_input_control(1)
-        , sr_block_ram_addr_control(1)
+        , sr_block_ram_addr_control_b(1)
         , sr_instruction_constant(1)
+        , cmac_data_addr
         )
     begin
 
@@ -475,10 +584,11 @@ begin
             when Const => br_dib <= sr_instruction_constant(1);
         end case;
 
-        case sr_block_ram_addr_control(1) is
+        case sr_block_ram_addr_control_b(1) is
             when Reg1  => br_addrb <= sr_rf_read_a(1)(ram_addr'range);
             when Reg2  => br_addrb <= sr_rf_read_b(1)(ram_addr'range);
             when Const => br_addrb <= sr_instruction_constant(1)(ram_addr'range);
+            when CmacData => br_addrb <= cmac_data_addr;
         end case;
 
         br_web <= sr_br_web(1);
@@ -492,9 +602,11 @@ begin
 
         if clk_en = '1' then
 
+            sr_br_doa(0) <= br_doa;
             sr_br_dob(0) <= br_dob;
 
             if reset = '1' then
+                sr_br_doa <= (others => (others => '0'));
                 sr_br_dob <= (others => (others => '0'));
             end if;
 
@@ -512,7 +624,8 @@ begin
             case sr_dsp_input_control(3).a is
                 when Zero   => sr_dsp_a(0) <= (others => '0');
                 when One    => sr_dsp_a(0) <= (0 => '1', others => '0');
-                when Ram    => sr_dsp_a(0) <= sign_extend(sr_br_dob(0), sr_dsp_a(0)'length);
+                when Ram1   => sr_dsp_a(0) <= sign_extend(sr_br_doa(0), sr_dsp_a(0)'length);
+                when Ram2   => sr_dsp_a(0) <= sign_extend(sr_br_dob(0), sr_dsp_a(0)'length);
                 when Acc    => sr_dsp_a(0) <= sr_accumulator(3)(sr_dsp_a(0)'range);
                 when Const  => sr_dsp_a(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_a(0)'length);
                 when Reg1   => sr_dsp_a(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_a(0)'length);
@@ -524,7 +637,8 @@ begin
             case sr_dsp_input_control(3).b is
                 when Zero   => sr_dsp_b(0) <= (others => '0');
                 when One    => sr_dsp_b(0) <= (0 => '1', others => '0');
-                when Ram    => sr_dsp_b(0) <= sr_br_dob(0);
+                when Ram1   => sr_dsp_b(0) <= sr_br_doa(0);
+                when Ram2   => sr_dsp_b(0) <= sr_br_dob(0);
                 when Acc    => sr_dsp_b(0) <= sr_accumulator(3)(word'range);
                 when Const  => sr_dsp_b(0) <= sr_instruction_constant(3);
                 when Reg1   => sr_dsp_b(0) <= sr_rf_read_a(3);
@@ -536,7 +650,8 @@ begin
             case sr_dsp_input_control(3).c is
                 when Zero   => sr_dsp_c(0) <= (others => '0');
                 when One    => sr_dsp_c(0) <= (0 => '1', others => '0');
-                when Ram    => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
+                when Ram1   => sr_dsp_c(0) <= sign_extend(sr_br_doa(0), sr_dsp_c(0)'length);
+                when Ram2   => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
                 when Acc    => sr_dsp_c(0) <= sr_accumulator(3);
                 when Const  => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
                 when Reg1   => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
@@ -548,7 +663,8 @@ begin
             case sr_dsp_input_control(3).d is
                 when Zero   => sr_dsp_d(0) <= (others => '0');
                 when One    => sr_dsp_d(0) <= (0 => '1', others => '0');
-                when Ram    => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), sr_dsp_d(0)'length);
+                when Ram1   => sr_dsp_d(0) <= sign_extend(sr_br_doa(0), sr_dsp_d(0)'length);
+                when Ram2   => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), sr_dsp_d(0)'length);
                 when Acc    => sr_dsp_d(0) <= sr_accumulator(3)(sr_dsp_d(0)'range);
                 when Const  => sr_dsp_d(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_d(0)'length);
                 when Reg1   => sr_dsp_d(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_d(0)'length);

@@ -66,19 +66,34 @@ package opcodes is
     -- | ra:6 | rb:6 | -- acc := p + *rb * ra
     constant OP_MACPM: opcode := "010011";
 
+    -- | const:12 | -- coefa := const
+    constant OP_COEFA: opcode := "010100";
+
+    -- | const:12 | -- dataa := const
+    constant OP_DATAA: opcode := "010101";
+
+    -- | const:12 | -- datao := const
+    constant OP_DATAO: opcode := "010110";
+
+    -- | const:12 | -- datam := const
+    constant OP_DATAM: opcode := "010111";
+
+    -- | -:12 | -- acc := p + (*coef++) * (*data++)
+    constant OP_CMAC: opcode := "011000";
+
     -- | const:12 | -- pc := const
-    constant OP_J: opcode := "010100";
+    constant OP_J: opcode := "011001";
 
     -- | -:6 | rb:6 | -- pc := rb
-    constant OP_BR: opcode := "010101";
+    constant OP_BR: opcode := "011010";
 
     -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
-    constant OP_BZ: opcode := "010110";
+    constant OP_BZ: opcode := "011011";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
-    constant OP_BNZ: opcode := "010111";
+    constant OP_BNZ: opcode := "011100";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
-    constant OP_BNZD: opcode := "011000";
+    constant OP_BNZD: opcode := "011101";
 
 end package opcodes;

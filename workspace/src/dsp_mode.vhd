@@ -37,4 +37,7 @@ package dsp_mode is
     -- P := C + A*B
     constant DSP_CpAtB: DSPMode := ("0110101", "00000", "0000");
 
+    -- P := P + A*B
+    constant DSP_PpAtB: DSPMode := ("0100101", "00000", "0000");
+
 end package dsp_mode;

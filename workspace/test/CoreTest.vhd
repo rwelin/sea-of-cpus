@@ -7,7 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
-use work.macp.all;
+use work.cmac.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -37,7 +37,7 @@ architecture behav of CoreTest is
         0 =>
             ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), 10),
         1 =>
-            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 1000)
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 100)
     );
 
 begin
@@ -73,13 +73,13 @@ begin
 
         reset <= '0';
 
-        for i in macp_code'range loop
+        for i in cmac_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= macp_code(i);
-            report "Loading data '" & to_string(macp_code(i)) & "' to address " & integer'image(i);
+            data <= cmac_code(i);
+            report "Loading data '" & to_string(cmac_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);
