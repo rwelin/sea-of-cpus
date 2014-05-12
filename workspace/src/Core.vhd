@@ -322,6 +322,23 @@ begin
                     sr_a_write_enable(0) <= '1';
                     sr_instruction_type(0) <= Mult;
 
+                when OP_MACP =>
+                    sr_dsp_input_control(0).c <= DspOut;
+                    sr_dsp_input_control(0).a <= Reg1;
+                    sr_dsp_input_control(0).b <= Reg2;
+                    sr_dsp_mode(0) <= DSP_CpAtB;
+                    sr_a_write_enable(0) <= '1';
+                    sr_instruction_type(0) <= Mult;
+
+                when OP_MACPM =>
+                    sr_dsp_input_control(0).c <= DspOut;
+                    sr_dsp_input_control(0).a <= Ram;
+                    sr_dsp_input_control(0).b <= Reg2;
+                    sr_block_ram_addr_control(0) <= Reg1;
+                    sr_dsp_mode(0) <= DSP_CpAtB;
+                    sr_a_write_enable(0) <= '1';
+                    sr_instruction_type(0) <= Mult;
+
                 when OP_J =>
                     sr_branch_type(0) <= UncondJ;
 

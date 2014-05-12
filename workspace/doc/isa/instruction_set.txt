@@ -16,6 +16,8 @@ SUBAR   | -:6 | rb:6 |      -- acc := acc - rb
 ADDR    | const:6 | rb:6 |  -- rb := rb + const
 SUBR    | const:6 | rb:6 |  -- rb := rb - const
 MAC     | ra:6 | rb:6 |     -- acc := acc + ra * rb
+MACP    | ra:6 | rb:6 |     -- acc := p + ra * rb
+MACPM   | ra:6 | rb:6 |     -- acc := p + *rb * ra
 J       | const:12 |        -- pc := const
 BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra

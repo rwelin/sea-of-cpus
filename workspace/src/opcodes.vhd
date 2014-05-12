@@ -60,19 +60,25 @@ package opcodes is
     -- | ra:6 | rb:6 | -- acc := acc + ra * rb
     constant OP_MAC: opcode := "010001";
 
+    -- | ra:6 | rb:6 | -- acc := p + ra * rb
+    constant OP_MACP: opcode := "010010";
+
+    -- | ra:6 | rb:6 | -- acc := p + *rb * ra
+    constant OP_MACPM: opcode := "010011";
+
     -- | const:12 | -- pc := const
-    constant OP_J: opcode := "010010";
+    constant OP_J: opcode := "010100";
 
     -- | -:6 | rb:6 | -- pc := rb
-    constant OP_BR: opcode := "010011";
+    constant OP_BR: opcode := "010101";
 
     -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
-    constant OP_BZ: opcode := "010100";
+    constant OP_BZ: opcode := "010110";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
-    constant OP_BNZ: opcode := "010101";
+    constant OP_BNZ: opcode := "010111";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
-    constant OP_BNZD: opcode := "010110";
+    constant OP_BNZD: opcode := "011000";
 
 end package opcodes;
