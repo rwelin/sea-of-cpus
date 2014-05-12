@@ -213,6 +213,9 @@ begin
 
             sr_branch_type(0) <= NoBr;
 
+            sr_block_ram_input_control(0) <= Acc;
+            sr_block_ram_addr_control(0) <= Const;
+
             sr_instruction_type(0) <= Normal;
 
             sr_rf_write_enable(0) <= '0';
