@@ -2,14 +2,12 @@
     datam   9
     coefa   cs
     dataa   ds
+    datao   0
     cmac
-    datao   42
-    nop
-    nop
-    nop
 
 end:
     J   end
+    nop
     nop
     nop
     nop
