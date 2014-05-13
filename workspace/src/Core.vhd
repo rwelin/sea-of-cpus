@@ -185,7 +185,6 @@ begin
 
             if reset = '1' then
                 program_counter <= (others => '0');
-                sr_core_we <= (others => '0');
             end if;
 
         end if;
@@ -468,27 +467,6 @@ begin
             sr_increment_cmac_registers(1) <= sr_increment_cmac_registers(0);
             sr_dsp_mode(1 to 5) <= sr_dsp_mode(0 to 4);
 
-            if reset = '1' then
-                coefa <= (others => '0');
-                dataa <= (others => '0');
-                datao <= (others => '0');
-                datam <= (others => '0');
-                sr_stall_pc <= (others => '0');
-                sr_branch_type <= (others => NoBr);
-                sr_instruction_type <= (others => Normal);
-                sr_instruction_constant <= (others => (others => '0'));
-                sr_write_register <= (others => (others => '0'));
-                sr_rf_write_enable <= (others => '0');
-                sr_a_write_enable <= (others => '0');
-                sr_br_web <= (others => '0');
-                sr_block_ram_input_control <= (others => Reg2);
-                sr_block_ram_addr_control_b <= (others => Reg1);
-                sr_block_ram_addr_control_a <= (others => PC);
-                sr_increment_cmac_registers <= (others => '0');
-                sr_dsp_input_control <= (others => (others => Zero));
-                sr_dsp_mode <= (others => DSP_C_PASSTHROUGH);
-            end if;
-
         end if;
 
     end process pipeline_stage_3;
@@ -527,16 +505,6 @@ begin
                 cmac_coef_addr <= std_logic_vector(unsigned(cmac_coef_addr)+1);
             end if;
 
-            if reset = '1' then
-                cmac_counter <= (others => '0');
-                cmac_data_addr <= (others => '0');
-                cmac_coef_addr <= (others => '0');
-                sr_rf_read_a <= (others => (others => '0'));
-                sr_rf_read_b <= (others => (others => '0'));
-                sr_rf_read_c <= (others => (others => '0'));
-                sr_accumulator <= (others => (others => '0'));
-            end if;
-
         end if;
 
     end process pipeline_stage_4;
@@ -557,10 +525,6 @@ begin
             end if;
 
             sr_use_pc_next_address(1) <= sr_use_pc_next_address(0);
-
-            if reset = '1' then
-                sr_use_pc_next_address <= (others => '1');
-            end if;
 
         end if;
 
@@ -606,11 +570,6 @@ begin
             sr_br_doa(0) <= br_doa;
             sr_br_dob(0) <= br_dob;
 
-            if reset = '1' then
-                sr_br_doa <= (others => (others => '0'));
-                sr_br_dob <= (others => (others => '0'));
-            end if;
-
         end if;
 
     end process pipeline_stage_6;
@@ -647,13 +606,6 @@ begin
             end case;
 
             sr_dsp_c(1) <= sr_dsp_c(0);
-
-            if reset = '1' then
-                sr_dsp_a <= (others => (others => '0'));
-                sr_dsp_b <= (others => (others => '0'));
-                sr_dsp_c <= (others => (others => '0'));
-                sr_dsp_d <= (others => (others => '0'));
-            end if;
 
         end if;
 
@@ -711,10 +663,6 @@ begin
         if clk_en = '1' then
 
             sr_dsp_p(0) <= dsp_p;
-
-            if reset = '1' then
-                sr_dsp_p <= (others => (others => '0'));
-            end if;
 
         end if;
 
