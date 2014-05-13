@@ -62,9 +62,6 @@ architecture behav of Core is
     type sr_rf_read_b_t is array (0 to 3) of word;
     signal sr_rf_read_b: sr_rf_read_b_t;
 
-    type sr_rf_read_c_t is array (0 to 3) of word;
-    signal sr_rf_read_c: sr_rf_read_c_t;
-
     type sr_accumulator_t is array (0 to 3) of slv48_t;
     signal sr_accumulator: sr_accumulator_t;
 
@@ -110,8 +107,14 @@ architecture behav of Core is
     type sr_br_web_t is array (0 to 1) of std_logic;
     signal sr_br_web: sr_br_web_t;
 
-    type sr_dsp_input_control_t is array (0 to 3) of DspDataInputControl;
-    signal sr_dsp_input_control: sr_dsp_input_control_t;
+    type sr_dsp_input_control_a_t is array (0 to 3) of dsp_input_control_a_t;
+    signal sr_dsp_input_control_a: sr_dsp_input_control_a_t;
+
+    type sr_dsp_input_control_b_t is array (0 to 3) of dsp_input_control_b_t;
+    signal sr_dsp_input_control_b: sr_dsp_input_control_b_t;
+
+    type sr_dsp_input_control_c_t is array (0 to 3) of dsp_input_control_c_t;
+    signal sr_dsp_input_control_c: sr_dsp_input_control_c_t;
 
     type sr_dsp_mode_t is array (0 to 5) of DSPMode;
     signal sr_dsp_mode: sr_dsp_mode_t;
@@ -284,37 +287,36 @@ begin
             sr_a_write_enable(0) <= '0';
             sr_br_web(0) <= '0';
 
-            sr_dsp_input_control(0).a <= Zero;
-            sr_dsp_input_control(0).b <= Zero;
-            sr_dsp_input_control(0).c <= Zero;
-            sr_dsp_input_control(0).d <= Zero;
+            sr_dsp_input_control_a(0) <= Zero;
+            sr_dsp_input_control_b(0) <= Zero;
+            sr_dsp_input_control_c(0) <= Zero;
 
             sr_dsp_mode(0) <= DSP_C_PASSTHROUGH;
 
             case op is
                 when OP_MOVA =>
-                    sr_dsp_input_control(0).c <= Const;
+                    sr_dsp_input_control_c(0) <= Const;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_MOVAR =>
-                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_dsp_input_control_c(0) <= Reg1;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_MOVR =>
-                    sr_dsp_input_control(0).c <= Const;
+                    sr_dsp_input_control_c(0) <= Const;
                     sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVRA =>
-                    sr_dsp_input_control(0).c <= Acc;
+                    sr_dsp_input_control_c(0) <= Acc;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVRR =>
-                    sr_dsp_input_control(0).c <= Reg1;
+                    sr_dsp_input_control_c(0) <= Reg1;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_LDA =>
-                    sr_dsp_input_control(0).c <= Ram2;
+                    sr_dsp_input_control_c(0) <= Ram2;
                     sr_block_ram_addr_control_b(0) <= Const;
                     sr_a_write_enable(0) <= '1';
 
@@ -324,7 +326,7 @@ begin
                     sr_br_web(0) <= '1';
 
                 when OP_LDAR =>
-                    sr_dsp_input_control(0).c <= Ram2;
+                    sr_dsp_input_control_c(0) <= Ram2;
                     sr_block_ram_addr_control_b(0) <= Reg1;
                     sr_a_write_enable(0) <= '1';
 
@@ -334,68 +336,68 @@ begin
                     sr_br_web(0) <= '1';
 
                 when OP_LDRR =>
-                    sr_dsp_input_control(0).c <= Ram2;
+                    sr_dsp_input_control_c(0) <= Ram2;
                     sr_block_ram_addr_control_b(0) <= Reg2;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_ADDA =>
-                    sr_dsp_input_control(0).c <= Acc;
-                    sr_dsp_input_control(0).b <= Const;
+                    sr_dsp_input_control_c(0) <= Acc;
+                    sr_dsp_input_control_b(0) <= Const;
                     sr_dsp_mode(0) <= DSP_CpAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_SUBA =>
-                    sr_dsp_input_control(0).c <= Acc;
-                    sr_dsp_input_control(0).b <= Const;
+                    sr_dsp_input_control_c(0) <= Acc;
+                    sr_dsp_input_control_b(0) <= Const;
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_ADDAR =>
-                    sr_dsp_input_control(0).c <= Acc;
-                    sr_dsp_input_control(0).b <= Reg1;
+                    sr_dsp_input_control_c(0) <= Acc;
+                    sr_dsp_input_control_b(0) <= Reg1;
                     sr_dsp_mode(0) <= DSP_CpAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_SUBAR =>
-                    sr_dsp_input_control(0).c <= Acc;
-                    sr_dsp_input_control(0).b <= Reg1;
+                    sr_dsp_input_control_c(0) <= Acc;
+                    sr_dsp_input_control_b(0) <= Reg1;
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_a_write_enable(0) <= '1';
 
                 when OP_ADDR =>
                     sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
-                    sr_dsp_input_control(0).c <= Reg1;
-                    sr_dsp_input_control(0).b <= Const;
+                    sr_dsp_input_control_c(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Const;
                     sr_dsp_mode(0) <= DSP_CpAB;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_SUBR =>
                     sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
-                    sr_dsp_input_control(0).c <= Reg1;
-                    sr_dsp_input_control(0).b <= Const;
+                    sr_dsp_input_control_c(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Const;
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MAC =>
-                    sr_dsp_input_control(0).c <= Acc;
-                    sr_dsp_input_control(0).a <= Reg1;
-                    sr_dsp_input_control(0).b <= Reg2;
+                    sr_dsp_input_control_c(0) <= Acc;
+                    sr_dsp_input_control_a(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Reg2;
                     sr_dsp_mode(0) <= DSP_CpAtB;
                     sr_a_write_enable(0) <= '1';
                     sr_instruction_type(0) <= Mult;
 
                 when OP_MACP =>
-                    sr_dsp_input_control(0).c <= DspOut;
-                    sr_dsp_input_control(0).a <= Reg1;
-                    sr_dsp_input_control(0).b <= Reg2;
+                    sr_dsp_input_control_c(0) <= DspOut;
+                    sr_dsp_input_control_a(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Reg2;
                     sr_dsp_mode(0) <= DSP_CpAtB;
                     sr_a_write_enable(0) <= '1';
                     sr_instruction_type(0) <= Mult;
 
                 when OP_MACPM =>
-                    sr_dsp_input_control(0).c <= DspOut;
-                    sr_dsp_input_control(0).a <= Ram2;
-                    sr_dsp_input_control(0).b <= Reg2;
+                    sr_dsp_input_control_c(0) <= DspOut;
+                    sr_dsp_input_control_a(0) <= Ram2;
+                    sr_dsp_input_control_b(0) <= Reg2;
                     sr_block_ram_addr_control_b(0) <= Reg1;
                     sr_dsp_mode(0) <= DSP_CpAtB;
                     sr_a_write_enable(0) <= '1';
@@ -422,9 +424,9 @@ begin
                         sr_block_ram_addr_control_a(0) <= CmacCoef;
                         sr_block_ram_addr_control_b(0) <= CmacData;
                         sr_dsp_mode(0) <= DSP_PpAtB;
-                        sr_dsp_input_control(0).c <= Zero;
-                        sr_dsp_input_control(0).a <= Ram2;
-                        sr_dsp_input_control(0).b <= Ram1;
+                        sr_dsp_input_control_c(0) <= Zero;
+                        sr_dsp_input_control_a(0) <= Ram2;
+                        sr_dsp_input_control_b(0) <= Ram1;
                     end if;
 
                 when OP_J =>
@@ -441,8 +443,8 @@ begin
 
                 when OP_BNZD =>
                     sr_branch_type(0) <= CondBrNZ;
-                    sr_dsp_input_control(0).c <= Reg1;
-                    sr_dsp_input_control(0).b <= One;
+                    sr_dsp_input_control_c(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= One;
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
@@ -450,6 +452,9 @@ begin
 
             end case;
 
+            sr_dsp_input_control_a(1 to 3) <= sr_dsp_input_control_a(0 to 2);
+            sr_dsp_input_control_b(1 to 3) <= sr_dsp_input_control_b(0 to 2);
+            sr_dsp_input_control_c(1 to 3) <= sr_dsp_input_control_c(0 to 2);
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
             sr_write_register(1 to 8) <= sr_write_register(0 to 7);
             sr_branch_type(1 to 3) <= sr_branch_type(0 to 2);
@@ -461,7 +466,6 @@ begin
             sr_block_ram_addr_control_a(1) <= sr_block_ram_addr_control_a(0);
             sr_block_ram_addr_control_b(1) <= sr_block_ram_addr_control_b(0);
             sr_increment_cmac_registers(1) <= sr_increment_cmac_registers(0);
-            sr_dsp_input_control(1 to 3) <= sr_dsp_input_control(0 to 2);
             sr_dsp_mode(1 to 5) <= sr_dsp_mode(0 to 4);
 
             if reset = '1' then
@@ -618,56 +622,28 @@ begin
 
         if clk_en = '1' then
 
-            case sr_dsp_input_control(3).a is
+            case sr_dsp_input_control_a(3) is
                 when Zero   => sr_dsp_a(0) <= (others => '0');
-                when One    => sr_dsp_a(0) <= (0 => '1', others => '0');
-                when Ram1   => sr_dsp_a(0) <= sign_extend(sr_br_doa(0), sr_dsp_a(0)'length);
                 when Ram2   => sr_dsp_a(0) <= sign_extend(sr_br_dob(0), sr_dsp_a(0)'length);
-                when Acc    => sr_dsp_a(0) <= sr_accumulator(3)(sr_dsp_a(0)'range);
-                when Const  => sr_dsp_a(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_a(0)'length);
                 when Reg1   => sr_dsp_a(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_a(0)'length);
-                when Reg2   => sr_dsp_a(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_a(0)'length);
-                when Reg3   => sr_dsp_a(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_a(0)'length);
-                when DspOut => sr_dsp_a(0) <= sr_dsp_p(0)(sr_dsp_a(0)'range);
             end case;
 
-            case sr_dsp_input_control(3).b is
+            case sr_dsp_input_control_b(3) is
                 when Zero   => sr_dsp_b(0) <= (others => '0');
                 when One    => sr_dsp_b(0) <= (0 => '1', others => '0');
                 when Ram1   => sr_dsp_b(0) <= sr_br_doa(0);
-                when Ram2   => sr_dsp_b(0) <= sr_br_dob(0);
-                when Acc    => sr_dsp_b(0) <= sr_accumulator(3)(word'range);
                 when Const  => sr_dsp_b(0) <= sr_instruction_constant(3);
                 when Reg1   => sr_dsp_b(0) <= sr_rf_read_a(3);
                 when Reg2   => sr_dsp_b(0) <= sr_rf_read_b(3);
-                when Reg3   => sr_dsp_b(0) <= sr_rf_read_c(3);
-                when DspOut => sr_dsp_b(0) <= sr_dsp_p(0)(sr_dsp_b(0)'range);
             end case;
 
-            case sr_dsp_input_control(3).c is
+            case sr_dsp_input_control_c(3) is
                 when Zero   => sr_dsp_c(0) <= (others => '0');
-                when One    => sr_dsp_c(0) <= (0 => '1', others => '0');
-                when Ram1   => sr_dsp_c(0) <= sign_extend(sr_br_doa(0), sr_dsp_c(0)'length);
                 when Ram2   => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
                 when Acc    => sr_dsp_c(0) <= sr_accumulator(3);
                 when Const  => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
                 when Reg1   => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
-                when Reg2   => sr_dsp_c(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_c(0)'length);
-                when Reg3   => sr_dsp_c(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_c(0)'length);
                 when DspOut => sr_dsp_c(0) <= sr_dsp_p(0);
-            end case;
-
-            case sr_dsp_input_control(3).d is
-                when Zero   => sr_dsp_d(0) <= (others => '0');
-                when One    => sr_dsp_d(0) <= (0 => '1', others => '0');
-                when Ram1   => sr_dsp_d(0) <= sign_extend(sr_br_doa(0), sr_dsp_d(0)'length);
-                when Ram2   => sr_dsp_d(0) <= sign_extend(sr_br_dob(0), sr_dsp_d(0)'length);
-                when Acc    => sr_dsp_d(0) <= sr_accumulator(3)(sr_dsp_d(0)'range);
-                when Const  => sr_dsp_d(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_d(0)'length);
-                when Reg1   => sr_dsp_d(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_d(0)'length);
-                when Reg2   => sr_dsp_d(0) <= sign_extend(sr_rf_read_b(3), sr_dsp_d(0)'length);
-                when Reg3   => sr_dsp_d(0) <= sign_extend(sr_rf_read_c(3), sr_dsp_d(0)'length);
-                when DspOut => sr_dsp_d(0) <= sr_dsp_p(0)(sr_dsp_d(0)'range);
             end case;
 
             sr_dsp_c(1) <= sr_dsp_c(0);
