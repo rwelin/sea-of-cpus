@@ -59,6 +59,7 @@
 #### Optimizations
 
 - Adding extra pipeline stage before DSP block for higher clock frequency.
+- Removing resets -> ~200 fewer LUTs used
 
 
 ### System
