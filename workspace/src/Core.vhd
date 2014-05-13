@@ -495,7 +495,6 @@ begin
 
         rf_inputs.addr_a <= s2_instruction_word(11 downto 6);
         rf_inputs.addr_b <= s2_instruction_word(5 downto 0);
-        rf_inputs.addr_c <= (others => '0');
 
     end process pipeline_stage_3_unclocked;
 
@@ -511,9 +510,6 @@ begin
 
             sr_rf_read_b(0) <= rf_read_b;
             sr_rf_read_b(1 to 3) <= sr_rf_read_b(0 to 2);
-
-            sr_rf_read_c(0) <= rf_read_c;
-            sr_rf_read_c(1 to 3) <= sr_rf_read_c(0 to 2);
 
             sr_accumulator(0) <= a_output;
             sr_accumulator(1 to 3) <= sr_accumulator(0 to 2);
@@ -801,20 +797,16 @@ begin
     );
 
 
-    register_file: entity RegisterFile
+    register_file: entity ThreePortRegisterFile
     port map (
         clk => clk,
-        reset => reset,
         write_enable => rf_inputs.write_enable,
         addr_a => rf_inputs.addr_a,
         addr_b => rf_inputs.addr_b,
-        addr_c => rf_inputs.addr_c,
         addr_d => rf_inputs.addr_d,
         write_data => rf_inputs.write_data,
         read_a => rf_read_a,
-        read_b => rf_read_b,
-        read_c => rf_read_c,
-        read_d => rf_read_d
+        read_b => rf_read_b
     );
 
 

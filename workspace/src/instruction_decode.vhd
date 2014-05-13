@@ -33,7 +33,6 @@ package instruction_decode is
             write_enable: std_logic;
             addr_a: register_addr;
             addr_b: register_addr;
-            addr_c: register_addr;
             addr_d: register_addr;
             write_data: word;
         end record;
