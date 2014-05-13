@@ -528,6 +528,7 @@ begin
             end if;
 
             if reset = '1' then
+                cmac_counter <= (others => '0');
                 cmac_data_addr <= (others => '0');
                 cmac_coef_addr <= (others => '0');
                 sr_rf_read_a <= (others => (others => '0'));
