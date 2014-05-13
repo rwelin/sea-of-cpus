@@ -81,19 +81,22 @@ package opcodes is
     -- | -:12 | -- acc := p + (*coef++) * (*data++)
     constant OP_CMAC: opcode := "011000";
 
+    -- | ra:6 | -:6 | -- datao := (datao - 1) mod datam; *(dataa + datao) := ra
+    constant OP_CSTR: opcode := "011001";
+
     -- | const:12 | -- pc := const
-    constant OP_J: opcode := "011001";
+    constant OP_J: opcode := "011010";
 
     -- | -:6 | rb:6 | -- pc := rb
-    constant OP_BR: opcode := "011010";
+    constant OP_BR: opcode := "011011";
 
     -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
-    constant OP_BZ: opcode := "011011";
+    constant OP_BZ: opcode := "011100";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
-    constant OP_BNZ: opcode := "011100";
+    constant OP_BNZ: opcode := "011101";
 
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
-    constant OP_BNZD: opcode := "011101";
+    constant OP_BNZD: opcode := "011110";
 
 end package opcodes;

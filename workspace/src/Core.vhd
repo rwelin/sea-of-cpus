@@ -155,6 +155,8 @@ architecture behav of Core is
 
     signal cmac_coef_addr: ram_addr;
     signal cmac_data_addr: ram_addr;
+    signal cmac_last_data_addr: ram_addr;
+    signal rotate_cmac_data_addr: std_logic_vector(0 to 1);
 
 begin
 
@@ -428,6 +430,16 @@ begin
                         sr_dsp_input_control_b(0) <= Ram1;
                     end if;
 
+                when OP_CSTR =>
+                    sr_block_ram_input_control(0) <= Reg2;
+                    sr_block_ram_addr_control_b(0) <= CmacData;
+                    sr_br_web(0) <= '1';
+                    if signed(datao) >= 0 then
+                        datao <= std_logic_vector(unsigned(datao)-1);
+                    else
+                        datao <= std_logic_vector(unsigned(dataa)+unsigned(datam));
+                    end if;
+
                 when OP_J =>
                     sr_branch_type(0) <= UncondJ;
 
@@ -497,11 +509,25 @@ begin
             sr_accumulator(1 to 3) <= sr_accumulator(0 to 2);
 
             cmac_counter <= datam;
-            cmac_data_addr <= dataa;
+            cmac_data_addr <= std_logic_vector(unsigned(dataa)+unsigned(datao));
+            cmac_last_data_addr <= std_logic_vector(unsigned(datam)-unsigned(datao));
             cmac_coef_addr <= coefa;
+            rotate_cmac_data_addr(0) <= '0';
+            rotate_cmac_data_addr(1) <= rotate_cmac_data_addr(0);
+
+            if sr_increment_cmac_registers(0) = '1' then
+                if signed(cmac_last_data_addr)-1 < 0 then
+                    rotate_cmac_data_addr(0) <= '1';
+                end if;
+                cmac_last_data_addr <= std_logic_vector(unsigned(cmac_last_data_addr)-1);
+            end if;
+
             if sr_increment_cmac_registers(1) = '1' then
                 cmac_counter <= std_logic_vector(unsigned(cmac_counter)-1);
                 cmac_data_addr <= std_logic_vector(unsigned(cmac_data_addr)+1);
+                if rotate_cmac_data_addr(0) = '1' and rotate_cmac_data_addr(1) = '0' then
+                    cmac_data_addr <= dataa;
+                end if;
                 cmac_coef_addr <= std_logic_vector(unsigned(cmac_coef_addr)+1);
             end if;
 

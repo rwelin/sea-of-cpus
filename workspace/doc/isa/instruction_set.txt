@@ -23,6 +23,7 @@ DATAA   | const:12 |        -- dataa := const
 DATAO   | const:12 |        -- datao := const
 DATAM   | const:12 |        -- datam := const
 CMAC    | -:12 |            -- acc := p + (*coef++) * (*data++)
+CSTR    | ra:6 | -:6 |      -- datao := (datao - 1) mod datam; *(dataa + datao) := ra
 J       | const:12 |        -- pc := const
 BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra
