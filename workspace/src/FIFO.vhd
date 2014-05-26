@@ -12,7 +12,6 @@ entity FIFO is
         clk_en: in std_logic;
         input_data: in std_logic_vector(word_len-1 downto 0);
         write_req: in std_logic;
-        write_done: out std_logic;
         output_data: out std_logic_vector(word_len-1 downto 0);
         valid: out std_logic
     );
