@@ -10,58 +10,62 @@ entity FIFO is
     port (
         clk: in std_logic;
         clk_en: in std_logic;
-        reset: in std_logic;
-        input: in std_logic_vector(word_len-1 downto 0);
-        push: in std_logic;
-        pop: in std_logic;
-        output: out std_logic_vector(word_len-1 downto 0);
-        pushed: out std_logic;
-        poped: out std_logic
+        input_data: in std_logic_vector(word_len-1 downto 0);
+        write_req: in std_logic;
+        write_done: out std_logic;
+        output_data: out std_logic_vector(word_len-1 downto 0);
+        valid: out std_logic
     );
 end FIFO;
 
 architecture behav of FIFO is
+
+    type entry_t is
+    record
+        data: std_logic_vector(word_len-1 downto 0);
+        valid: std_logic;
+    end record entry_t;
+
+    type fifo_t is array (0 to size-1) of entry_t;
+    signal data: fifo_t;
+
 begin
 
     write_data: process
-
-        variable index: unsigned(size-1 downto 0);
-
-        type fifo_t is array (0 to ((2**size)-1)) of std_logic_vector(word_len-1 downto 0);
-        variable data: fifo_t;
-
     begin
         wait until clk'event and clk = '1';
 
         if clk_en = '1' then
 
-            pushed <= '0';
-            poped <= '0';
-
-            if pop = '1' and index /= (index'range => '0') then
-                data(size-2 downto 0) := data(size-1 downto 1);
-                data(size-1) := (others => '0');
-                poped <= '1';
-                index := index - 1;
-            end if;
-
-            if push = '1' and index /= (index'range => '1') then
-                data(to_integer(index)) := input;
-                index := index + 1;
-                pushed <= '1';
-            end if;
-
-            if reset = '1' then
-                pushed <= '0';
-                poped <= '0';
-                index := to_unsigned(0, size);
-                data := (others => (others => '0'));
-            end if;
-
-            output <= data(0);
+            data(0).data <= input_data;
+            data(0).valid <= write_req;
 
         end if;
 
     end process write_data;
+
+
+    shuffle_data: process
+    begin
+        wait until clk'event and clk = '1';
+
+        if clk_en = '1' then
+
+            data(1 to size-1) <= data(0 to size-2);
+
+        end if;
+
+    end process shuffle_data;
+
+
+    read_data: process
+        ( data(size-1)
+        )
+    begin
+
+        output_data <= data(size-1).data;
+        valid <= data(size-1).valid;
+
+    end process read_data;
 
 end behav;
