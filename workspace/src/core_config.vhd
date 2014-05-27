@@ -20,7 +20,7 @@ package core_config is
 
     type dsp_input_control_a_t is (Reg1, Ram2, Zero);
     type dsp_input_control_b_t is (Reg1, Reg2, Ram1, One, Zero, Const);
-    type dsp_input_control_c_t is (Const, Reg1, Acc, Ram2, DspOut, Zero);
+    type dsp_input_control_c_t is (Const, Reg1, Acc, Ram2, DspOut, Zero, ExtData);
 
     type BlockRamAddrControlA is (PC, CmacCoef);
     type BlockRamDataInputControlB is (Acc, Reg2, Const);

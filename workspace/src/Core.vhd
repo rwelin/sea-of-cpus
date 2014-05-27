@@ -19,6 +19,7 @@ entity Core is
         addr: in ram_addr;
         data: in word;
         we: in std_logic;
+        read_req: out std_logic;
         output: out word
     );
 end Core;
@@ -35,6 +36,8 @@ architecture behav of Core is
     signal program_counter: ram_addr; -- Program counter
     signal sr_stall_pc: std_logic_vector(0 to 1); -- Indicates whether to hold the PC or not
     signal next_calculated_pc: ram_addr; -- Next instruction memory address
+
+    signal sr_read_req: std_logic_vector(0 to 2);
 
     signal rf_inputs: RegisterFileInputs;
     signal rf_read_a: word;
@@ -270,6 +273,8 @@ begin
             sr_stall_pc(0) <= '0';
             sr_stall_pc(1) <= sr_stall_pc(0);
 
+            sr_read_req(0) <= '0';
+
             sr_increment_cmac_registers(0) <= '0';
 
             sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
@@ -459,10 +464,16 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_MOVRE =>
+                    sr_dsp_input_control_c(0) <= ExtData;
+                    sr_rf_write_enable(0) <= '1';
+                    sr_read_req(0) <= '1';
+
                 when others =>
 
             end case;
 
+            sr_read_req(1 to 2) <= sr_read_req(0 to 1);
             sr_dsp_input_control_a(1 to 3) <= sr_dsp_input_control_a(0 to 2);
             sr_dsp_input_control_b(1 to 3) <= sr_dsp_input_control_b(0 to 2);
             sr_dsp_input_control_c(1 to 3) <= sr_dsp_input_control_c(0 to 2);
@@ -596,6 +607,8 @@ begin
             sr_br_doa(0) <= br_doa;
             sr_br_dob(0) <= br_dob;
 
+            read_req <= sr_read_req(2);
+
         end if;
 
     end process pipeline_stage_6;
@@ -623,12 +636,13 @@ begin
             end case;
 
             case sr_dsp_input_control_c(3) is
-                when Zero   => sr_dsp_c(0) <= (others => '0');
-                when Ram2   => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
-                when Acc    => sr_dsp_c(0) <= sr_accumulator(3);
-                when Const  => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
-                when Reg1   => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
-                when DspOut => sr_dsp_c(0) <= sr_dsp_p(0);
+                when Zero    => sr_dsp_c(0) <= (others => '0');
+                when Ram2    => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
+                when Acc     => sr_dsp_c(0) <= sr_accumulator(3);
+                when Const   => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
+                when Reg1    => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
+                when DspOut  => sr_dsp_c(0) <= sr_dsp_p(0);
+                when ExtData => sr_dsp_c(0) <= sign_extend(data, sr_dsp_c(0)'length);
             end case;
 
             sr_dsp_c(1) <= sr_dsp_c(0);
