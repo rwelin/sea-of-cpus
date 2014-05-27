@@ -35,7 +35,7 @@ architecture behav of SysUnitTest is
             wait_cycles: integer;
         end record;
 
-    type TestDataArray is array (0 to 3) of TestData;
+    type TestDataArray is array (0 to 4) of TestData;
     constant test_data: TestDataArray := (
         0 =>
             ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), (others => '0'), '0', 10),
@@ -44,6 +44,8 @@ architecture behav of SysUnitTest is
         2 =>
             ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), int2slv(11, WORD_LENGTH), '1', 1),
         3 =>
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), int2slv(-11, WORD_LENGTH), '1', 1),
+        4 =>
             ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), (others => '0'), '0', 30)
     );
 

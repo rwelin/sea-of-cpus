@@ -1,4 +1,5 @@
     movre   r0
+    movre   r1
     nop
     nop
     nop
