@@ -309,14 +309,10 @@ begin
             end if;
 
             repeat_instruction <= '0';
-            if (repeat_instruction = '0'
-               and br_doa(17 downto 12) = OP_CMAC
-               )
-            or (repeat_instruction = '1'
-               and s2_instruction_word(17 downto 12) = OP_CMAC
-               and unsigned(cmac_counter) > 3
-               ) then
+            if s2_instruction_word(17 downto 12) = OP_CMAC and
+               unsigned(cmac_counter) > 3 then
                 repeat_instruction <= '1';
+                s2_instruction_word <= s2_instruction_word;
             end if;
 
             if reset = '1' or sr_core_we(1) = '1' then
