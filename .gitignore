@@ -15,4 +15,5 @@ cache/
 report.pdf
 *~
 sim/
+*.srcs/
 workspace/test/programs/vhdl/
