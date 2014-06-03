@@ -9,7 +9,7 @@
 	<DefaultPromote Dir="$PROMOTEDIR"/>
 	<Config>
 		<Option Name="Id" Val="d068437600994492abcb8494702904ae"/>
-		<Option Name="Part" Val="xc7k70tfbg676-2"/>
+		<Option Name="Part" Val="xc7k70tfbg484-3"/>
 		<Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
 		<Option Name="TargetLanguage" Val="VHDL"/>
 		<Option Name="TargetSimulator" Val="ISim"/>
