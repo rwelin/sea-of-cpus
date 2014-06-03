@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<BillOfMaterials Version="1" Minor="2">
+  <IPInstance name="dual_clk_fifo">
+    <FileSets>
+      <FileSet generator="apply_current_project_options_generator">
+        <File name="./apply_current_project_options_generator.xlog" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="model_parameter_resolution_generator">
+        <File name="./model_parameter_resolution_generator.xlog" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="ip_xco_generator">
+        <File name="./dual_clk_fifo.xco" type="xco" timestamp="Mon Jun 02 14:23:47 GMT 2014" checksum="0x706296AB"></File>
+      </FileSet>
+      <FileSet generator="associated_files_generator">
+        <File name="./dual_clk_fifo/doc/fifo_generator_v9_3_vinfo.html" type="ignore" timestamp="Sun Oct 13 18:04:38 GMT 2013" checksum="0x9B56C5A6"></File>
+        <File name="./dual_clk_fifo/fifo_generator_v9_3_readme.txt" type="ignore" timestamp="Sun Oct 13 18:04:38 GMT 2013" checksum="0x4A0AA28D"></File>
+      </FileSet>
+      <FileSet generator="ejava_generator">
+        <File name="./dual_clk_fifo/example_design/dual_clk_fifo_exdes.ucf" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xB547BB7D"></File>
+        <File name="./dual_clk_fifo/example_design/dual_clk_fifo_exdes.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x2311DF3B"></File>
+        <File name="./dual_clk_fifo/implement/implement.bat" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x8D946AC9"></File>
+        <File name="./dual_clk_fifo/implement/implement.sh" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xE9E878EE"></File>
+        <File name="./dual_clk_fifo/implement/implement_synplify.bat" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xDE2750C3"></File>
+        <File name="./dual_clk_fifo/implement/implement_synplify.sh" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x4117DC92"></File>
+        <File name="./dual_clk_fifo/implement/planAhead_ise.bat" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x169ADC3E"></File>
+        <File name="./dual_clk_fifo/implement/planAhead_ise.sh" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x26E098D9"></File>
+        <File name="./dual_clk_fifo/implement/planAhead_ise.tcl" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xF6E634E0"></File>
+        <File name="./dual_clk_fifo/implement/xst.prj" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xEBF7E3AC"></File>
+        <File name="./dual_clk_fifo/implement/xst.scr" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xD9A55FE6"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_dgen.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x7257A78E"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_dverif.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x57886A9A"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_pctrl.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x4F7D596C"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_pkg.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x54DB3F1A"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_rng.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x079EC0E8"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_synth.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x20B228CA"></File>
+        <File name="./dual_clk_fifo/simulation/dual_clk_fifo_tb.vhd" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x4D948E8C"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_isim.bat" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x3991B414"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_isim.sh" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xEB5A4982"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_mti.bat" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x0C3CDB0C"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_mti.do" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xC13994E5"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_mti.sh" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x5FDBD750"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_ncsim.sh" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xC5DCB6E4"></File>
+        <File name="./dual_clk_fifo/simulation/functional/simulate_vcs.sh" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xC00FAC84"></File>
+        <File name="./dual_clk_fifo/simulation/functional/ucli_commands.key" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x5B4ECBBF"></File>
+        <File name="./dual_clk_fifo/simulation/functional/vcs_session.tcl" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x55CC5F53"></File>
+        <File name="./dual_clk_fifo/simulation/functional/wave_isim.tcl" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x27EEABC7"></File>
+        <File name="./dual_clk_fifo/simulation/functional/wave_mti.do" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xB8B768A5"></File>
+        <File name="./dual_clk_fifo/simulation/functional/wave_ncsim.sv" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x10B0792E"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_isim.bat" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x7115BC49"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_isim.sh" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0xF9495CBD"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_mti.bat" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x0C3CDB0C"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_mti.do" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x4D3D1C67"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_mti.sh" type="ignore" timestamp="Mon Jun 02 14:23:49 GMT 2014" checksum="0x5FDBD750"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_ncsim.sh" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xCE570E25"></File>
+        <File name="./dual_clk_fifo/simulation/timing/simulate_vcs.sh" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x4C1F9936"></File>
+        <File name="./dual_clk_fifo/simulation/timing/ucli_commands.key" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x5B4ECBBF"></File>
+        <File name="./dual_clk_fifo/simulation/timing/vcs_session.tcl" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xE067D0D2"></File>
+        <File name="./dual_clk_fifo/simulation/timing/wave_isim.tcl" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x27EEABC7"></File>
+        <File name="./dual_clk_fifo/simulation/timing/wave_mti.do" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0xB8B768A5"></File>
+        <File name="./dual_clk_fifo/simulation/timing/wave_ncsim.sv" type="ignore" timestamp="Mon Jun 02 14:23:50 GMT 2014" checksum="0x10B0792E"></File>
+      </FileSet>
+      <FileSet generator="ngc_netlist_generator">
+        <File name="./dual_clk_fifo.ngc" type="ngc" timestamp="Mon Jun 02 14:25:05 GMT 2014" checksum="0x24B164DA"></File>
+      </FileSet>
+      <FileSet generator="obfuscate_netlist_generator">
+        <File name="./obfuscate_netlist_generator.xlog" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="padded_implementation_netlist_generator">
+        <File name="./padded_implementation_netlist_generator.xlog" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="instantiation_template_generator">
+        <File name="./dual_clk_fifo.vho" type="vho" timestamp="Mon Jun 02 14:25:06 GMT 2014" checksum="0x53FA6F43"></File>
+      </FileSet>
+      <FileSet generator="structural_simulation_model_generator">
+        <File name="./dual_clk_fifo.vhd" type="vhdl" timestamp="Mon Jun 02 14:25:06 GMT 2014" checksum="0x1A217C67"></File>
+      </FileSet>
+      <FileSet generator="all_documents_generator">
+        <File name="./dual_clk_fifo/doc/fifo_generator_v9_3_readme.txt" type="ignore" timestamp="Mon Jun 02 14:25:06 GMT 2014" checksum="0x4A0AA28D"></File>
+        <File name="./dual_clk_fifo/doc/fifo_generator_v9_3_vinfo.html" type="ignore" timestamp="Mon Jun 02 14:25:06 GMT 2014" checksum="0x9B56C5A6"></File>
+        <File name="./dual_clk_fifo/doc/pg057-fifo-generator.pdf" type="ignore" timestamp="Mon Jun 02 14:25:06 GMT 2014" checksum="0x90F23916"></File>
+      </FileSet>
+      <FileSet generator="readme_documents_generator">
+        <File name="./readme_documents_generator.xlog" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="asy_generator">
+        <File name="./dual_clk_fifo.asy" type="asy" timestamp="Mon Jun 02 14:25:08 GMT 2014" checksum="0x9812B582"></File>
+      </FileSet>
+      <FileSet generator="xmdf_generator">
+        <File name="./dual_clk_fifo_xmdf.tcl" type="tclXmdf" timestamp="Mon Jun 02 14:25:08 GMT 2014" checksum="0x8DBC3232"></File>
+      </FileSet>
+      <FileSet generator="synthesis_ise_generator">
+        <File name="./dual_clk_fifo.gise" type="ignore" timestamp="Mon Jun 02 14:25:17 GMT 2014" checksum="0x46A91A2B"></File>
+        <File name="./dual_clk_fifo.xise" type="ignore" timestamp="Mon Jun 02 14:25:17 GMT 2014" checksum="0xDF5CAB35"></File>
+      </FileSet>
+      <FileSet generator="ise_generator">
+        <File name="./dual_clk_fifo.gise" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xDAB6D4B2"></File>
+        <File name="./dual_clk_fifo.xise" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0x254F535A"></File>
+      </FileSet>
+      <FileSet generator="deliver_readme_generator">
+        <File name="./deliver_readme_generator.xlog" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0xFFFFFFFF"></File>
+      </FileSet>
+      <FileSet generator="flist_generator">
+        <File name="./dual_clk_fifo_flist.txt" type="ignore" timestamp="Mon Jun 02 14:25:20 GMT 2014" checksum="0x9EF45087"></File>
+      </FileSet>
+    </FileSets>
+  </IPInstance>
+</BillOfMaterials>

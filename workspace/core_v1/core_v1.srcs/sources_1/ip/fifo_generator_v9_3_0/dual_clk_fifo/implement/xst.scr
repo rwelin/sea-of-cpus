@@ -1,0 +1,13 @@
+run
+-ifmt VHDL
+-ent dual_clk_fifo_exdes 
+-p xc7k70t-fbg484-3
+-ifn xst.prj
+-write_timing_constraints No
+-iobuf YES
+-max_fanout 100
+-ofn dual_clk_fifo_exdes 
+-ofmt NGC
+-bus_delimiter ()
+-hierarchy_separator /
+-case Maintain
