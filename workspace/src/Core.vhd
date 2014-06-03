@@ -800,6 +800,7 @@ begin
         , sr_rf_write_enable(8)
         , sr_dsp_p(0)
         , sr_instruction_type(8)
+        , sr_a_write_enable(7)
         )
     begin
 
