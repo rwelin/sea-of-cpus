@@ -7,7 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
-use work.cmac.all;
+use work.movrf.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -18,6 +18,8 @@ architecture behav of CoreTest is
     signal reset: std_logic;
     signal addr: ram_addr;
     signal data: word;
+    signal fifo_inputs: core_fifo_inputs_t;
+    signal fifo_full: std_logic_vector(core_fifo_inputs_t'range);
     signal we: std_logic;
     signal output: word;
 
@@ -37,7 +39,7 @@ architecture behav of CoreTest is
         0 =>
             ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), 10),
         1 =>
-            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 1000)
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 200)
     );
 
 begin
@@ -57,9 +59,22 @@ begin
         reset => reset,
         addr => addr,
         data => data,
+        fifo_inputs => fifo_inputs,
         we => we,
+        fifo_full => fifo_full,
         output => output
     );
+
+    set_fifo_inputs: process(clk)
+    begin
+
+        for i in core_fifo_inputs_t'range loop
+            fifo_inputs(i).wr_clk <= clk;
+            fifo_inputs(i).din <= (others => '1');
+            fifo_inputs(i).wr_en <= '1';
+        end loop;
+
+    end process set_fifo_inputs;
 
     Core_test: process
     begin
@@ -73,13 +88,13 @@ begin
 
         reset <= '0';
 
-        for i in cmac_code'range loop
+        for i in movrf_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= cmac_code(i);
-            report "Loading data '" & to_string(cmac_code(i)) & "' to address " & integer'image(i);
+            data <= movrf_code(i);
+            report "Loading data '" & to_string(movrf_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);

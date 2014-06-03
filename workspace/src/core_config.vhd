@@ -30,6 +30,29 @@ package core_config is
 
     type InstructionType is (Normal, Mult);
 
+    constant NUM_CORE_FIFOS: integer := 1;
+
+    type fifo_inputs_t is
+    record
+        wr_clk: std_logic;
+        din: word;
+        wr_en: std_logic;
+    end record fifo_inputs_t;
+
+    type fifo_outputs_t is
+    record
+        dout: word;
+        full: std_logic;
+        empty: std_logic;
+    end record fifo_outputs_t;
+
+    type core_fifo_inputs_t is array (0 to NUM_CORE_FIFOS-1) of fifo_inputs_t;
+    type core_fifo_outputs_t is array (0 to NUM_CORE_FIFOS-1) of fifo_outputs_t;
+    type core_fifo_rd_en_t is array (0 to NUM_CORE_FIFOS-1) of std_logic;
+
+    constant NUM_CORE_OUTPUTS: integer := 1;
+    type core_outputs_t is array (0 to NUM_CORE_OUTPUTS-1) of word;
+
 end core_config;
 
 package body core_config is

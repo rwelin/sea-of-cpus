@@ -19,7 +19,8 @@ entity Core is
         addr: in ram_addr;
         data: in word;
         we: in std_logic;
-        read_req: out std_logic;
+        fifo_inputs: in core_fifo_inputs_t;
+        fifo_full: out std_logic_vector(0 to NUM_CORE_FIFOS-1);
         output: out word
     );
 end Core;
@@ -33,11 +34,11 @@ architecture behav of Core is
     signal br_dib: word;
     signal br_web: std_logic;
 
+    signal core_en: std_logic;
+
     signal program_counter: ram_addr; -- Program counter
     signal sr_stall_pc: std_logic_vector(0 to 1); -- Indicates whether to hold the PC or not
     signal next_calculated_pc: ram_addr; -- Next instruction memory address
-
-    signal sr_read_req: std_logic_vector(0 to 2);
 
     signal rf_inputs: RegisterFileInputs;
     signal rf_read_a: word;
@@ -161,6 +162,20 @@ architecture behav of Core is
     signal cmac_last_data_addr: ram_addr;
     signal rotate_cmac_data_addr: std_logic_vector(0 to 1);
 
+
+    -- FIFO signal
+    --
+
+    subtype fifo_index_t is integer range 0 to NUM_CORE_FIFOS-1;
+    type sr_fifo_index_t is array (0 to 3) of fifo_index_t;
+    type sr_fifo_rd_en_t is array (0 to 2) of core_fifo_rd_en_t;
+
+    signal sr_fifo_rd_en: sr_fifo_rd_en_t;
+    signal sr_fifo_index: sr_fifo_index_t;
+
+    signal fifo_outputs: core_fifo_outputs_t;
+
+
 begin
 
 
@@ -168,11 +183,40 @@ begin
     op <= s2_instruction_word(17 downto 12);
 
 
+    set_core_en: process
+        ( clk_en
+        , sr_fifo_rd_en(2)
+        , fifo_outputs
+        , sr_fifo_index(2)
+        )
+    begin
+
+        core_en <= clk_en;
+        if sr_fifo_rd_en(2)(sr_fifo_index(2)) = '1' and
+           fifo_outputs(sr_fifo_index(2)).empty = '1' then
+            core_en <= '0';
+        end if;
+
+    end process set_core_en;
+
+
+    set_fifo_full: process
+        ( fifo_outputs
+        )
+    begin
+
+        for i in fifo_outputs'range loop
+            fifo_full(i) <= fifo_outputs(i).full;
+        end loop;
+
+    end process set_fifo_full;
+
+
     pipeline_stage_1: process
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             ------------
             -- Update PC
@@ -225,7 +269,7 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             if repeat_instruction = '0' then
                 s2_instruction_word <= br_doa;
@@ -268,12 +312,13 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
+
+            sr_fifo_rd_en(0) <= (others => '0');
+            sr_fifo_index(0) <= 0;
 
             sr_stall_pc(0) <= '0';
             sr_stall_pc(1) <= sr_stall_pc(0);
-
-            sr_read_req(0) <= '0';
 
             sr_increment_cmac_registers(0) <= '0';
 
@@ -464,16 +509,18 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
-                when OP_MOVRE =>
+                when OP_MOVRF =>
                     sr_dsp_input_control_c(0) <= ExtData;
+                    sr_fifo_rd_en(0)(to_integer(unsigned(s2_instruction_word(5 downto 0)))) <= '1';
+                    sr_fifo_index(0) <= to_integer(unsigned(s2_instruction_word(5 downto 0)));
                     sr_rf_write_enable(0) <= '1';
-                    sr_read_req(0) <= '1';
 
                 when others =>
 
             end case;
 
-            sr_read_req(1 to 2) <= sr_read_req(0 to 1);
+            sr_fifo_rd_en(1 to 2) <= sr_fifo_rd_en(0 to 1);
+            sr_fifo_index(1 to 3) <= sr_fifo_index(0 to 2);
             sr_dsp_input_control_a(1 to 3) <= sr_dsp_input_control_a(0 to 2);
             sr_dsp_input_control_b(1 to 3) <= sr_dsp_input_control_b(0 to 2);
             sr_dsp_input_control_c(1 to 3) <= sr_dsp_input_control_c(0 to 2);
@@ -508,7 +555,7 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             sr_rf_read_a(0) <= rf_read_a;
             sr_rf_read_a(1 to 3) <= sr_rf_read_a(0 to 2);
@@ -551,7 +598,7 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             sr_use_pc_next_address(0) <= '1';
             if sr_branch_type(1) = UncondBr
@@ -602,12 +649,10 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             sr_br_doa(0) <= br_doa;
             sr_br_dob(0) <= br_dob;
-
-            read_req <= sr_read_req(2);
 
         end if;
 
@@ -618,7 +663,7 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             case sr_dsp_input_control_a(3) is
                 when Zero   => sr_dsp_a(0) <= (others => '0');
@@ -642,7 +687,7 @@ begin
                 when Const   => sr_dsp_c(0) <= sign_extend(sr_instruction_constant(3), sr_dsp_c(0)'length);
                 when Reg1    => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
                 when DspOut  => sr_dsp_c(0) <= sr_dsp_p(0);
-                when ExtData => sr_dsp_c(0) <= sign_extend(data, sr_dsp_c(0)'length);
+                when ExtData => sr_dsp_c(0) <= sign_extend(fifo_outputs(sr_fifo_index(3)).dout, sr_dsp_c(0)'length);
             end case;
 
             sr_dsp_c(1) <= sr_dsp_c(0);
@@ -700,7 +745,7 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
             sr_dsp_p(0) <= dsp_p;
 
@@ -713,7 +758,7 @@ begin
     begin
         wait until clk'event and clk = '1';
 
-        if clk_en = '1' then
+        if core_en = '1' then
 
         end if;
 
@@ -777,7 +822,7 @@ begin
     accumulator_inst: entity Accumulator
     port map (
         clk => clk,
-        clk_en => clk_en,
+        clk_en => core_en,
         reset => reset,
         write_enable => a_write_enable,
         input => a_input,
@@ -788,7 +833,7 @@ begin
     dsp_inst: entity DSP
     port map (
         clk => clk,
-        clk_en => clk_en,
+        clk_en => core_en,
         reset => reset,
         mode => dsp_inputs.mode,
         a => dsp_inputs.a,
@@ -797,5 +842,21 @@ begin
         d => dsp_inputs.d,
         p => dsp_p
     );
+
+
+    gen_fifos: for i in 0 to (NUM_CORE_FIFOS-1) generate
+        fifo_inst: entity dual_clk_fifo
+        port map (
+            rst => reset,
+            wr_clk => fifo_inputs(i).wr_clk,
+            rd_clk => clk,
+            din => fifo_inputs(i).din,
+            wr_en => fifo_inputs(i).wr_en,
+            rd_en => sr_fifo_rd_en(2)(i),
+            dout => fifo_outputs(i).dout,
+            full => fifo_outputs(i).full,
+            empty => fifo_outputs(i).empty
+        );
+    end generate gen_fifos;
 
 end behav;

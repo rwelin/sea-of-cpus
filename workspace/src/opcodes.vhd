@@ -99,7 +99,7 @@ package opcodes is
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
     constant OP_BNZD: opcode := "011110";
 
-    -- | ra:6 | -- ra := ext_data
-    constant OP_MOVRE: opcode := "011111";
+    -- | ra:6 | const:6 | -- ra := fifo[const]
+    constant OP_MOVRF: opcode := "011111";
 
 end package opcodes;

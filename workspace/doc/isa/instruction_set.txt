@@ -29,4 +29,4 @@ BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra
 BNZ     | ra:6 | rb:6 |     -- if rb != 0: pc := ra
 BNZD    | ra:6 | rb:6 |     -- if rb != 0: pc := ra; rb -= 1
-MOVRE   | ra:6 |            -- ra := ext_data
+MOVRF   | ra:6 | const:6 |  -- ra := fifo[const]
