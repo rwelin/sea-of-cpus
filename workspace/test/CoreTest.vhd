@@ -7,7 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
-use work.movrf.all;
+use work.cmac.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -92,13 +92,13 @@ begin
 
         reset <= '0';
 
-        for i in movrf_code'range loop
+        for i in cmac_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= movrf_code(i);
-            report "Loading data '" & to_string(movrf_code(i)) & "' to address " & integer'image(i);
+            data <= cmac_code(i);
+            report "Loading data '" & to_string(cmac_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);
