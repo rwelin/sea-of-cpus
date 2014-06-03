@@ -186,24 +186,28 @@ begin
 
 
     set_core_en: process
-        ( clk_en
-        , sr_fifo_rd_en(2)
-        , fifo_outputs
-        , sr_fifo_index(2)
-        , sr_outputs_wr_en(2)
-        , outputs_full
-        )
     begin
+        wait until clk'event and clk = '1';
 
         core_en <= clk_en;
-        if (sr_fifo_rd_en(2)(sr_fifo_index(2)) = '1' and
+        if (sr_fifo_rd_en(1)(sr_fifo_index(1)) = '1' and
+            fifo_outputs(sr_fifo_index(1)).empty = '1') or
+           (outputs_full(sr_fifo_index(1)) = '1' and
+            sr_outputs_wr_en(1)(sr_fifo_index(1)) = '1') then
+            core_en <= '0';
+        end if;
+
+        if core_en = '0' and
+           ((sr_fifo_rd_en(2)(sr_fifo_index(2)) = '1' and
             fifo_outputs(sr_fifo_index(2)).empty = '1') or
            (outputs_full(sr_fifo_index(2)) = '1' and
-            sr_outputs_wr_en(2)(sr_fifo_index(2)) = '1') then
+           sr_outputs_wr_en(2)(sr_fifo_index(2)) = '1')) then
             core_en <= '0';
         end if;
 
     end process set_core_en;
+
+
 
 
     set_fifo_full: process
