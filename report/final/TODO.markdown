@@ -1,14 +1,17 @@
 # TODO
 
-. Show simple communication
+1. Show simple communication
     - Demonstrates communication functionality and bandwidth
 
-. Place and route large number of cores (linear chain)
+2. Place and route large number of cores (linear chain)
     - Shows clock speed 
 
-. Place and route 2D grid
+3. Write programs that demonstrate special compute functionality
+    - FIR filter
 
-. Demonstrate programs that aren't easily implemented with non-soft processors
+4. Place and route 2D grid
+
+5. Demonstrate programs that aren't easily implemented with non-soft processors
     - Fibonacci, binary tree search
 
-. Place and route more interesting topologies
+6. Place and route more interesting topologies
