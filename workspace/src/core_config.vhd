@@ -49,9 +49,7 @@ package core_config is
     type core_fifo_inputs_t is array (0 to NUM_CORE_FIFOS-1) of fifo_inputs_t;
     type core_fifo_outputs_t is array (0 to NUM_CORE_FIFOS-1) of fifo_outputs_t;
     type core_fifo_rd_en_t is array (0 to NUM_CORE_FIFOS-1) of std_logic;
-
-    constant NUM_CORE_OUTPUTS: integer := 1;
-    type core_outputs_t is array (0 to NUM_CORE_OUTPUTS-1) of word;
+    type core_fifo_wr_en_t is array (0 to NUM_CORE_FIFOS-1) of std_logic;
 
 end core_config;
 

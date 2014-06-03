@@ -21,7 +21,8 @@ architecture behav of CoreTest is
     signal fifo_inputs: core_fifo_inputs_t;
     signal fifo_full: std_logic_vector(core_fifo_inputs_t'range);
     signal we: std_logic;
-    signal output: word;
+    signal outputs: core_fifo_inputs_t;
+    signal outputs_full: std_logic_vector(core_fifo_inputs_t'range);
 
     type TestData is
         record
@@ -30,16 +31,18 @@ architecture behav of CoreTest is
             addr: ram_addr;
             data: word;
             we: std_logic;
-            output: word;
+            outputs_full: std_logic_vector(core_fifo_inputs_t'range);
             wait_cycles: integer;
         end record;
 
-    type TestDataArray is array (0 to 1) of TestData;
+    type TestDataArray is array (0 to 2) of TestData;
     constant test_data: TestDataArray := (
         0 =>
             ('1', '1', (others => '0'), (others => '0'), '0', (others => '0'), 10),
         1 =>
-            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 200)
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '1'), 100),
+        2 =>
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 100)
     );
 
 begin
@@ -59,10 +62,11 @@ begin
         reset => reset,
         addr => addr,
         data => data,
-        fifo_inputs => fifo_inputs,
         we => we,
+        fifo_inputs => fifo_inputs,
         fifo_full => fifo_full,
-        output => output
+        outputs => outputs,
+        outputs_full => outputs_full
     );
 
     set_fifo_inputs: process(clk)
@@ -106,14 +110,9 @@ begin
             addr <= test_data(i).addr;
             data <= test_data(i).data;
             we <= test_data(i).we;
+            outputs_full <= test_data(i).outputs_full;
 
             wait_for(test_data(i).wait_cycles, clk);
-
-            assert output = test_data(i).output
-            report "Test " & integer'image(i) & ":" &
-                " `output' is " & to_string(output) &
-                " should be " & to_string(test_data(i).output)
-            severity failure;
 
         end loop;
 

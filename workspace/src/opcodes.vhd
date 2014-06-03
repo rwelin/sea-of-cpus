@@ -102,4 +102,7 @@ package opcodes is
     -- | ra:6 | const:6 | -- ra := fifo[const]
     constant OP_MOVRF: opcode := "011111";
 
+    -- | ra:6 | const:6 | -- fifo[const] := ra
+    constant OP_MOVFR: opcode := "100000";
+
 end package opcodes;

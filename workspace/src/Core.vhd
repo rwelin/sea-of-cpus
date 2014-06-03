@@ -21,7 +21,8 @@ entity Core is
         we: in std_logic;
         fifo_inputs: in core_fifo_inputs_t;
         fifo_full: out std_logic_vector(0 to NUM_CORE_FIFOS-1);
-        output: out word
+        outputs: out core_fifo_inputs_t;
+        outputs_full: in std_logic_vector(0 to NUM_CORE_FIFOS-1)
     );
 end Core;
 
@@ -169,9 +170,11 @@ architecture behav of Core is
     subtype fifo_index_t is integer range 0 to NUM_CORE_FIFOS-1;
     type sr_fifo_index_t is array (0 to 3) of fifo_index_t;
     type sr_fifo_rd_en_t is array (0 to 2) of core_fifo_rd_en_t;
+    type sr_outputs_wr_en_t is array (0 to 2) of core_fifo_wr_en_t;
 
     signal sr_fifo_rd_en: sr_fifo_rd_en_t;
     signal sr_fifo_index: sr_fifo_index_t;
+    signal sr_outputs_wr_en: sr_outputs_wr_en_t;
 
     signal fifo_outputs: core_fifo_outputs_t;
 
@@ -179,7 +182,6 @@ architecture behav of Core is
 begin
 
 
-    output <= a_output(word'range);
     op <= s2_instruction_word(17 downto 12);
 
 
@@ -188,12 +190,16 @@ begin
         , sr_fifo_rd_en(2)
         , fifo_outputs
         , sr_fifo_index(2)
+        , sr_outputs_wr_en(2)
+        , outputs_full
         )
     begin
 
         core_en <= clk_en;
-        if sr_fifo_rd_en(2)(sr_fifo_index(2)) = '1' and
-           fifo_outputs(sr_fifo_index(2)).empty = '1' then
+        if (sr_fifo_rd_en(2)(sr_fifo_index(2)) = '1' and
+            fifo_outputs(sr_fifo_index(2)).empty = '1') or
+           (outputs_full(sr_fifo_index(2)) = '1' and
+            sr_outputs_wr_en(2)(sr_fifo_index(2)) = '1') then
             core_en <= '0';
         end if;
 
@@ -210,6 +216,22 @@ begin
         end loop;
 
     end process set_fifo_full;
+
+
+    set_outputs: process
+        ( clk
+        , sr_rf_read_a(2)
+        , sr_outputs_wr_en(2)
+        )
+    begin
+
+        for i in outputs'range loop
+            outputs(i).wr_clk <= clk;
+            outputs(i).din <= sr_rf_read_a(2);
+            outputs(i).wr_en <= sr_outputs_wr_en(2)(i);
+        end loop;
+
+    end process set_outputs;
 
 
     pipeline_stage_1: process
@@ -315,6 +337,7 @@ begin
         if core_en = '1' then
 
             sr_fifo_rd_en(0) <= (others => '0');
+            sr_outputs_wr_en(0) <= (others => '0');
             sr_fifo_index(0) <= 0;
 
             sr_stall_pc(0) <= '0';
@@ -515,11 +538,16 @@ begin
                     sr_fifo_index(0) <= to_integer(unsigned(s2_instruction_word(5 downto 0)));
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_MOVFR =>
+                    sr_outputs_wr_en(0)(to_integer(unsigned(s2_instruction_word(5 downto 0)))) <= '1';
+                    sr_fifo_index(0) <= to_integer(unsigned(s2_instruction_word(5 downto 0)));
+
                 when others =>
 
             end case;
 
             sr_fifo_rd_en(1 to 2) <= sr_fifo_rd_en(0 to 1);
+            sr_outputs_wr_en(1 to 2) <= sr_outputs_wr_en(0 to 1);
             sr_fifo_index(1 to 3) <= sr_fifo_index(0 to 2);
             sr_dsp_input_control_a(1 to 3) <= sr_dsp_input_control_a(0 to 2);
             sr_dsp_input_control_b(1 to 3) <= sr_dsp_input_control_b(0 to 2);
