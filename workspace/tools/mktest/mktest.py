@@ -86,7 +86,7 @@ def main():
     with open(args.vhdl_entity_file) as text:
         in_entity = False
         for line in text:
-            line = line.strip()
+            line = line.strip().lower()
             if line.startswith('entity '):
                 in_entity = True
                 entity.name = line.split()[1]
