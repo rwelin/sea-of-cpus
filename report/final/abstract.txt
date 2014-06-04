@@ -1,12 +1,19 @@
-Session: Circuts 2
+Session: Circuits 2
 Student: Welin,R.
 Title: Sea-of-CPUs on an FPGA
-Supervisor: Dr. Thomas,D.B.
+Supervisor: Dr. D.B. Thomas.
 
 This project concerns the design and implementation of a large, configurable
 array of independent soft processors on an FPGA with inter-core communication.
 The aim of this project is to create a general purpose CPU that utilizes the
-dedicated logic, block RAMs, DSP slices of the target FPGA well; to create a
-simple interface between CPUs that allows for communication between CPUs in
-different clock regions and to create an assembler in order to more easily
-program the device. 
+dedicated logic, block RAMs, DSP slices of the target Xilinx FPGA well; to
+create a scalable interface between the CPUs that allows for communication
+between CPUs in different clock regions and to create an assembler in order to
+more easily program the device. By designing a very regular instruction set
+architecture which was greatly influenced by the target hardware, the resulting
+micro-architecture implementation was small, yet powerful, and also allowed for
+a very simple assembler. The inter-core communication was implemented using a
+FIFO based approach which allowed for straight-forward configuration and high
+bandwidth. The CPUs were tested using various programs, demonstrating good
+functionality and performance with different topologies. In addition, possible
+future improvements to the CPU are considered.
