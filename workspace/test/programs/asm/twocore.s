@@ -11,16 +11,16 @@
     nop 
     nop 
 loop:
-    movfr   r0  0
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
     subr    r0  1
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    movfr   r0  0
     nop
     nop
     nop

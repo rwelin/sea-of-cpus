@@ -507,10 +507,10 @@ begin
                     sr_block_ram_input_control(0) <= Reg2;
                     sr_block_ram_addr_control_b(0) <= CmacData;
                     sr_br_web(0) <= '1';
-                    if signed(datao) >= 0 then
+                    if signed(datao) > 0 then
                         datao <= std_logic_vector(unsigned(datao)-1);
                     else
-                        datao <= std_logic_vector(unsigned(dataa)+unsigned(datam));
+                        datao <= datam;
                     end if;
 
                 when OP_J =>
