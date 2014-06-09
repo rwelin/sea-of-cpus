@@ -80,7 +80,7 @@ architecture behav of Core is
     type sr_instruction_constant_t is array (0 to 3) of word;
     signal sr_instruction_constant: sr_instruction_constant_t;
 
-    type sr_write_register_t is array (0 to 9) of register_addr;
+    type sr_write_register_t is array (0 to 8) of register_addr;
     signal sr_write_register: sr_write_register_t;
 
     type sr_dsp_p_t is array (0 to 0) of slv48_t;
@@ -104,10 +104,10 @@ architecture behav of Core is
     type sr_core_we_t is array (0 to 1) of std_logic;
     signal sr_core_we: sr_core_we_t;
 
-    type sr_a_write_enable_t is array (0 to 9) of std_logic;
+    type sr_a_write_enable_t is array (0 to 8) of std_logic;
     signal sr_a_write_enable: sr_a_write_enable_t;
 
-    type sr_rf_write_enable_t is array (0 to 9) of std_logic;
+    type sr_rf_write_enable_t is array (0 to 8) of std_logic;
     signal sr_rf_write_enable: sr_rf_write_enable_t;
 
     type sr_br_web_t is array (0 to 1) of std_logic;
@@ -137,7 +137,7 @@ architecture behav of Core is
     type sr_branch_type_t is array (0 to 3) of BranchOp;
     signal sr_branch_type: sr_branch_type_t;
 
-    type sr_instruction_type_t is array(0 to 9) of InstructionType;
+    type sr_instruction_type_t is array(0 to 8) of InstructionType;
     signal sr_instruction_type: sr_instruction_type_t;
 
     type sr_increment_cmac_registers_t is array (0 to 1) of std_logic;
@@ -564,11 +564,11 @@ begin
             sr_dsp_input_control_b(1 to 3) <= sr_dsp_input_control_b(0 to 2);
             sr_dsp_input_control_c(1 to 3) <= sr_dsp_input_control_c(0 to 2);
             sr_instruction_constant(1 to 3) <= sr_instruction_constant(0 to 2);
-            sr_write_register(1 to 9) <= sr_write_register(0 to 8);
+            sr_write_register(1 to 8) <= sr_write_register(0 to 7);
             sr_branch_type(1 to 3) <= sr_branch_type(0 to 2);
-            sr_instruction_type(1 to 9) <= sr_instruction_type(0 to 8);
-            sr_rf_write_enable(1 to 9) <= sr_rf_write_enable(0 to 8);
-            sr_a_write_enable(1 to 9) <= sr_a_write_enable(0 to 8);
+            sr_instruction_type(1 to 8) <= sr_instruction_type(0 to 7);
+            sr_rf_write_enable(1 to 8) <= sr_rf_write_enable(0 to 7);
+            sr_a_write_enable(1 to 8) <= sr_a_write_enable(0 to 7);
             sr_br_web(1) <= sr_br_web(0);
             sr_block_ram_input_control(1) <= sr_block_ram_input_control(0);
             sr_block_ram_addr_control_a(1) <= sr_block_ram_addr_control_a(0);
@@ -750,9 +750,17 @@ begin
     end process pipeline_stage_7_unclocked;
 
 
-    pipeline_stage_8: process
+    pipeline_stage_8_unclocked: process
+        ( sr_dsp_a(0)
+        , sr_dsp_b(0)
+        , sr_dsp_c(0)
+        , sr_dsp_c(1)
+        , sr_dsp_d(0)
+        , sr_instruction_type(5)
+        , sr_dsp_mode(4)
+        , sr_dsp_mode(5)
+        )
     begin
-        wait until clk'event and clk = '1';
 
         dsp_inputs.mode <= sr_dsp_mode(4);
         if sr_instruction_type(5) = Mult then
@@ -769,7 +777,7 @@ begin
 
         dsp_inputs.d <= sr_dsp_d(0);
 
-    end process pipeline_stage_8;
+    end process pipeline_stage_8_unclocked;
 
 
     pipeline_stage_10: process
@@ -797,23 +805,23 @@ begin
 
 
     pipeline_stage_11_unclocked: process
-        ( sr_write_register(8)
-        , sr_write_register(9)
+        ( sr_write_register(7)
+        , sr_write_register(8)
+        , sr_rf_write_enable(7)
         , sr_rf_write_enable(8)
-        , sr_rf_write_enable(9)
         , sr_dsp_p(0)
-        , sr_instruction_type(9)
-        , sr_a_write_enable(8)
+        , sr_instruction_type(8)
+        , sr_a_write_enable(7)
         )
     begin
 
-        a_write_enable <= sr_a_write_enable(8);
-        rf_inputs.write_enable <= sr_rf_write_enable(8);
-        rf_inputs.addr_d <= sr_write_register(8);
-        if sr_instruction_type(9) = Mult then
-            a_write_enable <= sr_a_write_enable(9);
-            rf_inputs.write_enable <= sr_rf_write_enable(9);
-            rf_inputs.addr_d <= sr_write_register(9);
+        a_write_enable <= sr_a_write_enable(7);
+        rf_inputs.write_enable <= sr_rf_write_enable(7);
+        rf_inputs.addr_d <= sr_write_register(7);
+        if sr_instruction_type(8) = Mult then
+            a_write_enable <= sr_a_write_enable(8);
+            rf_inputs.write_enable <= sr_rf_write_enable(8);
+            rf_inputs.addr_d <= sr_write_register(8);
         end if;
 
         rf_inputs.write_data <= sr_dsp_p(0)(word'range);
