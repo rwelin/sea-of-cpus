@@ -9,13 +9,11 @@
     nop
     nop
     nop
-    nop
 
     movra   r2
     movra   r4
     mova    0
 
-    nop
     nop
     nop
     nop
@@ -32,11 +30,9 @@ setup:
     nop
     nop
     nop
-    nop
 
 loop:
 
-    nop
     nop
     nop
     nop
@@ -53,7 +49,6 @@ loop:
     nop
 
 teardown:
-    nop
     nop
     nop
     nop
