@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 
 class Core:
 
@@ -65,14 +66,14 @@ class Core:
         return template.format(this = id(self))
 
 
-def to_vhdl(cores):
+def to_vhdl(name, cores):
     template = """
 library ieee;
 use ieee.std_logic_1164.all;
 use work.core_config.all;
 use work.all;
 
-entity Chain is
+entity {name} is
     port (
         clk: in std_logic;
         clk_en: in std_logic;
@@ -87,9 +88,7 @@ entity Chain is
     );
 end Chain;
 
-architecture behav of Chain is
-
-    constant num_cores: integer := 1;
+architecture behav of {name} is
 
     {signal_decls}
 
@@ -110,7 +109,7 @@ end behav;
         signal_cons += c.signal_cons()
         entities += c.entity()
 
-    return template.format(signal_decls = signal_decls, signal_cons = signal_cons, entities = entities)
+    return template.format(name = name, signal_decls = signal_decls, signal_cons = signal_cons, entities = entities)
 
 def chain(length):
     cores = [ Core([]) for i in range(length) ]
@@ -141,9 +140,16 @@ def grid(dim):
 
 
 def main():
+    parser = argparse.ArgumentParser(prog = 'mkarray')
+    parser.add_argument('type', choices=['chain', 'grid'])
+    parser.add_argument('size', type=int)
+    args = parser.parse_args()
 
-    print(to_vhdl(chain(100)))
-    #print(to_vhdl(grid(2)))
+    if args.type == 'chain':
+        print(to_vhdl('Chain{}'.format(args.size), chain(args.size)))
+    elif args.type == 'grid':
+        print(to_vhdl('Grid{dim}x{dim}'.format(dim = args.size), grid(args.size)))
+
 
 if __name__ == "__main__":
     main()
