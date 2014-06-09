@@ -86,7 +86,7 @@ entity {name} is
         outputs: out core_fifo_inputs_t;
         outputs_full: in std_logic_vector(0 to NUM_CORE_FIFOS-1)
     );
-end Chain;
+end {name};
 
 architecture behav of {name} is
 
