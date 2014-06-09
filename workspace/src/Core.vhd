@@ -55,7 +55,6 @@ architecture behav of Core is
     signal a_output: slv48_t;
 
     signal s2_instruction_word: word;
-    signal s3_instruction_word: word;
     signal resume_instruction_word: word;
     signal repeat_instruction: std_logic;
 
@@ -183,7 +182,7 @@ architecture behav of Core is
 begin
 
 
-    op <= s3_instruction_word(17 downto 12);
+    op <= s2_instruction_word(17 downto 12);
 
 
     set_core_en: process
@@ -292,16 +291,6 @@ begin
     end process pipeline_stage_1_unclocked;
 
 
-    read_instruction_ram: process
-    begin
-        wait until clk'event and clk = '1';
-
-        s2_instruction_word <= br_doa;
-
-    end process read_instruction_ram;
-
-
-
     pipeline_stage_2: process
     begin
         wait until clk'event and clk = '1';
@@ -309,29 +298,29 @@ begin
         if core_en = '1' then
 
             if repeat_instruction = '0' then
-                s3_instruction_word <= s2_instruction_word;
+                s2_instruction_word <= br_doa;
                 if sr_stall_pc(0) = '1' then
-                    s3_instruction_word <= (others => '0');
+                    s2_instruction_word <= (others => '0');
                 end if;
             end if;
 
             if repeat_instruction = '1' and sr_stall_pc(0) = '0' then
-                resume_instruction_word <= s2_instruction_word;
+                resume_instruction_word <= br_doa;
             end if;
 
             if sr_stall_pc(0) = '0' and sr_stall_pc(1) = '1' then
-                s3_instruction_word <= resume_instruction_word;
+                s2_instruction_word <= resume_instruction_word;
             end if;
 
             repeat_instruction <= '0';
-            if s3_instruction_word(17 downto 12) = OP_CMAC and
+            if s2_instruction_word(17 downto 12) = OP_CMAC and
                unsigned(cmac_counter) > 3 then
                 repeat_instruction <= '1';
-                s3_instruction_word <= s3_instruction_word;
+                s2_instruction_word <= s2_instruction_word;
             end if;
 
             if reset = '1' or sr_core_we(1) = '1' then
-                s3_instruction_word <= (others => '0');
+                s2_instruction_word <= (others => '0');
                 repeat_instruction <= '0';
                 resume_instruction_word <= (others => '0');
             end if;
@@ -356,9 +345,9 @@ begin
 
             sr_increment_cmac_registers(0) <= '0';
 
-            sr_instruction_constant(0) <= sign_extend(s3_instruction_word(11 downto 0), word'length);
+            sr_instruction_constant(0) <= sign_extend(s2_instruction_word(11 downto 0), word'length);
 
-            sr_write_register(0) <= s3_instruction_word(11 downto 6);
+            sr_write_register(0) <= s2_instruction_word(11 downto 6);
 
             sr_branch_type(0) <= NoBr;
 
@@ -389,7 +378,7 @@ begin
 
                 when OP_MOVR =>
                     sr_dsp_input_control_c(0) <= Const;
-                    sr_instruction_constant(0) <= sign_extend(s3_instruction_word(5 downto 0), word'length);
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVRA =>
@@ -450,14 +439,14 @@ begin
                     sr_a_write_enable(0) <= '1';
 
                 when OP_ADDR =>
-                    sr_instruction_constant(0) <= sign_extend(s3_instruction_word(5 downto 0), word'length);
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_dsp_input_control_c(0) <= Reg1;
                     sr_dsp_input_control_b(0) <= Const;
                     sr_dsp_mode(0) <= DSP_CpAB;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_SUBR =>
-                    sr_instruction_constant(0) <= sign_extend(s3_instruction_word(5 downto 0), word'length);
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
                     sr_dsp_input_control_c(0) <= Reg1;
                     sr_dsp_input_control_b(0) <= Const;
                     sr_dsp_mode(0) <= DSP_CsAB;
@@ -489,16 +478,16 @@ begin
                     sr_instruction_type(0) <= Mult;
 
                 when OP_COEFA =>
-                    coefa <= s3_instruction_word(ram_addr'range);
+                    coefa <= s2_instruction_word(ram_addr'range);
 
                 when OP_DATAA =>
-                    dataa <= s3_instruction_word(ram_addr'range);
+                    dataa <= s2_instruction_word(ram_addr'range);
 
                 when OP_DATAO =>
-                    datao <= s3_instruction_word(ram_addr'range);
+                    datao <= s2_instruction_word(ram_addr'range);
 
                 when OP_DATAM =>
-                    datam <= s3_instruction_word(ram_addr'range);
+                    datam <= s2_instruction_word(ram_addr'range);
 
                 when OP_CMAC =>
                     sr_instruction_type(0) <= Mult;
@@ -545,13 +534,13 @@ begin
 
                 when OP_MOVRF =>
                     sr_dsp_input_control_c(0) <= ExtData;
-                    sr_fifo_rd_en(0)(to_integer(unsigned(s3_instruction_word(5 downto 0)))) <= '1';
-                    sr_fifo_index(0) <= to_integer(unsigned(s3_instruction_word(5 downto 0)));
+                    sr_fifo_rd_en(0)(to_integer(unsigned(s2_instruction_word(5 downto 0)))) <= '1';
+                    sr_fifo_index(0) <= to_integer(unsigned(s2_instruction_word(5 downto 0)));
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVFR =>
-                    sr_outputs_wr_en(0)(to_integer(unsigned(s3_instruction_word(5 downto 0)))) <= '1';
-                    sr_fifo_index(0) <= to_integer(unsigned(s3_instruction_word(5 downto 0)));
+                    sr_outputs_wr_en(0)(to_integer(unsigned(s2_instruction_word(5 downto 0)))) <= '1';
+                    sr_fifo_index(0) <= to_integer(unsigned(s2_instruction_word(5 downto 0)));
 
                 when others =>
 
@@ -581,11 +570,11 @@ begin
     end process pipeline_stage_3;
 
 
-    pipeline_stage_3_unclocked: process(s3_instruction_word)
+    pipeline_stage_3_unclocked: process(s2_instruction_word)
     begin
 
-        rf_inputs.addr_a <= s3_instruction_word(11 downto 6);
-        rf_inputs.addr_b <= s3_instruction_word(5 downto 0);
+        rf_inputs.addr_a <= s2_instruction_word(11 downto 6);
+        rf_inputs.addr_b <= s2_instruction_word(5 downto 0);
 
     end process pipeline_stage_3_unclocked;
 
