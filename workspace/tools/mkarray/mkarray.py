@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 import argparse
 
+class Output:
+
+    def __init__(self, core, input_index):
+        self.core = core
+        self.input_index = input_index
+
+
 class Core:
 
     def __init__(self, out_cores):
@@ -39,13 +46,14 @@ class Core:
     def signal_cons(self):
 
         out_template = """
-        fifo_inputs_{out_core}({index}) <= outputs_{this}({index});
-        outputs_full_{this}({index}) <= fifo_full_{out_core}({index});
+        fifo_inputs_{out_core}({in_index}) <= outputs_{this}({out_index});
+        outputs_full_{this}({out_index}) <= fifo_full_{out_core}({in_index});
         """
 
         str = ''
         for i, c in enumerate(self.out_cores):
-            str += out_template.format(index = i, this = id(self), out_core = id(c))
+            if c != None:
+                str += out_template.format(in_index = c.input_index, out_index = i, this = id(self), out_core = id(c.core))
 
         return str
 
@@ -114,27 +122,25 @@ end behav;
 def chain(length):
     cores = [ Core([]) for i in range(length) ]
     for i, c in enumerate(cores):
-        if i != 0:
-            c.in_cores = [cores[i-1]]
         if i != length-1:
-            c.out_cores = [cores[i+1]]
+            c.out_cores = [Output(cores[i+1], 0)]
 
     return cores
 
 def grid(dim):
-    cores = [ [ Core([]) for i in range(dim) ] for j in range(dim) ]
+    cores = [ [ Core([None]*4) for i in range(dim) ] for j in range(dim) ]
 
     for j in range(dim):
         for i in range(dim):
             c = cores[j][i]
-            if j + 1 < dim:
-                c.out_cores += [cores[j+1][i]]
             if i + 1 < dim:
-                c.out_cores += [cores[j][i+1]]
-            if j - 1 >= 0:
-                c.out_cores += [cores[j-1][i]]
+                c.out_cores[0] = Output(cores[j][i+1], 1)
             if i - 1 >= 0:
-                c.out_cores += [cores[j][i-1]]
+                c.out_cores[1] = Output(cores[j][i-1], 0)
+            if j + 1 < dim:
+                c.out_cores[2] = Output(cores[j+1][i], 3)
+            if j - 1 >= 0:
+                c.out_cores[3] = Output(cores[j-1][i], 2)
 
     return [ c for row in cores for c in row]
 
