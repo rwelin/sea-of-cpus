@@ -7,7 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
-use work.fir_filter.all;
+use work.factorial.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -92,13 +92,13 @@ begin
 
         reset <= '0';
 
-        for i in fir_filter_code'range loop
+        for i in factorial_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= fir_filter_code(i);
-            report "Loading data '" & to_string(fir_filter_code(i)) & "' to address " & integer'image(i);
+            data <= factorial_code(i);
+            report "Loading data '" & to_string(factorial_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);

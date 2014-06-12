@@ -411,13 +411,14 @@ begin
 
                 when OP_LDRR =>
                     sr_dsp_input_control_c(0) <= Ram2;
-                    sr_block_ram_addr_control_b(0) <= Reg2;
+                    sr_block_ram_addr_control_b(0) <= Reg1;
+                    sr_write_register(0) <= s2_instruction_word(5 downto 0);
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_STRR =>
                     sr_block_ram_input_control(0) <= Reg2;
                     sr_block_ram_addr_control_b(0) <= Reg1;
-                    sr_rf_write_enable(0) <= '1';
+                    sr_br_web(0) <= '1';
 
                 when OP_ADDA =>
                     sr_dsp_input_control_c(0) <= Acc;
