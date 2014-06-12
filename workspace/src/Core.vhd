@@ -44,8 +44,6 @@ architecture behav of Core is
     signal rf_inputs: RegisterFileInputs;
     signal rf_read_a: word;
     signal rf_read_b: word;
-    signal rf_read_c: word;
-    signal rf_read_d: word;
 
     signal dsp_inputs: DSPInputs;
     signal dsp_p: slv48_t;
