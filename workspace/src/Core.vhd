@@ -550,6 +550,13 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_CALL =>
+                    sr_branch_type(0) <= UncondBr;
+                    sr_dsp_input_control_c(0) <= PC;
+                    sr_dsp_input_control_b(0) <= One;
+                    sr_dsp_mode(0) <= DSP_CpAB;
+                    sr_rf_write_enable(0) <= '1';
+
                 when OP_MOVRF =>
                     sr_dsp_input_control_c(0) <= ExtData;
                     sr_fifo_rd_en(0)(to_integer(unsigned(s2_instruction_word(5 downto 0)))) <= '1';
@@ -726,6 +733,7 @@ begin
                 when Reg2   => sr_dsp_b(0) <= sr_rf_read_b(3);
             end case;
 
+            sr_dsp_c(0) <= (others => '0');
             case sr_dsp_input_control_c(3) is
                 when Zero    => sr_dsp_c(0) <= (others => '0');
                 when Ram2    => sr_dsp_c(0) <= sign_extend(sr_br_dob(0), sr_dsp_c(0)'length);
@@ -734,6 +742,7 @@ begin
                 when Reg1    => sr_dsp_c(0) <= sign_extend(sr_rf_read_a(3), sr_dsp_c(0)'length);
                 when DspOut  => sr_dsp_c(0) <= sr_dsp_p(0);
                 when ExtData => sr_dsp_c(0) <= sign_extend(fifo_outputs(sr_fifo_index(3)).dout, sr_dsp_c(0)'length);
+                when PC      => sr_dsp_c(0)(program_counter'range) <= program_counter;
             end case;
 
             sr_dsp_c(1) <= sr_dsp_c(0);

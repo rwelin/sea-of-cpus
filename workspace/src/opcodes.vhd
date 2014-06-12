@@ -108,10 +108,13 @@ package opcodes is
     -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
     constant OP_BNZD: opcode := "100001";
 
+    -- | ra:6 | rb:6 | -- rb := pc + 1; pc := ra
+    constant OP_CALL: opcode := "100010";
+
     -- | ra:6 | const:6 | -- ra := fifo[const]
-    constant OP_MOVRF: opcode := "100010";
+    constant OP_MOVRF: opcode := "100011";
 
     -- | ra:6 | const:6 | -- fifo[const] := ra
-    constant OP_MOVFR: opcode := "100011";
+    constant OP_MOVFR: opcode := "100100";
 
 end package opcodes;
