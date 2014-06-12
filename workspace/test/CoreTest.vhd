@@ -42,7 +42,7 @@ architecture behav of CoreTest is
         1 =>
             ('1', '0', (others => '0'), (others => '0'), '0', (others => '1'), 100),
         2 =>
-            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 100)
+            ('1', '0', (others => '0'), (others => '0'), '0', (others => '0'), 200)
     );
 
 begin

@@ -384,7 +384,8 @@ begin
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MOVRR =>
-                    sr_dsp_input_control_c(0) <= Reg1;
+                    sr_dsp_mode(0) <= DSP_CpAB;
+                    sr_dsp_input_control_b(0) <= Reg2;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_LDA =>
@@ -466,6 +467,32 @@ begin
                     sr_dsp_input_control_c(0) <= Reg1;
                     sr_dsp_input_control_b(0) <= Ram1;
                     sr_dsp_mode(0) <= DSP_CsAB;
+                    sr_rf_write_enable(0) <= '1';
+
+                when OP_MULR =>
+                    sr_dsp_input_control_c(0) <= Zero;
+                    sr_dsp_input_control_a(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Const;
+                    sr_instruction_constant(0) <= sign_extend(s2_instruction_word(5 downto 0), word'length);
+                    sr_dsp_mode(0) <= DSP_CpAtB;
+                    sr_instruction_type(0) <= Mult;
+                    sr_rf_write_enable(0) <= '1';
+
+                when OP_MULRR =>
+                    sr_dsp_input_control_c(0) <= Zero;
+                    sr_dsp_input_control_a(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Reg2;
+                    sr_dsp_mode(0) <= DSP_CpAtB;
+                    sr_instruction_type(0) <= Mult;
+                    sr_rf_write_enable(0) <= '1';
+
+                when OP_MULRM =>
+                    sr_block_ram_addr_control_b(0) <= Reg2;
+                    sr_dsp_input_control_c(0) <= Zero;
+                    sr_dsp_input_control_a(0) <= Ram2;
+                    sr_dsp_input_control_b(0) <= Reg1;
+                    sr_dsp_mode(0) <= DSP_CpAtB;
+                    sr_instruction_type(0) <= Mult;
                     sr_rf_write_enable(0) <= '1';
 
                 when OP_MAC =>

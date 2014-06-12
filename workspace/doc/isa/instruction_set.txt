@@ -18,6 +18,9 @@ ADDR    | ra:6 | const:6 |  -- ra := ra + const
 SUBR    | ra:6 | const:6 |  -- ra := ra - const
 ADDRM   | ra:6 | rb:6 |     -- ra := ra + *rb
 SUBRM   | ra:6 | rb:6 |     -- ra := ra - *rb
+MULR    | ra:6 | const:6 |  -- ra := ra * const
+MULRR   | ra:6 | rb:6 |     -- ra := ra * *rb
+MULRM   | ra:6 | rb:6 |     -- ra := ra * *rb
 MAC     | ra:6 | rb:6 |     -- acc := acc + ra * rb
 MACP    | ra:6 | rb:6 |     -- acc := p + ra * rb
 MACPM   | ra:6 | rb:6 |     -- acc := p + *rb * ra
@@ -32,6 +35,6 @@ BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra
 BNZ     | ra:6 | rb:6 |     -- if rb != 0: pc := ra
 BNZD    | ra:6 | rb:6 |     -- if rb != 0: pc := ra; rb -= 1
-CALL    | ra:6 | rb:6 |     -- rb := pc + 1; pc := ra
+CALL    | ra:6 | rb:6 |     -- ra := pc + 1; pc := rb
 MOVRF   | ra:6 | const:6 |  -- ra := fifo[const]
 MOVFR   | ra:6 | const:6 |  -- fifo[const] := ra
