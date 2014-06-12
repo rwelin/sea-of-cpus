@@ -452,6 +452,18 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_ADDRM =>
+                    sr_dsp_input_control_c(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Ram1;
+                    sr_dsp_mode(0) <= DSP_CpAB;
+                    sr_rf_write_enable(0) <= '1';
+
+                when OP_SUBRM =>
+                    sr_dsp_input_control_c(0) <= Reg1;
+                    sr_dsp_input_control_b(0) <= Ram1;
+                    sr_dsp_mode(0) <= DSP_CsAB;
+                    sr_rf_write_enable(0) <= '1';
+
                 when OP_MAC =>
                     sr_dsp_input_control_c(0) <= Acc;
                     sr_dsp_input_control_a(0) <= Reg1;
