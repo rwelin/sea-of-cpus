@@ -1,0 +1,107 @@
+\documentclass[a4paper,twoside,11pt]{IEEEtran}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage[british]{babel}
+\usepackage{csquotes}
+\usepackage{graphicx}
+\usepackage{pdflscape}
+\usepackage{tikz}
+
+\usepackage[
+  style=apa,
+  backend=biber,
+  urldate=iso8601]{biblatex}
+\addbibresource{sources.bib}
+\bibliography{sources}
+\DeclareLanguageMapping{british}{british-apa}
+
+% Setup source code listings
+\usepackage{courier}
+
+\usepackage{color}
+\definecolor{cred}{rgb}{0.9,0.1,0.25}
+\definecolor{cgreen}{rgb}{0.05,0.5,0.1}
+\definecolor{ccyan}{rgb}{0.1,0.6,0.8}
+\definecolor{cmagenta}{rgb}{0.7,0.1,0.2}
+\definecolor{cyellow}{rgb}{0.7,0.4,0}
+\definecolor{cgray}{rgb}{0.5,0.5,0.5}
+\definecolor{clightlightgray}{gray}{1.0}
+
+\usepackage{listings}
+\lstset{
+  language={[x86masm]Assembler},
+  basicstyle=\footnotesize\ttfamily,    % Standardschrift
+  tabsize=4,                            % Groesse von Tabs
+  extendedchars=true,                   %
+  breaklines=true,                      % Zeilen werden Umgebrochen
+  frame=b,
+  backgroundcolor=\color{clightlightgray},
+  %backgroundcolor=\color{cgray},
+  keywordstyle=\color{cmagenta}\bfseries,
+  stringstyle=\color{cyellow},
+  commentstyle=\color{cgreen},
+  showspaces=false,                     % Leerzeichen anzeigen ?
+  showtabs=false,                       % Tabs anzeigen ?
+  xleftmargin=17pt,
+  framexleftmargin=17pt,
+  framexrightmargin=5pt,
+  framexbottommargin=4pt,
+  showstringspaces=false                % Leerzeichen in Strings anzeigen ?
+}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}
+{\colorbox[cmyk]{0.43,0.35,0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+\captionsetup[lstlisting]{ format=listing,
+  labelfont=white,
+  textfont=white,
+  singlelinecheck=false,
+  margin=0pt,
+  font={bf,sf,small}
+}
+
+\def\name{Robert Welin}
+\def\prjtitle{Sea-of-CPUs on an FPGA}
+\def\cid{00656261}
+
+% Title info
+\markboth{}{\name: \prjtitle}
+
+\begin{document}
+
+\begin{titlepage}
+% \newgeometry{top=25mm,bottom=25mm,left=38mm,right=32mm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+% \fontfamily{phv}\selectfont
+
+{
+\Large
+\raggedright
+Imperial College London\\[17pt]
+Department of Electrical and Electronic Engineering\\[17pt]
+Final Year Project Report 2014\\[17pt]
+
+}
+\rule{\columnwidth}{3pt}
+
+\vfill
+
+\centering
+% \includegraphics[width=0.7\columnwidth,height=60mm,keepaspectratio]{imgs/MyRobot.jpg}
+
+\vfill
+
+\setlength{\tabcolsep}{0pt}
+\begin{tabular}{p{40mm}p{\dimexpr\columnwidth-40mm}}
+Project Title: & \textbf{\title} \\[12pt]
+Student: & \textbf{\name} \\[12pt]
+CID: & \textbf{00656261} \\[12pt]
+Course: & \textbf{EIE4} \\[12pt]
+Project Supervisor: & \textbf{Dr D.B. Thomas} \\[12pt]
+Second Marker: & \textbf{Dr K. Nikolic} \\
+\end{tabular}
+\end{titlepage}
+
+\end{document}
