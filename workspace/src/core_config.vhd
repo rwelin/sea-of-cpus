@@ -18,8 +18,8 @@ package core_config is
     subtype ram_addr is std_logic_vector(RAM_ADDR_LENGTH - 1 downto 0);
     subtype opcode is std_logic_vector(OPCODE_LENGTH - 1 downto 0);
 
-    type dsp_input_control_a_t is (Reg1, Ram2, Zero);
-    type dsp_input_control_b_t is (Reg1, Reg2, Ram1, One, Zero, Const);
+    type dsp_input_control_a_t is (Reg1, Reg2, Ram1, Zero);
+    type dsp_input_control_b_t is (Reg1, Reg2, Ram2, One, Zero, Const);
     type dsp_input_control_c_t is (Const, Reg1, Acc, Ram2, DspOut, Zero, ExtData, PC);
 
     type BlockRamAddrControlA is (PC, CmacCoef);
