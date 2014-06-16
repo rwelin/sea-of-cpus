@@ -1,4 +1,5 @@
-\documentclass[a4paper,twoside,11pt]{IEEEtran}
+\documentclass[a4paper,twoside,11pt]{article}
+\usepackage{fullpage}
 \usepackage{enumerate}
 \usepackage{amsmath}
 \usepackage[british]{babel}
@@ -95,7 +96,7 @@ Final Year Project Report 2014\\[17pt]
 
 \setlength{\tabcolsep}{0pt}
 \begin{tabular}{p{40mm}p{\dimexpr\columnwidth-40mm}}
-Project Title: & \textbf{\title} \\[12pt]
+Project Title: & \textbf{\prjtitle} \\[12pt]
 Student: & \textbf{\name} \\[12pt]
 CID: & \textbf{00656261} \\[12pt]
 Course: & \textbf{EIE4} \\[12pt]
@@ -103,5 +104,100 @@ Project Supervisor: & \textbf{Dr D.B. Thomas} \\[12pt]
 Second Marker: & \textbf{Dr K. Nikolic} \\
 \end{tabular}
 \end{titlepage}
+
+
+\section{Introduction}
+
+\section{Background}
+
+\subsection{Instruction set architectures}
+
+The instruction set architecture (ISA) of a processor can be considered the software interface of the processor.
+It provides the programmer or compiler writer a definition of commands that can be issued to the machine, so called opcodes or machine instructions.
+The ISA also describes the structure of these opcodes such as length and the information contained in the opcode.
+This could be the registers used in the operation, memory locations or specific addressing modes.
+
+ISAs are generally divided into two big classes: complex instruction set computer (CISC) and reduced instruction set computer (RISC).
+CISC usually features variable length instructions with complex effects, whereas RISC architectures has fixed length instructions with a single effect.
+Modern CISC architectures such as x86 are known for being relatively simple to program at the cost of larger, more complex hardware.
+Conversely, RISC designs such as MIPS are very small, but require more machine instructions to accomplish the same task as a CISC architecture, resulting in larger programs and more complex compilers.
+
+\subsubsection{Instruction types and addressing modes}
+
+Machine instructions are commonly categorized into different types.
+
+Addressing modes are descriptions of how the operands in a given machine instruction are used to calculate a memory address.
+There are several commonly used addressing modes, each with their advantages and disadvantages.
+
+
+\subsection{Micro architectures}
+
+The microarchitecture of a processors refers to a specific implementation of a instruction set architecture.
+
+\subsection{Related work}
+
+
+
+\section{Design}
+
+The design had of the processor had to take several aspects into account.
+
+\begin{itemize}
+    \item As it was going to be target on an FPGA, the dedicated logic in the form of block RAMs and DSP slices had to be used effectively.
+    \item The implementation had to a relatively few number of LUTs in order to accommodate for the ratio between LUTs and other dedicated logic.
+    \item The processor had to run at a relatively high clock frequency.
+\end{itemize}
+
+\subsection{Instruction set architecture}
+
+The different instruction types of the instruction set architecture are shown in table \ref{t-instruction-types}.
+
+\begin{table}[ht!]
+\centering
+\caption{Instruction types}
+\label{t-instruction-types}
+\newcommand{\const}{\multicolumn{2}{c|}{const}}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Type  & \multicolumn{3}{c|}{format}         \\ \hline
+          & [17:12]     &   [11:6]  &   [5:0]   \\ \hline
+          & op          &   \multicolumn{2}{c|}{const} \\ \hline
+          & op          &   reg     &   -       \\ \hline
+          & op          &   -       &   reg     \\ \hline
+          & op          &   reg     &   reg     \\ \hline
+          & op          &   reg     &   const   \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Implementation}
+
+\subsection{Tools}
+
+\subsubsection{Assembler}
+
+\subsubsection{Array generator}
+
+Due to the Xilinx tools lack of support for versions of VHDL later than VHDL 1993, a program had to be written in order to generate large configurations of processor cores.
+The resulting program, called \texttt{mkarray}, takes a topology and a size as arguments and outputs a VHDL entity.
+The entity instantiates the given number of cores, connected according to the given topology.
+
+Two configurations were implemented: a one directional chain and a two-dimensional grid pattern with bi-directional communication.
+These can be seen in listing \ref{l-mkarray-sample}.
+
+Since the configurations are simply expressed using Python, additional topologies can easily be expressed.
+
+\lstinputlisting[
+  language=python,
+  label=l-mkarray-sample,
+caption={Chain and grid implementations in \texttt{mkarray}}]
+  {mkarray-sample.py}
+
+\section{Result}
+
+\section{Discussion}
+
+\subsection{Improvements}
+
+\section{Conclusion}
 
 \end{document}
