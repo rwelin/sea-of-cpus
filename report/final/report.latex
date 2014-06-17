@@ -120,23 +120,63 @@ This could be the registers used in the operation, memory locations or specific 
 ISAs are generally divided into two big classes: complex instruction set computer (CISC) and reduced instruction set computer (RISC).
 CISC usually features variable length instructions with complex effects, whereas RISC architectures has fixed length instructions with a single effect.
 Modern CISC architectures such as x86 are known for being relatively simple to program at the cost of larger, more complex hardware.
-Conversely, RISC designs such as MIPS are very small, but require more machine instructions to accomplish the same task as a CISC architecture, resulting in larger programs and more complex compilers.
+Conversely, RISC designs such as MIPS are very small, but require more machine instructions to accomplish the same task as a CISC architecture, resulting in larger programs and a more complex compilers.
 
-\subsubsection{Instruction types and addressing modes}
+Both types of processors usually follow the same architectural pattern with the following four stages:
 
-Machine instructions are commonly categorized into different types.
+\begin{enumerate}
+    \item \emph{Instruction decode} -- load instruction word from memory and identify the operation and any associated operands.
+    \item \emph{Data fetch} -- use the operands of the instruction to fetch any data needed to perform the desired calculation.
+    \item \emph{Execution} -- perform the arithmetic or other operation on the fetched data.
+    \item \emph{Write back} -- store the result from the execution stage.
+\end{enumerate}
+
+
+\subsubsection{Addressing modes}
 
 Addressing modes are descriptions of how the operands in a given machine instruction are used to calculate a memory address.
 There are several commonly used addressing modes, each with their advantages and disadvantages.
+
+\begin{itemize}
+    \item \emph{Absolute addressing} uses an operand in the instruction word as a direct address without any modification.
+      This mode usually requires an operand that is large enough to cover the entire address space of the processor,
+      which might be impossible for ISAs with very short instruction words.
+
+    \item \emph{Register indirect addressing} uses an operand as a register index.
+      The content of the register is then used as a memory address.
+
+    \item \emph{PC relative addressing} calculates an address from adding a constant to the value of the program counter.
+      Since computer programs have a lot of spacial locality, 90\% of all branches can be calculated using PC relative addressing and an offset of as little as 8 bits.
+
+\end{itemize}
 
 
 \subsection{Micro architectures}
 
 The microarchitecture of a processors refers to a specific implementation of a instruction set architecture.
 
+\subsection{DSP48E1 slice}
+
+\begin{figure}
+  \caption{Diagram of the DSP48E1 slice \parencite{dsp48e1}}
+  \label{fig:dsp48e1}
+  \includegraphics[width=\linewidth]{dsp48e1}
+\end{figure}
+
+
 \subsection{Related work}
 
+- Other attempts at soft-processors
+  - Microblaze, picoblaze
+  - SIMD processors
+  - DSP block focused processors
+- MPPAs
 
+\subsection{Hardware capabilities}
+
+\subsubsection{DSP48E1 Slice}
+
+\subsubsection{Block RAM}
 
 \section{Design}
 
@@ -148,24 +188,85 @@ The design had of the processor had to take several aspects into account.
     \item The processor had to run at a relatively high clock frequency.
 \end{itemize}
 
+%- Proof of concept processor:
+%  - Arithmetic instructions that prove points
+%  - useful branch instructions and mov
+
+
+
+
+
 \subsection{Instruction set architecture}
 
-The different instruction types of the instruction set architecture are shown in table \ref{t-instruction-types}.
+The different instruction types of the instruction set architecture are shown in table \ref{t:instruction-types}.
 
-\begin{table}[ht!]
+\begin{table}
 \centering
 \caption{Instruction types}
-\label{t-instruction-types}
+\label{t:instruction-types}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l |}
     \hline
-    Type  & \multicolumn{3}{c|}{format}         \\ \hline
-          & [17:12]     &   [11:6]  &   [5:0]   \\ \hline
-          & op          &   \multicolumn{2}{c|}{const} \\ \hline
-          & op          &   reg     &   -       \\ \hline
-          & op          &   -       &   reg     \\ \hline
-          & op          &   reg     &   reg     \\ \hline
-          & op          &   reg     &   const   \\ \hline
+    Type    & \multicolumn{3}{c|}{format}       \\ \hline
+            & [17:12]   &   [11:6]  &   [5:0]   \\ \hline
+    1       & op        &   -       &   -       \\ \hline
+    2       & op        &   \const              \\ \hline
+    3       & op        &   reg     &   -       \\ \hline
+    4       & op        &   -       &   reg     \\ \hline
+    5       & op        &   reg     &   reg     \\ \hline
+    6       & op        &   reg     &   const   \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\centering
+\caption{Instruction set}
+\label{t:instruction-set}
+\newcommand{\const}{\multicolumn{2}{c|}{const}}
+\begin{tabular}{| l | l | l | l | l |}
+    \hline
+    Type    & \multicolumn{3}{c|}{Format}       &   Description             \\ \hline
+            & [17:12]   &   [11:6]  &   [5:0]   &                           \\ \hline
+    1       & nop       &   -       &   -       &   Does nothing            \\ \hline
+    2       & mova      &   \const              &   acc := const            \\ \hline
+    3       & movar     &   ra      &   -       &   acc := ra               \\ \hline
+    3       & movra     &   ra      &   -       &   ra := acc               \\ \hline
+    6       & movr      &   ra      &   const   &   ra := const             \\ \hline
+    5       & movrr     &   ra      &   rb      &   ra := rb                \\ \hline
+    2       & lda       &   \const              &   acc := [const]          \\ \hline
+    2       & sta       &   \const              &   [const] := acc          \\ \hline
+    3       & ldar      &   ra      &   -       &   acc := [ra]             \\ \hline
+    3       & star      &   ra      &   -       &   [ra] := acc             \\ \hline
+    5       & ldrr      &   ra      &   rb      &   ra := [rb]              \\ \hline
+    5       & strr      &   ra      &   rb      &   [ra] := rb              \\ \hline
+    2       & adda      &   \const              &   acc := acc + const      \\ \hline
+    2       & suba      &   \const              &   acc := acc - const      \\ \hline
+    6       & addar     &   ra      &   const   &   ra := ra + const        \\ \hline
+    6       & subar     &   ra      &   const   &   ra := ra - const        \\ \hline
+    5       & addr      &   ra      &   rb      &   ra := ra + rb           \\ \hline
+    5       & subr      &   ra      &   rb      &   ra := ra - rb           \\ \hline
+    5       & addrm     &   ra      &   rb      &   ra := ra + [rb]         \\ \hline
+    5       & subrm     &   ra      &   rb      &   ra := ra - [rb]         \\ \hline
+    6       & mulr      &   ra      &   const   &   ra := ra * const        \\ \hline
+    5       & mulrr     &   ra      &   rb      &   ra := ra * rb           \\ \hline
+    5       & mulrm     &   ra      &   rb      &   ra := ra * [rb]         \\ \hline
+    5       & mac       &   ra      &   rb      &   acc := acc + ra * [rb]  \\ \hline
+    5       & macp      &   ra      &   rb      &   acc := p + ra * rb      \\ \hline
+    5       & macpm     &   ra      &   rb      &   acc := p + ra * [rb]    \\ \hline
+    2       & coefa     &   \const              &   coefa := const          \\ \hline
+    2       & dataa     &   \const              &   dataa := const          \\ \hline
+    2       & datao     &   \const              &   datao := const          \\ \hline
+    2       & datam     &   \const              &   datam := const          \\ \hline
+    1       & cmac      &   -       &   -       &   acc := p + [coefa++] * [dataa++] \\ \hline
+    3       & cstr      &   ra:6    &   -       &   datao := (datao-1) mod (datam+1); [dataa+datao] := ra \\ \hline
+    2       & j         &   \const              &   pc := const             \\ \hline
+    4       & br        &   -       &   rb      &   pc := rb                \\ \hline
+    5       & bz        &   ra      &   rb      &   if ra = 0: pc := rb     \\ \hline
+    5       & bnz       &   ra      &   rb      &   if rb != 0: pc := ra    \\ \hline
+    5       & call      &   ra      &   rb      &   ra := pc + 7; pc := rb  \\ \hline
+    6       & movrf     &   ra      &   index   &   push back ra to output[index] \\ \hline
+    6       & movfr     &   ra      &   index   &   pop front of input[index] \\ \hline
 \end{tabular}
 \end{table}
 
@@ -194,9 +295,21 @@ caption={Chain and grid implementations in \texttt{mkarray}}]
 
 \section{Result}
 
+%- Communication bandwidth
+%- Cycle count for programs
+%  - FIR
+%  - Fibonacci
+%  -
+%- Size with varying number of fifos
+%- Clock rate impact with different number of cores
+
+
 \section{Discussion}
 
-\subsection{Improvements}
+%- Pipeline too long with no benefit (extra hardware)
+%- Low clock frequency
+%- Instruction set should be bigger (shifts, compare, bitwise ops)
+%- Simultaneous multi threading because nops
 
 \section{Conclusion}
 
