@@ -18,7 +18,7 @@ package opcodes is
     -- | ra:6 | -- ra := acc
     constant OP_MOVRA: opcode := "000011";
 
-    -- | const:6 | rb:6 | -- rb := const
+    -- | ra:6 | const:6 | -- ra := const
     constant OP_MOVR: opcode := "000100";
 
     -- | ra:6 | rb:6 | -- ra := rb
@@ -42,88 +42,100 @@ package opcodes is
     -- | ra:6 | rb:6 | -- *ra := rb
     constant OP_STRR: opcode := "001011";
 
+    -- | const:12 | -- acc := acc >> const
+    constant OP_SHFTA: opcode := "001100";
+
+    -- | ra:6 | -:6 | -- acc := acc >> ra
+    constant OP_SHFTAR: opcode := "001101";
+
     -- | const:12 | -- acc := acc + const
-    constant OP_ADDA: opcode := "001100";
+    constant OP_ADDA: opcode := "001110";
 
     -- | const:12 | -- acc := acc - const
-    constant OP_SUBA: opcode := "001101";
+    constant OP_SUBA: opcode := "001111";
 
     -- | -:6 | rb:6 | -- acc := acc + rb
-    constant OP_ADDAR: opcode := "001110";
+    constant OP_ADDAR: opcode := "010000";
 
     -- | -:6 | rb:6 | -- acc := acc - rb
-    constant OP_SUBAR: opcode := "001111";
+    constant OP_SUBAR: opcode := "010001";
 
     -- | ra:6 | const:6 | -- ra := ra + const
-    constant OP_ADDR: opcode := "010000";
+    constant OP_ADDR: opcode := "010010";
 
     -- | ra:6 | const:6 | -- ra := ra - const
-    constant OP_SUBR: opcode := "010001";
+    constant OP_SUBR: opcode := "010011";
 
     -- | ra:6 | rb:6 | -- ra := ra + *rb
-    constant OP_ADDRM: opcode := "010010";
+    constant OP_ADDRM: opcode := "010100";
 
     -- | ra:6 | rb:6 | -- ra := ra - *rb
-    constant OP_SUBRM: opcode := "010011";
+    constant OP_SUBRM: opcode := "010101";
 
     -- | ra:6 | const:6 | -- ra := ra * const
-    constant OP_MULR: opcode := "010100";
+    constant OP_MULR: opcode := "010110";
+
+    -- | ra:6 | rb:6 | -- ra := ra * rb
+    constant OP_MULRR: opcode := "010111";
 
     -- | ra:6 | rb:6 | -- ra := ra * *rb
-    constant OP_MULRR: opcode := "010101";
-
-    -- | ra:6 | rb:6 | -- ra := ra * *rb
-    constant OP_MULRM: opcode := "010110";
+    constant OP_MULRM: opcode := "011000";
 
     -- | ra:6 | rb:6 | -- acc := acc + ra * rb
-    constant OP_MAC: opcode := "010111";
+    constant OP_MAC: opcode := "011001";
 
     -- | ra:6 | rb:6 | -- acc := p + ra * rb
-    constant OP_MACP: opcode := "011000";
+    constant OP_MACP: opcode := "011010";
 
     -- | ra:6 | rb:6 | -- acc := p + *rb * ra
-    constant OP_MACPM: opcode := "011001";
+    constant OP_MACPM: opcode := "011011";
 
     -- | const:12 | -- coefa := const
-    constant OP_COEFA: opcode := "011010";
+    constant OP_COEFA: opcode := "011100";
 
     -- | const:12 | -- dataa := const
-    constant OP_DATAA: opcode := "011011";
+    constant OP_DATAA: opcode := "011101";
 
     -- | const:12 | -- datao := const
-    constant OP_DATAO: opcode := "011100";
+    constant OP_DATAO: opcode := "011110";
 
     -- | const:12 | -- datam := const
-    constant OP_DATAM: opcode := "011101";
+    constant OP_DATAM: opcode := "011111";
 
     -- | -:12 | -- acc := p + (*coef++) * (*data++)
-    constant OP_CMAC: opcode := "011110";
+    constant OP_CMAC: opcode := "100000";
 
     -- | ra:6 | -:6 | -- datao := (datao - 1) mod datam; *(dataa + datao) := ra
-    constant OP_CSTR: opcode := "011111";
+    constant OP_CSTR: opcode := "100001";
 
     -- | const:12 | -- pc := const
-    constant OP_J: opcode := "100000";
+    constant OP_J: opcode := "100010";
 
     -- | -:6 | rb:6 | -- pc := rb
-    constant OP_BR: opcode := "100001";
+    constant OP_BR: opcode := "100011";
 
-    -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
-    constant OP_BZ: opcode := "100010";
+    -- | ra:6 | rb:6 | -- if ra = 0: pc := rb
+    constant OP_BZ: opcode := "100100";
 
-    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
-    constant OP_BNZ: opcode := "100011";
+    -- | ra:6 | rb:6 | -- if ra != 0: pc := rb
+    constant OP_BNZ: opcode := "100101";
 
-    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
-    constant OP_BNZD: opcode := "100100";
+    -- | ra:6 | rb:6 | -- if ra != 0: pc := rb; ra := ra - 1
+    constant OP_BNZD: opcode := "100110";
 
-    -- | ra:6 | rb:6 | -- ra := pc + 1; pc := rb
-    constant OP_CALL: opcode := "100101";
+    -- | ra:6 | rb:6 | -- if ra < 0: pc := rb
+    constant OP_BLTZ: opcode := "100111";
+
+    -- | ra:6 | rb:6 | -- if ra >= 0: pc := rb
+    constant OP_BGEZ: opcode := "101000";
+
+    -- | ra:6 | rb:6 | -- ra := pc + 7; pc := rb
+    constant OP_CALL: opcode := "101001";
 
     -- | ra:6 | const:6 | -- ra := fifo[const]
-    constant OP_MOVRF: opcode := "100110";
+    constant OP_MOVRF: opcode := "101010";
 
     -- | ra:6 | const:6 | -- fifo[const] := ra
-    constant OP_MOVFR: opcode := "100111";
+    constant OP_MOVFR: opcode := "101011";
 
 end package opcodes;

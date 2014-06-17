@@ -2,7 +2,7 @@ NOP
 MOVA    | const:12 |        -- acc := const
 MOVAR   | ra:6 |            -- acc := ra
 MOVRA   | ra:6 |            -- ra := acc
-MOVR    | const:6 | rb:6 |  -- rb := const
+MOVR    | ra:6 | const:6 |  -- ra := const
 MOVRR   | ra:6 | rb:6 |     -- ra := rb
 LDA     | const:12 |        -- acc := *const
 STA     | const:12 |        -- *const := acc
@@ -10,6 +10,8 @@ LDAR    | ra:6 | -:6 |      -- acc := *ra
 STAR    | ra:6 | -:6 |      -- *ra := acc
 LDRR    | ra:6 | rb:6 |     -- rb := *ra
 STRR    | ra:6 | rb:6 |     -- *ra := rb
+SHFTA   | const:12 |        -- acc := acc >> const
+SHFTAR  | ra:6 | -:6 |     -- acc := acc >> ra
 ADDA    | const:12 |        -- acc := acc + const
 SUBA    | const:12 |        -- acc := acc - const
 ADDAR   | -:6 | rb:6 |      -- acc := acc + rb
@@ -19,7 +21,7 @@ SUBR    | ra:6 | const:6 |  -- ra := ra - const
 ADDRM   | ra:6 | rb:6 |     -- ra := ra + *rb
 SUBRM   | ra:6 | rb:6 |     -- ra := ra - *rb
 MULR    | ra:6 | const:6 |  -- ra := ra * const
-MULRR   | ra:6 | rb:6 |     -- ra := ra * *rb
+MULRR   | ra:6 | rb:6 |     -- ra := ra * rb
 MULRM   | ra:6 | rb:6 |     -- ra := ra * *rb
 MAC     | ra:6 | rb:6 |     -- acc := acc + ra * rb
 MACP    | ra:6 | rb:6 |     -- acc := p + ra * rb
@@ -32,9 +34,11 @@ CMAC    | -:12 |            -- acc := p + (*coef++) * (*data++)
 CSTR    | ra:6 | -:6 |      -- datao := (datao - 1) mod datam; *(dataa + datao) := ra
 J       | const:12 |        -- pc := const
 BR      | -:6 | rb:6 |      -- pc := rb
-BZ      | ra:6 | rb:6 |     -- if rb = 0: pc := ra
-BNZ     | ra:6 | rb:6 |     -- if rb != 0: pc := ra
-BNZD    | ra:6 | rb:6 |     -- if rb != 0: pc := ra; rb -= 1
-CALL    | ra:6 | rb:6 |     -- ra := pc + 1; pc := rb
+BZ      | ra:6 | rb:6 |     -- if ra = 0: pc := rb
+BNZ     | ra:6 | rb:6 |     -- if ra != 0: pc := rb
+BNZD    | ra:6 | rb:6 |     -- if ra != 0: pc := rb; ra := ra - 1
+BLTZ    | ra:6 | rb:6 |     -- if ra < 0: pc := rb
+BGEZ    | ra:6 | rb:6 |     -- if ra >= 0: pc := rb
+CALL    | ra:6 | rb:6 |     -- ra := pc + 7; pc := rb
 MOVRF   | ra:6 | const:6 |  -- ra := fifo[const]
 MOVFR   | ra:6 | const:6 |  -- fifo[const] := ra

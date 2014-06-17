@@ -26,7 +26,11 @@ package core_config is
     type BlockRamDataInputControlB is (Acc, Reg2, Const);
     type BlockRamAddrControlB is (Reg1, Reg2, Const, CmacData);
 
-    type BranchOp is (NoBr, UncondJ, UncondBr, CondBrZ, CondBrNZ);
+    type ShifterAmount is (Reg1, Const);
+
+    type WriteBackInput is (Shift, DspOut);
+
+    type BranchOp is (NoBr, UncondJ, UncondBr, CondBrZ, CondBrNZ, CondBrLTZ, CondBrGEZ);
 
     type InstructionType is (Normal, Mult);
 
