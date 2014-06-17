@@ -7,7 +7,7 @@ use work.core_config.all;
 use work.test_utils.all;
 use work.opcodes.all;
 use work.utils.all;
-use work.fibonacci.all;
+use work.fir_filter.all;
 
 entity CoreTest is
 end entity CoreTest;
@@ -92,13 +92,13 @@ begin
 
         reset <= '0';
 
-        for i in fibonacci_code'range loop
+        for i in fir_filter_code'range loop
             wait_for(1, clk);
 
             addr <= int2slv(i, ram_addr'length);
             report integer'image(i);
-            data <= fibonacci_code(i);
-            report "Loading data '" & to_string(fibonacci_code(i)) & "' to address " & integer'image(i);
+            data <= fir_filter_code(i);
+            report "Loading data '" & to_string(fir_filter_code(i)) & "' to address " & integer'image(i);
         end loop;
 
         wait_for(1, clk);

@@ -95,6 +95,9 @@ architecture behav of Core is
     type sr_dsp_d_t is array (0 to 0) of slv25_t;
     signal sr_dsp_d: sr_dsp_d_t;
 
+    type sr_shift_t is array (0 to 3) of slv48_t;
+    signal sr_shift: sr_shift_t;
+
     -- Control flags
     --
 
@@ -121,6 +124,12 @@ architecture behav of Core is
 
     type sr_dsp_mode_t is array (0 to 5) of DSPMode;
     signal sr_dsp_mode: sr_dsp_mode_t;
+
+    type sr_shift_amount_t is array (0 to 7) of ShifterAmount;
+    signal sr_shift_amount: sr_shift_amount_t;
+
+    type sr_wb_input_control_t is array (0 to 7) of WriteBackInput;
+    signal sr_a_input_control: sr_wb_input_control_t;
 
     type sr_block_ram_input_control_t is array (0 to 1) of BlockRamDataInputControlB;
     signal sr_block_ram_input_control: sr_block_ram_input_control_t;
@@ -355,6 +364,8 @@ begin
 
             sr_instruction_type(0) <= Normal;
 
+            sr_a_input_control(0) <= DspOut;
+
             sr_rf_write_enable(0) <= '0';
             sr_a_write_enable(0) <= '0';
             sr_br_web(0) <= '0';
@@ -364,6 +375,8 @@ begin
             sr_dsp_input_control_c(0) <= Zero;
 
             sr_dsp_mode(0) <= DSP_C_PASSTHROUGH;
+
+            sr_shift_amount(0) <= Const;
 
             case op is
                 when OP_MOVA =>
@@ -418,6 +431,15 @@ begin
                     sr_block_ram_input_control(0) <= Reg2;
                     sr_block_ram_addr_control_b(0) <= Reg1;
                     sr_br_web(0) <= '1';
+
+                when OP_SHFTA =>
+                    sr_a_write_enable(0) <= '1';
+                    sr_a_input_control(0) <= Shift;
+
+                when OP_SHFTAR =>
+                    sr_a_write_enable(0) <= '1';
+                    sr_a_input_control(0) <= Shift;
+                    sr_shift_amount(0) <= Reg1;
 
                 when OP_ADDA =>
                     sr_dsp_input_control_c(0) <= Acc;
@@ -607,6 +629,7 @@ begin
             sr_fifo_rd_en(1 to 2) <= sr_fifo_rd_en(0 to 1);
             sr_outputs_wr_en(1 to 2) <= sr_outputs_wr_en(0 to 1);
             sr_fifo_index(1 to 3) <= sr_fifo_index(0 to 2);
+            sr_a_input_control(1 to 7) <= sr_a_input_control(0 to 6);
             sr_dsp_input_control_a(1 to 3) <= sr_dsp_input_control_a(0 to 2);
             sr_dsp_input_control_b(1 to 3) <= sr_dsp_input_control_b(0 to 2);
             sr_dsp_input_control_c(1 to 3) <= sr_dsp_input_control_c(0 to 2);
@@ -622,6 +645,7 @@ begin
             sr_block_ram_addr_control_b(1) <= sr_block_ram_addr_control_b(0);
             sr_increment_cmac_registers(1) <= sr_increment_cmac_registers(0);
             sr_dsp_mode(1 to 5) <= sr_dsp_mode(0 to 4);
+            sr_shift_amount(1 to 3) <= sr_shift_amount(0 to 2);
 
         end if;
 
@@ -783,6 +807,13 @@ begin
 
             sr_dsp_c(1) <= sr_dsp_c(0);
 
+            sr_shift(0) <= std_logic_vector(unsigned(sr_accumulator(3)) srl to_integer(unsigned(sr_instruction_constant(3))));
+            if sr_shift_amount(3) = Reg1 then
+                sr_shift(0) <= std_logic_vector(unsigned(sr_accumulator(3)) srl to_integer(unsigned(sr_rf_read_a(3))));
+            end if;
+
+            sr_shift(1 to 3) <= sr_shift(0 to 2);
+
         end if;
 
     end process pipeline_stage_7;
@@ -864,21 +895,26 @@ begin
         , sr_dsp_p(0)
         , sr_instruction_type(8)
         , sr_a_write_enable(7)
+        , sr_a_input_control(7)
         )
     begin
+
+        a_input <= sr_dsp_p(0);
+        if sr_a_input_control(7) = Shift then
+            a_input <= sr_shift(3);
+        end if;
 
         a_write_enable <= sr_a_write_enable(7);
         rf_inputs.write_enable <= sr_rf_write_enable(7);
         rf_inputs.addr_d <= sr_write_register(7);
         if sr_instruction_type(8) = Mult then
+            a_input <= sr_dsp_p(0);
             a_write_enable <= sr_a_write_enable(8);
             rf_inputs.write_enable <= sr_rf_write_enable(8);
             rf_inputs.addr_d <= sr_write_register(8);
         end if;
 
         rf_inputs.write_data <= sr_dsp_p(0)(word'range);
-
-        a_input <= sr_dsp_p(0);
 
     end process pipeline_stage_11_unclocked;
 

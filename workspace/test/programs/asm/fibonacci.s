@@ -18,7 +18,7 @@
     nop
     nop
     nop
-    call    r18 r16
+    call    r18 r16 ; call fibonacci function
     nop
     nop
     nop
