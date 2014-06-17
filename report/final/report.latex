@@ -186,16 +186,29 @@ The block consists of three main parts: the pre-adder, the multiplier and the AL
 It has four main data inputs: A, B, C and D and three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE).
 The pre-adder allows for two of the data inputs (A and D) to be added or subtracted before the resulting signal enters the multiplier.
 The multiplier performs a multiplication on the output of the pre-adder and the B input.
-
+The final stage in the DSP slice is the ALU which can take a number of different inputs and perform addition, subtraction and various logic operations.
+The inputs include the C input, the output of the multiplier and inputs A and B concatenated.
+All these inputs and operations are configurable on every clock cycle which makes it a very flexible hardware block. \parencite{dsp48e1}
 
 
 \begin{figure}
-  \caption{Diagram of the DSP48E1 slice \parencite{dsp48e1}}
+  \centering
+  \caption{Diagram of the DSP48E1 slice \parencite[pp 8]{dsp48e1}}
   \label{fig:dsp48e1}
   \includegraphics[width=\linewidth]{dsp48e1}
 \end{figure}
 
 \subsubsection{Block RAM}
+
+Figure \ref{fig:bram} shows a diagram of the Xilinx 36kb block RAM.
+The block RAM can be configured in many ways, including the word size and memory width, different port configurations (e.g. single port, true dual port) and clock inputs.
+
+\begin{figure}
+  \centering
+  \caption{Diagram of the 36kb block RAM \parencite[pp 14]{memory}}
+  \label{fig:bram}
+  \includegraphics[width=0.5\textwidth]{bram}
+\end{figure}
 
 \subsection{Related work}
 
