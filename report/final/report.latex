@@ -224,49 +224,52 @@ The different instruction types of the instruction set architecture are shown in
 \caption{Instruction set}
 \label{t:instruction-set}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
-\begin{tabular}{| l | l | l | l | l |}
+\begin{tabular}{| l | l | l | l |}
     \hline
-    Type    & \multicolumn{3}{c|}{Format}       &   Description             \\ \hline
-            & [17:12]   &   [11:6]  &   [5:0]   &                           \\ \hline
-    1       & nop       &   -       &   -       &   Does nothing            \\ \hline
-    2       & mova      &   \const              &   acc := const            \\ \hline
-    3       & movar     &   ra      &   -       &   acc := ra               \\ \hline
-    3       & movra     &   ra      &   -       &   ra := acc               \\ \hline
-    6       & movr      &   ra      &   const   &   ra := const             \\ \hline
-    5       & movrr     &   ra      &   rb      &   ra := rb                \\ \hline
-    2       & lda       &   \const              &   acc := [const]          \\ \hline
-    2       & sta       &   \const              &   [const] := acc          \\ \hline
-    3       & ldar      &   ra      &   -       &   acc := [ra]             \\ \hline
-    3       & star      &   ra      &   -       &   [ra] := acc             \\ \hline
-    5       & ldrr      &   ra      &   rb      &   ra := [rb]              \\ \hline
-    5       & strr      &   ra      &   rb      &   [ra] := rb              \\ \hline
-    2       & adda      &   \const              &   acc := acc + const      \\ \hline
-    2       & suba      &   \const              &   acc := acc - const      \\ \hline
-    6       & addar     &   ra      &   const   &   ra := ra + const        \\ \hline
-    6       & subar     &   ra      &   const   &   ra := ra - const        \\ \hline
-    5       & addr      &   ra      &   rb      &   ra := ra + rb           \\ \hline
-    5       & subr      &   ra      &   rb      &   ra := ra - rb           \\ \hline
-    5       & addrm     &   ra      &   rb      &   ra := ra + [rb]         \\ \hline
-    5       & subrm     &   ra      &   rb      &   ra := ra - [rb]         \\ \hline
-    6       & mulr      &   ra      &   const   &   ra := ra * const        \\ \hline
-    5       & mulrr     &   ra      &   rb      &   ra := ra * rb           \\ \hline
-    5       & mulrm     &   ra      &   rb      &   ra := ra * [rb]         \\ \hline
-    5       & mac       &   ra      &   rb      &   acc := acc + ra * [rb]  \\ \hline
-    5       & macp      &   ra      &   rb      &   acc := p + ra * rb      \\ \hline
-    5       & macpm     &   ra      &   rb      &   acc := p + ra * [rb]    \\ \hline
-    2       & coefa     &   \const              &   coefa := const          \\ \hline
-    2       & dataa     &   \const              &   dataa := const          \\ \hline
-    2       & datao     &   \const              &   datao := const          \\ \hline
-    2       & datam     &   \const              &   datam := const          \\ \hline
-    1       & cmac      &   -       &   -       &   acc := p + [coefa++] * [dataa++] \\ \hline
-    3       & cstr      &   ra:6    &   -       &   datao := (datao-1) mod (datam+1); [dataa+datao] := ra \\ \hline
-    2       & j         &   \const              &   pc := const             \\ \hline
-    4       & br        &   -       &   rb      &   pc := rb                \\ \hline
-    5       & bz        &   ra      &   rb      &   if ra = 0: pc := rb     \\ \hline
-    5       & bnz       &   ra      &   rb      &   if rb != 0: pc := ra    \\ \hline
-    5       & call      &   ra      &   rb      &   ra := pc + 7; pc := rb  \\ \hline
-    6       & movrf     &   ra      &   index   &   push back ra to output[index] \\ \hline
-    6       & movfr     &   ra      &   index   &   pop front of input[index] \\ \hline
+    \multicolumn{3}{|c|}{Format}       &   Description             \\ \hline
+    [17:12]     &   [11:6]  &   [5:0]   &                           \\ \hline
+    nop         &   -       &   -       &   Does nothing            \\ \hline
+    mova        &   \const              &   acc := const            \\ \hline
+    movar       &   ra      &   -       &   acc := ra               \\ \hline
+    movra       &   ra      &   -       &   ra := acc               \\ \hline
+    movr        &   ra      &   const   &   ra := const             \\ \hline
+    movrr       &   ra      &   rb      &   ra := rb                \\ \hline
+    lda         &   \const              &   acc := [const]          \\ \hline
+    sta         &   \const              &   [const] := acc          \\ \hline
+    ldar        &   ra      &   -       &   acc := [ra]             \\ \hline
+    star        &   ra      &   -       &   [ra] := acc             \\ \hline
+    ldrr        &   ra      &   rb      &   ra := [rb]              \\ \hline
+    strr        &   ra      &   rb      &   [ra] := rb              \\ \hline
+    adda        &   \const              &   acc := acc + const      \\ \hline
+    suba        &   \const              &   acc := acc - const      \\ \hline
+    addar       &   ra      &   const   &   ra := ra + const        \\ \hline
+    subar       &   ra      &   const   &   ra := ra - const        \\ \hline
+    addr        &   ra      &   rb      &   ra := ra + rb           \\ \hline
+    subr        &   ra      &   rb      &   ra := ra - rb           \\ \hline
+    addrm       &   ra      &   rb      &   ra := ra + [rb]         \\ \hline
+    subrm       &   ra      &   rb      &   ra := ra - [rb]         \\ \hline
+    mulr        &   ra      &   const   &   ra := ra * const        \\ \hline
+    mulrr       &   ra      &   rb      &   ra := ra * rb           \\ \hline
+    mulrm       &   ra      &   rb      &   ra := ra * [rb]         \\ \hline
+    mac         &   ra      &   rb      &   acc := acc + ra * [rb]  \\ \hline
+    macp        &   ra      &   rb      &   acc := p + ra * rb      \\ \hline
+    macpm       &   ra      &   rb      &   acc := p + ra * [rb]    \\ \hline
+    coefa       &   \const              &   coefa := const          \\ \hline
+    dataa       &   \const              &   dataa := const          \\ \hline
+    datao       &   \const              &   datao := const          \\ \hline
+    datam       &   \const              &   datam := const          \\ \hline
+    cmac        &   -       &   -       &   acc := p + [coefa++] * [dataa++] \\ \hline
+    cstr        &   ra:6    &   -       &   datao := (datao-1) mod (datam+1); [dataa+datao] := ra \\ \hline
+    j           &   \const              &   pc := const             \\ \hline
+    br          &   -       &   rb      &   pc := rb                \\ \hline
+    bz          &   ra      &   rb      &   if ra = 0: pc := rb     \\ \hline
+    bnz         &   ra      &   rb      &   if ra != 0: pc := rb    \\ \hline
+    bnzd        &   ra      &   rb      &   if ra != 0: pc := rb; ra := ra - 1 \\ \hline
+    bltz        &   ra      &   rb      &   if rb < 0: pc := rb     \\ \hline
+    bgez        &   ra      &   rb      &   if rb >= 0: pc := rb    \\ \hline
+    call        &   ra      &   rb      &   ra := pc + 7; pc := rb  \\ \hline
+    movrf       &   ra      &   index   &   push back ra to output[index] \\ \hline
+    movfr       &   ra      &   index   &   pop front of input[index] \\ \hline
 \end{tabular}
 \end{table}
 
@@ -309,6 +312,11 @@ caption={Chain and grid implementations in \texttt{mkarray}}]
 %- Pipeline too long with no benefit (extra hardware)
 %- Low clock frequency
 %- Instruction set should be bigger (shifts, compare, bitwise ops)
+\subsection{Missing functionality}
+
+Although the processor used the arithmetic operations of the DSP48E1 slice effectively, it did not take advantage of its bitwise operations.
+These would have been a useful addition for applications like cryptography where the exclusive-or operation is frequently used.
+
 %- Simultaneous multi threading because nops
 
 \section{Conclusion}

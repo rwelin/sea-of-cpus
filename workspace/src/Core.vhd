@@ -577,6 +577,12 @@ begin
                     sr_dsp_mode(0) <= DSP_CsAB;
                     sr_rf_write_enable(0) <= '1';
 
+                when OP_BLTZ =>
+                    sr_branch_type(0) <= CondBrLTZ;
+
+                when OP_BGEZ =>
+                    sr_branch_type(0) <= CondBrGEZ;
+
                 when OP_CALL =>
                     sr_branch_type(0) <= UncondBr;
                     sr_dsp_input_control_c(0) <= PC;
@@ -684,7 +690,9 @@ begin
             if sr_branch_type(1) = UncondBr
             or sr_branch_type(1) = UncondJ
             or (sr_branch_type(1) = CondBrZ and sr_rf_read_a(1) = (word'range => '0'))
-            or (sr_branch_type(1) = CondBrNZ and sr_rf_read_a(1) /= (word'range => '0')) then
+            or (sr_branch_type(1) = CondBrNZ and sr_rf_read_a(1) /= (word'range => '0'))
+            or (sr_branch_type(1) = CondBrLTZ and signed(sr_rf_read_a(1)) < 0)
+            or (sr_branch_type(1) = CondBrGEZ and signed(sr_rf_read_a(1)) >= 0) then
                 sr_use_pc_next_address(0) <= '0';
             end if;
 

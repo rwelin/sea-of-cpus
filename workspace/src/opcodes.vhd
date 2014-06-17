@@ -18,7 +18,7 @@ package opcodes is
     -- | ra:6 | -- ra := acc
     constant OP_MOVRA: opcode := "000011";
 
-    -- | const:6 | rb:6 | -- rb := const
+    -- | ra:6 | const:6 | -- ra := const
     constant OP_MOVR: opcode := "000100";
 
     -- | ra:6 | rb:6 | -- ra := rb
@@ -69,7 +69,7 @@ package opcodes is
     -- | ra:6 | const:6 | -- ra := ra * const
     constant OP_MULR: opcode := "010100";
 
-    -- | ra:6 | rb:6 | -- ra := ra * *rb
+    -- | ra:6 | rb:6 | -- ra := ra * rb
     constant OP_MULRR: opcode := "010101";
 
     -- | ra:6 | rb:6 | -- ra := ra * *rb
@@ -108,22 +108,28 @@ package opcodes is
     -- | -:6 | rb:6 | -- pc := rb
     constant OP_BR: opcode := "100001";
 
-    -- | ra:6 | rb:6 | -- if rb = 0: pc := ra
+    -- | ra:6 | rb:6 | -- if ra = 0: pc := rb
     constant OP_BZ: opcode := "100010";
 
-    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra
+    -- | ra:6 | rb:6 | -- if ra != 0: pc := rb
     constant OP_BNZ: opcode := "100011";
 
-    -- | ra:6 | rb:6 | -- if rb != 0: pc := ra; rb -= 1
+    -- | ra:6 | rb:6 | -- if ra != 0: pc := rb; ra := ra - 1
     constant OP_BNZD: opcode := "100100";
 
-    -- | ra:6 | rb:6 | -- ra := pc + 1; pc := rb
-    constant OP_CALL: opcode := "100101";
+    -- | ra:6 | rb:6 | -- if ra < 0: pc := rb
+    constant OP_BLTZ: opcode := "100101";
+
+    -- | ra:6 | rb:6 | -- if ra >= 0: pc := rb
+    constant OP_BGEZ: opcode := "100110";
+
+    -- | ra:6 | rb:6 | -- ra := pc + 7; pc := rb
+    constant OP_CALL: opcode := "100111";
 
     -- | ra:6 | const:6 | -- ra := fifo[const]
-    constant OP_MOVRF: opcode := "100110";
+    constant OP_MOVRF: opcode := "101000";
 
     -- | ra:6 | const:6 | -- fifo[const] := ra
-    constant OP_MOVFR: opcode := "100111";
+    constant OP_MOVFR: opcode := "101001";
 
 end package opcodes;

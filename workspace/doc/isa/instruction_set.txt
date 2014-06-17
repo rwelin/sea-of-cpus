@@ -35,6 +35,8 @@ BR      | -:6 | rb:6 |      -- pc := rb
 BZ      | ra:6 | rb:6 |     -- if ra = 0: pc := rb
 BNZ     | ra:6 | rb:6 |     -- if ra != 0: pc := rb
 BNZD    | ra:6 | rb:6 |     -- if ra != 0: pc := rb; ra := ra - 1
+BLTZ    | ra:6 | rb:6 |     -- if ra < 0: pc := rb
+BGEZ    | ra:6 | rb:6 |     -- if ra >= 0: pc := rb
 CALL    | ra:6 | rb:6 |     -- ra := pc + 7; pc := rb
 MOVRF   | ra:6 | const:6 |  -- ra := fifo[const]
 MOVFR   | ra:6 | const:6 |  -- fifo[const] := ra
