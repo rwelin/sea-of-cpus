@@ -226,7 +226,7 @@ The different instruction types of the instruction set architecture are shown in
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l |}
     \hline
-    \multicolumn{3}{|c|}{Format}       &   Description             \\ \hline
+    \multicolumn{3}{|c|}{Format}        &   Description             \\ \hline
     [17:12]     &   [11:6]  &   [5:0]   &                           \\ \hline
     nop         &   -       &   -       &   Does nothing            \\ \hline
     mova        &   \const              &   acc := const            \\ \hline
@@ -240,6 +240,8 @@ The different instruction types of the instruction set architecture are shown in
     star        &   ra      &   -       &   [ra] := acc             \\ \hline
     ldrr        &   ra      &   rb      &   ra := [rb]              \\ \hline
     strr        &   ra      &   rb      &   [ra] := rb              \\ \hline
+    shfta       &   \const              &   acc := acc >> const     \\ \hline
+    shftar      &   ra      &   -       &   acc := acc >> ra        \\ \hline
     adda        &   \const              &   acc := acc + const      \\ \hline
     suba        &   \const              &   acc := acc - const      \\ \hline
     addar       &   ra      &   const   &   ra := ra + const        \\ \hline
