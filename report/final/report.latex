@@ -108,6 +108,13 @@ Second Marker: & \textbf{Dr K. Nikolic} \\
 
 \section{Introduction}
 
+FPGAs have for a long time been a desirable platform because of their excellent flexibility and relatively good performance.
+Over the last few year, however, the demand for special purpose hardware primitives on the FPGA for ubiquitous operations such as multiply-accumulate has increased rapidly.
+Modern FPGAs have therefore become increasingly complex, with large amounts of traditional configurable logic, RAM blocks and dedicated DSP units.
+
+The aim of the project is to design and implement a small, independent soft processor that utilise these resources.
+A large number of these CPUs should be instantiated on a single FPGA, forming a large processor array that can co-operate to solve larger, parallel tasks.
+
 \section{Background}
 
 \subsection{Instruction set architectures}
@@ -115,7 +122,7 @@ Second Marker: & \textbf{Dr K. Nikolic} \\
 The instruction set architecture (ISA) of a processor can be considered the software interface of the processor.
 It provides the programmer or compiler writer a definition of commands that can be issued to the machine, so called opcodes or machine instructions.
 The ISA also describes the structure of these opcodes such as length and the information contained in the opcode.
-This could be the registers used in the operation, memory locations or specific addressing modes.
+This could be the registers used in the operation, memory locations or specific addressing modes. \parencite[pp 22]{comp-arch-organization}
 
 ISAs are generally divided into two big classes: complex instruction set computer (CISC) and reduced instruction set computer (RISC).
 CISC usually features variable length instructions with complex effects, whereas RISC architectures has fixed length instructions with a single effect.
@@ -131,9 +138,24 @@ Both types of processors usually follow the same architectural pattern with the 
     \item \emph{Write back} -- store the result from the execution stage.
 \end{enumerate}
 
+In addition, instruction set architectures are further classified by how data is fetched and executed upon.
+
+\begin{itemize}
+    \item \emph{Accumulator architecture} -- uses a single register that stores intermediate results.
+    \item \emph{Load/store architecture} -- data is fetched from main memory into registers.
+        Arithmetic and logic operations only operate on registers.
+        This type is very common among RISC architectures such as MIPS and ARM \parencite[pp 9-12]{flynn1995computer}.
+    \item \emph{Register memory architecture} -- operands can be used as memory addresses in order to fetch data from main memory and perform the operation on the data directly,
+        without having to store the data in a register first.
+        The x86 architecture is a well known register memory architecture \parencite[pp 9-12]{flynn1995computer}.
+
+\end{itemize}
+
+
 
 \subsubsection{Addressing modes}
 
+When accessing data from memory, a memory address has to be encoded in the machine instruction.
 Addressing modes are descriptions of how the operands in a given machine instruction are used to calculate a memory address.
 There are several commonly used addressing modes, each with their advantages and disadvantages.
 
@@ -146,16 +168,26 @@ There are several commonly used addressing modes, each with their advantages and
       The content of the register is then used as a memory address.
 
     \item \emph{PC relative addressing} calculates an address from adding a constant to the value of the program counter.
-      Since computer programs have a lot of spacial locality, 90\% of all branches can be calculated using PC relative addressing and an offset of as little as 8 bits.
+      Since computer programs have a lot of spacial locality, 90\% of all branches can be calculated using PC relative addressing and an offset of as little as 8 bits \parencite{isa-design-1995}.
 
 \end{itemize}
 
-
 \subsection{Micro architectures}
 
-The microarchitecture of a processors refers to a specific implementation of a instruction set architecture.
+The microarchitecture of a processors refers to a specific implementation of an instruction set architecture.
+Since the aim of this project is to effectively utilise the hardware on the FPGA, the microarchitecture is very influential on the resulting ISA.
 
-\subsection{DSP48E1 slice}
+\subsubsection{DSP48E1 Slice}
+
+Figure \ref{fig:dsp48e1} shows a diagram of the Xilinx DSP48E1 slice.
+It can perform a large number of different arithmetic and logic operations and is configurable on a per-cycle basis.
+
+The block consists of three main parts: the pre-adder, the multiplier and the ALU.
+It has four main data inputs: A, B, C and D and three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE).
+The pre-adder allows for two of the data inputs (A and D) to be added or subtracted before the resulting signal enters the multiplier.
+The multiplier performs a multiplication on the output of the pre-adder and the B input.
+
+
 
 \begin{figure}
   \caption{Diagram of the DSP48E1 slice \parencite{dsp48e1}}
@@ -163,20 +195,28 @@ The microarchitecture of a processors refers to a specific implementation of a i
   \includegraphics[width=\linewidth]{dsp48e1}
 \end{figure}
 
+\subsubsection{Block RAM}
 
 \subsection{Related work}
 
-- Other attempts at soft-processors
-  - Microblaze, picoblaze
-  - SIMD processors
-  - DSP block focused processors
-- MPPAs
+FPGAs have historically been used for accelerating algorithms by creating custom pipelined, parallel processors, often called hard-core processors.
+However, many programs are more suited for software implementations, and it has therefore become more and more common to use soft-core processors along with the accelerator hardware or standalone.
+Many commercial soft-processors are available including the Xilinx PicoBlaze microcontroller \parencite{picoblaze}, the Xilinx MicroBlaze \parencite{microblaze} and the Altera Nios II processor \parencite{nios2}.
 
-\subsection{Hardware capabilities}
+With the recent addition of special purpose hardware such as the Xilinx DSP48E1 slice, research into soft-processors that utilise these resources has become increasingly popular.
+\cite{cheah2012lean} created a small processor that showcased the capabilities of a single DSP slice.
+They later, developed this into a complete processor \parencite{idea-2012}.
 
-\subsubsection{DSP48E1 Slice}
 
-\subsubsection{Block RAM}
+
+
+
+%- Other attempts at soft-processors
+%  - Microblaze, picoblaze
+%  - SIMD processors
+%  - DSP block focused processors
+%- MPPAs
+
 
 \section{Design}
 
@@ -240,8 +280,8 @@ The different instruction types of the instruction set architecture are shown in
     star        &   ra      &   -       &   [ra] := acc             \\ \hline
     ldrr        &   ra      &   rb      &   ra := [rb]              \\ \hline
     strr        &   ra      &   rb      &   [ra] := rb              \\ \hline
-    shfta       &   \const              &   acc := acc >> const     \\ \hline
-    shftar      &   ra      &   -       &   acc := acc >> ra        \\ \hline
+    shfta       &   \const              &   acc := acc \textgreater\textgreater by const \\ \hline
+    shftar      &   ra      &   -       &   acc := acc logical shift right by ra \\ \hline
     adda        &   \const              &   acc := acc + const      \\ \hline
     suba        &   \const              &   acc := acc - const      \\ \hline
     addar       &   ra      &   const   &   ra := ra + const        \\ \hline
@@ -261,14 +301,14 @@ The different instruction types of the instruction set architecture are shown in
     datao       &   \const              &   datao := const          \\ \hline
     datam       &   \const              &   datam := const          \\ \hline
     cmac        &   -       &   -       &   acc := p + [coefa++] * [dataa++] \\ \hline
-    cstr        &   ra:6    &   -       &   datao := (datao-1) mod (datam+1); [dataa+datao] := ra \\ \hline
+    cstr        &   ra      &   -       &   datao := (datao-1) mod (datam+1); [dataa+datao] := ra \\ \hline
     j           &   \const              &   pc := const             \\ \hline
     br          &   -       &   rb      &   pc := rb                \\ \hline
-    bz          &   ra      &   rb      &   if ra = 0: pc := rb     \\ \hline
-    bnz         &   ra      &   rb      &   if ra != 0: pc := rb    \\ \hline
-    bnzd        &   ra      &   rb      &   if ra != 0: pc := rb; ra := ra - 1 \\ \hline
-    bltz        &   ra      &   rb      &   if rb < 0: pc := rb     \\ \hline
-    bgez        &   ra      &   rb      &   if rb >= 0: pc := rb    \\ \hline
+    bz          &   ra      &   rb      &   if $ra = 0$: pc := rb     \\ \hline
+    bnz         &   ra      &   rb      &   if $ra \neq 0$: pc := rb    \\ \hline
+    bnzd        &   ra      &   rb      &   if $ra \neq 0$: pc := rb; ra := ra - 1 \\ \hline
+    bltz        &   ra      &   rb      &   if $rb < 0$: pc := rb     \\ \hline
+    bgez        &   ra      &   rb      &   if $rb \ge 0$: pc := rb    \\ \hline
     call        &   ra      &   rb      &   ra := pc + 7; pc := rb  \\ \hline
     movrf       &   ra      &   index   &   push back ra to output[index] \\ \hline
     movfr       &   ra      &   index   &   pop front of input[index] \\ \hline
@@ -300,20 +340,46 @@ caption={Chain and grid implementations in \texttt{mkarray}}]
 
 \section{Result}
 
-%- Communication bandwidth
+%- Communication bandwidth and latency
 %- Cycle count for programs
 %  - FIR
 %  - Fibonacci
-%  -
+%  - vector-matrix multiplication (same as FIR essentially)
 %- Size with varying number of fifos
 %- Clock rate impact with different number of cores
+
+\lstinputlisting[
+  label=l-fibonacci,
+caption={Fibonacci implementation}]
+  {fibonacci.s}
+
+\lstinputlisting[
+  label=l-fir,
+caption={Fixed point FIR filter implementation}]
+  {fir_filter.s}
+
+\begin{table}
+\centering
+\caption{Program performance}
+\label{t:program-performance}
+\newcommand{\const}{\multicolumn{2}{c|}{const}}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Program     &   Size (num. instr.)  &   Cycle Count                     &   Exec. Time      \\ \hline
+    Fibonacci   &   110                 &   11047 for fib(10)               &                   \\ \hline
+    Factorial   &   85                  &   224 for 4!                      &                   \\ \hline
+    FIR         &   28                  &   13 setup + 12 outer loop + (4 + taps) inner loop &     \\ \hline
+\end{tabular}
+\end{table}
 
 
 \section{Discussion}
 
 %- Pipeline too long with no benefit (extra hardware)
 %- Low clock frequency
-%- Instruction set should be bigger (shifts, compare, bitwise ops)
+%- Instruction set should be bigger (compare, bitwise ops)
+%- More advanced tools
+%- Additional adder in order to do more efficient pops
 \subsection{Missing functionality}
 
 Although the processor used the arithmetic operations of the DSP48E1 slice effectively, it did not take advantage of its bitwise operations.
