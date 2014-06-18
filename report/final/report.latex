@@ -179,23 +179,36 @@ Since the aim of this project is to effectively utilise the hardware on the FPGA
 
 \subsubsection{DSP48E1 Slice}
 
-Figure \ref{fig:dsp48e1} shows a diagram of the Xilinx DSP48E1 slice.
+Figure \ref{fig:dsp48e1} shows a diagram of the embedded Xilinx DSP48E1 slice.
 It can perform a large number of different arithmetic and logic operations and is configurable on a per-cycle basis.
 
 The block consists of three main parts: the pre-adder, the multiplier and the ALU.
 It has four main data inputs: A, B, C and D and three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE).
 The pre-adder allows for two of the data inputs (A and D) to be added or subtracted before the resulting signal enters the multiplier.
 The multiplier performs a multiplication on the output of the pre-adder and the B input.
-
+The final stage in the DSP slice is the ALU which can take a number of different inputs and perform addition, subtraction and various logic operations.
+The inputs include the C input, the output of the multiplier and inputs A and B concatenated.
+All these inputs and operations are configurable on every clock cycle which makes it a very flexible hardware block. \parencite{dsp48e1}
 
 
 \begin{figure}
-  \caption{Diagram of the DSP48E1 slice \parencite{dsp48e1}}
+  \centering
+  \caption{Diagram of the DSP48E1 slice \parencite[pp 8]{dsp48e1}}
   \label{fig:dsp48e1}
   \includegraphics[width=\linewidth]{dsp48e1}
 \end{figure}
 
 \subsubsection{Block RAM}
+
+Figure \ref{fig:bram} shows a diagram of the Xilinx 36kb block RAM.
+The block RAM can be configured in many ways, including the word size and memory width, different port configurations (e.g. single port, true dual port) and clock inputs.
+
+\begin{figure}
+  \centering
+  \caption{Diagram of the 36kb block RAM \parencite[pp 14]{memory}}
+  \label{fig:bram}
+  \includegraphics[width=0.5\textwidth]{bram}
+\end{figure}
 
 \subsection{Related work}
 
@@ -203,11 +216,17 @@ FPGAs have historically been used for accelerating algorithms by creating custom
 However, many programs are more suited for software implementations, and it has therefore become more and more common to use soft-core processors along with the accelerator hardware or standalone.
 Many commercial soft-processors are available including the Xilinx PicoBlaze microcontroller \parencite{picoblaze}, the Xilinx MicroBlaze \parencite{microblaze} and the Altera Nios II processor \parencite{nios2}.
 
+In research, many different kinds of soft processors have been proposed.
+These include multithreaded processors such as \parencite{octavo-2012} and \parencite{custard} which has automatically generated custom instructions.
+Various VLIW processors have also been developed such as \parencite{vliw} which has runtime configurable number of issue slots.
+Vector processors have also been attempted multiple times \parencite{ultra-fine-2009}\parencite{vespa}.
+
 With the recent addition of special purpose hardware such as the Xilinx DSP48E1 slice, research into soft-processors that utilise these resources has become increasingly popular.
 \cite{cheah2012lean} created a small processor that showcased the capabilities of a single DSP slice.
 They later, developed this into a complete processor \parencite{idea-2012}.
 
-
+There has also been research into multicore architectures such as \parencite{mora-2009} and \parencite{fpga-simd}.
+However, only the latter takes advantage of embedded DSP blocks.
 
 
 
@@ -317,6 +336,21 @@ The different instruction types of the instruction set architecture are shown in
 
 \section{Implementation}
 
+\begin{landscape}
+
+\begin{figure}[p]
+    \caption{Core diagram}
+    \label{fig:core-IV}
+    \resizebox{1.05\linewidth}{!}{\input{core-IV.tex}}
+\end{figure}
+
+\begin{figure}[p]
+    \caption{CMAC configuration}
+    \label{fig:core-cmac}
+    \resizebox{\linewidth}{!}{\input{core-cmac.tex}}
+\end{figure}
+\end{landscape}
+
 \subsection{Tools}
 
 \subsubsection{Assembler}
@@ -349,12 +383,17 @@ caption={Chain and grid implementations in \texttt{mkarray}}]
 %- Clock rate impact with different number of cores
 
 \lstinputlisting[
-  label=l-fibonacci,
-caption={Fibonacci implementation}]
+  label=lst:factorial,
+caption={Recursive factorial implementation}]
+  {factorial.s}
+
+\lstinputlisting[
+  label=lst:fibonacci,
+caption={Recursive fibonacci implementation (nops removed for consistency)}]
   {fibonacci.s}
 
 \lstinputlisting[
-  label=l-fir,
+  label=lst:fir,
 caption={Fixed point FIR filter implementation}]
   {fir_filter.s}
 
@@ -388,5 +427,7 @@ These would have been a useful addition for applications like cryptography where
 %- Simultaneous multi threading because nops
 
 \section{Conclusion}
+
+\printbibliography
 
 \end{document}
