@@ -179,7 +179,7 @@ Since the aim of this project is to effectively utilise the hardware on the FPGA
 
 \subsubsection{DSP48E1 Slice}
 
-Figure \ref{fig:dsp48e1} shows a diagram of the Xilinx DSP48E1 slice.
+Figure \ref{fig:dsp48e1} shows a diagram of the embedded Xilinx DSP48E1 slice.
 It can perform a large number of different arithmetic and logic operations and is configurable on a per-cycle basis.
 
 The block consists of three main parts: the pre-adder, the multiplier and the ALU.
@@ -216,11 +216,17 @@ FPGAs have historically been used for accelerating algorithms by creating custom
 However, many programs are more suited for software implementations, and it has therefore become more and more common to use soft-core processors along with the accelerator hardware or standalone.
 Many commercial soft-processors are available including the Xilinx PicoBlaze microcontroller \parencite{picoblaze}, the Xilinx MicroBlaze \parencite{microblaze} and the Altera Nios II processor \parencite{nios2}.
 
+In research, many different kinds of soft processors have been proposed.
+These include multithreaded processors such as \parencite{octavo-2012} and \parencite{custard} which has automatically generated custom instructions.
+Various VLIW processors have also been developed such as \parencite{vliw} which has runtime configurable number of issue slots.
+Vector processors have also been attempted multiple times \parencite{ultra-fine-2009}\parencite{vespa}.
+
 With the recent addition of special purpose hardware such as the Xilinx DSP48E1 slice, research into soft-processors that utilise these resources has become increasingly popular.
 \cite{cheah2012lean} created a small processor that showcased the capabilities of a single DSP slice.
 They later, developed this into a complete processor \parencite{idea-2012}.
 
-
+There has also been research into multicore architectures such as \parencite{mora-2009} and \parencite{fpga-simd}.
+However, only the latter takes advantage of embedded DSP blocks.
 
 
 
