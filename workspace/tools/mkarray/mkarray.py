@@ -187,7 +187,7 @@ def main():
     elif args.type == 'bichain':
         print(to_vhdl('Bichain{}'.format(args.size), bichain(args.size)))
     elif args.type == 'grid':
-        print(to_vhdl('Grid{dim}x{dim}'.format(dim = args.size), grid(args.size)))
+        print(to_vhdl('Grid{}'.format(args.size), grid(args.size)))
     elif args.type == 'cube':
         print(to_vhdl('Cube{}'.format(args.size), cube(args.size)))
 

@@ -1,0 +1,15 @@
+NOP
+MOVA    | const:12 |        -- acc := const
+MOVAR   | ra:6 |            -- acc := ra
+MOVRA   | ra:6 |            -- ra := acc
+MOVR    | ra:6 | const:6 |  -- ra := const
+MOVRR   | ra:6 | rb:6 |     -- ra := rb
+LDRR    | ra:6 | rb:6 |     -- rb := *ra
+STRR    | ra:6 | rb:6 |     -- *ra := rb
+ADDA    | const:12 |        -- acc := acc + const
+ADDAR   | -:6 | rb:6 |      -- acc := acc + rb
+ADDRM   | ra:6 | rb:6 |     -- ra := ra + *rb
+MULRM   | ra:6 | rb:6 |     -- ra := ra * *rb
+CMAC    | -:12 |            -- acc := p + (*coef++) * (*data++)
+J       | const:12 |        -- pc := const
+BR      | -:6 | rb:6 |      -- pc := rb

@@ -175,6 +175,7 @@ There are several commonly used addressing modes, each with their advantages and
 \subsection{Micro architectures}
 
 The microarchitecture of a processors refers to a specific implementation of an instruction set architecture.
+Although an instruction set architecture can be implemented in more than one microarchitecture, the two are closely related.
 Since the aim of this project is to effectively utilise the hardware on the FPGA, the microarchitecture is very influential on the resulting ISA.
 
 \subsubsection{DSP48E1 Slice}
@@ -245,7 +246,9 @@ The design had of the processor had to take several aspects into account.
     \item As it was going to be target on an FPGA, the dedicated logic in the form of block RAMs and DSP slices had to be used effectively.
     \item The implementation had to a relatively few number of LUTs in order to accommodate for the ratio between LUTs and other dedicated logic.
     \item The processor had to run at a relatively high clock frequency.
+    \item It had to have an instruction set that allowed for good performing DSP programs such as FIR filters, but also allowed for more general computations.
 \end{itemize}
+
 
 %- Proof of concept processor:
 %  - Arithmetic instructions that prove points
@@ -257,6 +260,24 @@ The design had of the processor had to take several aspects into account.
 
 \subsection{Instruction set architecture}
 
+The first constraint on the instruction set architecture was the size of the instruction word.
+Since a single block RAM was going to be used as main memory, the instruction word had to be a possible word width of the RAM in order utilise it efficiently.
+Three different block RAM configurations were considered: 1024$\times$36, 2048$\times$18 and 4096$\times$9.
+
+\begin{itemize}
+  \item 4096$\times$9 -- very small instruction word that would make it difficult to encode the instructions.
+  \item 1024$\times$36 -- too small address space which would make it difficult to store both the program and data.
+  \item 2048$\times$18 -- middle-ground that has a large enough instruction word and an adequate address space.
+\end{itemize}
+
+An 18-bit word size was chosen since the alternatives would result in a too small instruction word or a too small address space.
+This size allows for six bits for the opcode and twelve bits for the operands.
+These twelve bits could be used for three 4-bit register indices, two 6-bit register indices or some combination of register indices and constants.
+Four bits for the register index would allow for a register file with only 16 entries, so a 6-bit register index or equivalently a 64 entry register file was chosen.
+
+The register file was chosen to be 18 bits wide to keep it consistent with the main memory.
+
+
 The different instruction types of the instruction set architecture are shown in table \ref{t:instruction-types}.
 
 \begin{table}
@@ -264,13 +285,13 @@ The different instruction types of the instruction set architecture are shown in
 \caption{Instruction types}
 \label{t:instruction-types}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
-\begin{tabular}{| l | l | l | l |}
+\begin{tabular}{| l | l | l | l | l |}
     \hline
-    Type    & \multicolumn{3}{c|}{format}       \\ \hline
-            & [17:12]   &   [11:6]  &   [5:0]   \\ \hline
-    1       & op        &   -       &   -       \\ \hline
-    2       & op        &   \const              \\ \hline
-    3       & op        &   reg     &   -       \\ \hline
+    Type    & \multicolumn{3}{c|}{Format}  & Example instructions     \\ \hline
+            & [17:12]   &   [11:6]  &   [5:0]   &           \\ \hline
+    1       & op        &   -       &   -       &   Nop     \\ \hline
+    2       & op        &   \const              &   Unconditional absolute jump \\ \hline
+    3       & op        &   reg     &   -       &   \\ \hline
     4       & op        &   -       &   reg     \\ \hline
     5       & op        &   reg     &   reg     \\ \hline
     6       & op        &   reg     &   const   \\ \hline
@@ -336,10 +357,13 @@ The different instruction types of the instruction set architecture are shown in
 
 \section{Implementation}
 
+Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
+
+
 \begin{landscape}
 
 \begin{figure}[p]
-    \caption{Core diagram}
+    \caption{Core diagram. The instruction memory and the data memory are different ports on the same block RAM.}
     \label{fig:core-IV}
     \resizebox{1.05\linewidth}{!}{\input{core-IV.tex}}
 \end{figure}
@@ -353,18 +377,62 @@ The different instruction types of the instruction set architecture are shown in
 
 \subsection{Tools}
 
+\subsubsection{Opcode generator}
+
+In order to keep the opcodes of the instruction words consistent between the assembler and the instruction decode of the core,
+an opcode generator script called \texttt{opcode\_vhdl\_gen} was implemented to generate opcodes automatically from a list of instruction mnemonics.
+From the list of mnemonics, the script generates a VHDL package with opcode constants that can then be used by the rest of the processor.
+Only the first word on each line is used as a mnemonic, the rest is added as a comment to the constant in the VHDL package.
+This list of instructions is used by both the assembler and the opcode generator, which guarantees that the opcodes are consistent between the assembler and the instruction decode.
+The script also makes it more convenient to change the instruction set without having to edit the assembler.
+
+Listing \ref{lst:instruction-set-txt} shows a subset of the Core's instruction set in this format and listing \ref{lst:instruction-set-vhdl} shows the corresponding VHDL package generated by \texttt{opcode\_vhdl\_gen}.
+
+\lstinputlisting[
+  label=lst:instruction-set-txt,
+caption={Subset of the Core's instruction set in the format used by the opcode generator and the assembler.}]
+  {instruction_set_example.txt}
+
+\lstinputlisting[
+  label=lst:instruction-set-vhdl,
+caption={Subset of the Core's instruction set as a VHDL package generated by \texttt{opcode\_vhdl\_gen} from Listing \ref{lst:instruction-set-txt}}]
+  {instruction_set_example.vhd}
+
+
 \subsubsection{Assembler}
+
+In order to make it easier to program the device, a simple assembler was created.
+The assembly language features instruction mnemonics, register names, signed decimal constants, labels and comments.
+Labels make it easier to write branch instructions and add static data.
+The assembler does two passes on the assembly code: the first to translate labels to memory addresses and the second to generate the machine code.
+
+\subsubsection{Test template generator}
+
+Automated testing was used in order to ensure correct execution of the processor and its components.
+This was achieved by implementing a test template generator, called \texttt{mktest}.
+The program takes a VHDL entity and outputs a corresponding test template.
+Inputs and expected outputs could then be added to the template and when run as a simulation, would automatically fail on incorrect output.
+This method ensured faster refactoring and the test files also serve as a guarantee of the components behaviour.
+
+Listing \ref{lst:test-template} shows the template generated for the Core entity.
+
+\lstinputlisting[
+  language=vhdl,
+  label=lst:test-template,
+caption={Test template generated for \texttt{Core} by \texttt{mktest}}]
+  {core_test_template.vhd}
 
 \subsubsection{Array generator}
 
 Due to the Xilinx tools lack of support for versions of VHDL later than VHDL 1993, a program had to be written in order to generate large configurations of processor cores.
 The resulting program, called \texttt{mkarray}, takes a topology and a size as arguments and outputs a VHDL entity.
 The entity instantiates the given number of cores, connected according to the given topology.
+The entity uses the same interface as the core itself, but leaves the FIFO signals unconnected for the user to connect.
 
-Two configurations were implemented: a one directional chain and a two-dimensional grid pattern with bi-directional communication.
-These can be seen in listing \ref{l-mkarray-sample}.
+Four configurations were implemented: a one directional chain, a bi-directional chain, a two-dimensional grid pattern with bi-directional communication and a three-dimensional grid pattern with bi-directional communication.
+The one directional chain and the 2D grid can be seen in listing \ref{l-mkarray-sample}.
 
-Since the configurations are simply expressed using Python, additional topologies can easily be expressed.
+Since the configurations are simply expressed using Python, additional topologies can easily be added.
 
 \lstinputlisting[
   language=python,
@@ -397,17 +465,19 @@ caption={Recursive fibonacci implementation (nops removed for consistency)}]
 caption={Fixed point FIR filter implementation}]
   {fir_filter.s}
 
+Table \ref{t:program-performance} shows size and speed of three programs.
+
 \begin{table}
 \centering
 \caption{Program performance}
 \label{t:program-performance}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
-\begin{tabular}{| l | l | l | l |}
+\begin{tabular}{| l | l | l | l | l |}
     \hline
-    Program     &   Size (num. instr.)  &   Cycle Count                     &   Exec. Time      \\ \hline
-    Fibonacci   &   110                 &   11047 for fib(10)               &                   \\ \hline
-    Factorial   &   85                  &   224 for 4!                      &                   \\ \hline
-    FIR         &   28                  &   13 setup + 12 outer loop + (4 + taps) inner loop &     \\ \hline
+    Program     &   Size (\#instr.)  &   Size w/o nops   &   Cycle Count                     &   Exec. Time      \\ \hline
+    Fibonacci   &   110                 &   24              &   11047 for fib(10)               &                   \\ \hline
+    Factorial   &   85                  &   17              &   224 for 4!                      &                   \\ \hline
+    FIR         &   28                  &   16              &   13 setup + 12 outer loop + (4 + taps) inner loop &     \\ \hline
 \end{tabular}
 \end{table}
 
@@ -423,6 +493,25 @@ caption={Fixed point FIR filter implementation}]
 
 Although the processor used the arithmetic operations of the DSP48E1 slice effectively, it did not take advantage of its bitwise operations.
 These would have been a useful addition for applications like cryptography where the exclusive-or operation is frequently used.
+Another missing feature is a dedicated compare instruction.
+The equivalent operation is done using a subtraction and a conditional branch, but by having a compare instruction, a dedicated status register and conditional execution of instructions based on this status register would save up to 7 clock cycles per comparison.
+
+As opposed to many modern processors, this design does not have any forwarding paths (short cuts from the output of a data source like the block RAM or DSP block to the their inputs).
+The current design could benefit from a forwarding path from the output of the DSP block to the input of the block RAM.
+This would save two cycles for memory operations that are dependent on a DSP instruction.
+Although this would be of some benefit, it would mean extra area usage to an already too large processor.
+
+The tools created in addition to the processor were useful during the development processes, but would not be considered very good as a product.
+The assembler, especially, lacks basic features such as checking the correct operands for a given instruction.
+The latest version only fails if the mnemonic is incorrect or more than two operands are given.
+This makes it very easy to make mistakes.
+
+Additionally, programming a large number of processor using only the given assembly language is extremely difficult.
+Even though the model ensures that a program that reads from the input FIFOs are correct even when the FIFO is empty,
+the model is prone to deadlocks if, for example, two processors try to read from each other at the same time.
+They will simply lock up, waiting for each other.
+A programmer would have to keep these hazards in mind which would make programming very complex.
+A better programming language and/or debugging tools that detect these problems is therefore needed.
 
 %- Simultaneous multi threading because nops
 
