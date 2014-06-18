@@ -330,6 +330,21 @@ The different instruction types of the instruction set architecture are shown in
 
 \section{Implementation}
 
+\begin{landscape}
+
+\begin{figure}[p]
+    \caption{Core diagram}
+    \label{fig:core-IV}
+    \resizebox{1.05\linewidth}{!}{\input{core-IV.tex}}
+\end{figure}
+
+\begin{figure}[p]
+    \caption{CMAC configuration}
+    \label{fig:core-cmac}
+    \resizebox{\linewidth}{!}{\input{core-cmac.tex}}
+\end{figure}
+\end{landscape}
+
 \subsection{Tools}
 
 \subsubsection{Assembler}
