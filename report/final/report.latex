@@ -423,4 +423,6 @@ These would have been a useful addition for applications like cryptography where
 
 \section{Conclusion}
 
+\printbibliography
+
 \end{document}
