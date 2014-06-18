@@ -383,12 +383,17 @@ caption={Chain and grid implementations in \texttt{mkarray}}]
 %- Clock rate impact with different number of cores
 
 \lstinputlisting[
-  label=l-fibonacci,
-caption={Fibonacci implementation}]
+  label=lst:factorial,
+caption={Recursive factorial implementation}]
+  {factorial.s}
+
+\lstinputlisting[
+  label=lst:fibonacci,
+caption={Recursive fibonacci implementation (nops removed for consistency)}]
   {fibonacci.s}
 
 \lstinputlisting[
-  label=l-fir,
+  label=lst:fir,
 caption={Fixed point FIR filter implementation}]
   {fir_filter.s}
 
