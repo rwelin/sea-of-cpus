@@ -175,6 +175,7 @@ There are several commonly used addressing modes, each with their advantages and
 \subsection{Micro architectures}
 
 The microarchitecture of a processors refers to a specific implementation of an instruction set architecture.
+Although an instruction set architecture can be implemented in more than one microarchitecture, the two are closely related.
 Since the aim of this project is to effectively utilise the hardware on the FPGA, the microarchitecture is very influential on the resulting ISA.
 
 \subsubsection{DSP48E1 Slice}
@@ -264,12 +265,18 @@ Since a single block RAM was going to be used as main memory, the instruction wo
 Three different block RAM configurations were considered: 1024$\times$36, 2048$\times$18 and 4096$\times$9.
 
 \begin{itemize}
-  \item \emph{4096$\times$9} -- very small instruction word that would make it difficult to encode the instructions.
-  \item \emph{1024$\times$36} -- too small address space which would make it difficult to store both the program and data.
-  \item \emph{2048$\times$18} -- middle-ground that has a large enough instruction word and an adequate address space.
+  \item 4096$\times$9 -- very small instruction word that would make it difficult to encode the instructions.
+  \item 1024$\times$36 -- too small address space which would make it difficult to store both the program and data.
+  \item 2048$\times$18 -- middle-ground that has a large enough instruction word and an adequate address space.
 \end{itemize}
 
 An 18-bit word size was chosen since the alternatives would result in a too small instruction word or a too small address space.
+This size allows for six bits for the opcode and twelve bits for the operands.
+These twelve bits could be used for three 4-bit register indices, two 6-bit register indices or some combination of register indices and constants.
+Four bits for the register index would allow for a register file with only 16 entries, so a 6-bit register index or equivalently a 64 entry register file was chosen.
+
+The register file was chosen to be 18 bits wide to keep it consistent with the main memory.
+
 
 The different instruction types of the instruction set architecture are shown in table \ref{t:instruction-types}.
 
@@ -278,13 +285,13 @@ The different instruction types of the instruction set architecture are shown in
 \caption{Instruction types}
 \label{t:instruction-types}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
-\begin{tabular}{| l | l | l | l |}
+\begin{tabular}{| l | l | l | l | l |}
     \hline
-    Type    & \multicolumn{3}{c|}{format}       \\ \hline
-            & [17:12]   &   [11:6]  &   [5:0]   \\ \hline
-    1       & op        &   -       &   -       \\ \hline
-    2       & op        &   \const              \\ \hline
-    3       & op        &   reg     &   -       \\ \hline
+    Type    & \multicolumn{3}{c|}{Format}  & Example instructions     \\ \hline
+            & [17:12]   &   [11:6]  &   [5:0]   &           \\ \hline
+    1       & op        &   -       &   -       &   Nop     \\ \hline
+    2       & op        &   \const              &   Unconditional absolute jump \\ \hline
+    3       & op        &   reg     &   -       &   \\ \hline
     4       & op        &   -       &   reg     \\ \hline
     5       & op        &   reg     &   reg     \\ \hline
     6       & op        &   reg     &   const   \\ \hline
@@ -350,10 +357,13 @@ The different instruction types of the instruction set architecture are shown in
 
 \section{Implementation}
 
+Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
+
+
 \begin{landscape}
 
 \begin{figure}[p]
-    \caption{Core diagram}
+    \caption{Core diagram. The instruction memory and the data memory are different ports on the same block RAM.}
     \label{fig:core-IV}
     \resizebox{1.05\linewidth}{!}{\input{core-IV.tex}}
 \end{figure}
@@ -422,7 +432,7 @@ The entity uses the same interface as the core itself, but leaves the FIFO signa
 Four configurations were implemented: a one directional chain, a bi-directional chain, a two-dimensional grid pattern with bi-directional communication and a three-dimensional grid pattern with bi-directional communication.
 The one directional chain and the 2D grid can be seen in listing \ref{l-mkarray-sample}.
 
-Since the configurations are simply expressed using Python, additional topologies can easily be expressed.
+Since the configurations are simply expressed using Python, additional topologies can easily be added.
 
 \lstinputlisting[
   language=python,
@@ -455,17 +465,19 @@ caption={Recursive fibonacci implementation (nops removed for consistency)}]
 caption={Fixed point FIR filter implementation}]
   {fir_filter.s}
 
+Table \ref{t:program-performance} shows size and speed of three programs.
+
 \begin{table}
 \centering
 \caption{Program performance}
 \label{t:program-performance}
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
-\begin{tabular}{| l | l | l | l |}
+\begin{tabular}{| l | l | l | l | l |}
     \hline
-    Program     &   Size (num. instr.)  &   Cycle Count                     &   Exec. Time      \\ \hline
-    Fibonacci   &   110                 &   11047 for fib(10)               &                   \\ \hline
-    Factorial   &   85                  &   224 for 4!                      &                   \\ \hline
-    FIR         &   28                  &   13 setup + 12 outer loop + (4 + taps) inner loop &     \\ \hline
+    Program     &   Size (\#instr.)  &   Size w/o nops   &   Cycle Count                     &   Exec. Time      \\ \hline
+    Fibonacci   &   110                 &   24              &   11047 for fib(10)               &                   \\ \hline
+    Factorial   &   85                  &   17              &   224 for 4!                      &                   \\ \hline
+    FIR         &   28                  &   16              &   13 setup + 12 outer loop + (4 + taps) inner loop &     \\ \hline
 \end{tabular}
 \end{table}
 
@@ -481,6 +493,25 @@ caption={Fixed point FIR filter implementation}]
 
 Although the processor used the arithmetic operations of the DSP48E1 slice effectively, it did not take advantage of its bitwise operations.
 These would have been a useful addition for applications like cryptography where the exclusive-or operation is frequently used.
+Another missing feature is a dedicated compare instruction.
+The equivalent operation is done using a subtraction and a conditional branch, but by having a compare instruction, a dedicated status register and conditional execution of instructions based on this status register would save up to 7 clock cycles per comparison.
+
+As opposed to many modern processors, this design does not have any forwarding paths (short cuts from the output of a data source like the block RAM or DSP block to the their inputs).
+The current design could benefit from a forwarding path from the output of the DSP block to the input of the block RAM.
+This would save two cycles for memory operations that are dependent on a DSP instruction.
+Although this would be of some benefit, it would mean extra area usage to an already too large processor.
+
+The tools created in addition to the processor were useful during the development processes, but would not be considered very good as a product.
+The assembler, especially, lacks basic features such as checking the correct operands for a given instruction.
+The latest version only fails if the mnemonic is incorrect or more than two operands are given.
+This makes it very easy to make mistakes.
+
+Additionally, programming a large number of processor using only the given assembly language is extremely difficult.
+Even though the model ensures that a program that reads from the input FIFOs are correct even when the FIFO is empty,
+the model is prone to deadlocks if, for example, two processors try to read from each other at the same time.
+They will simply lock up, waiting for each other.
+A programmer would have to keep these hazards in mind which would make programming very complex.
+A better programming language and/or debugging tools that detect these problems is therefore needed.
 
 %- Simultaneous multi threading because nops
 
