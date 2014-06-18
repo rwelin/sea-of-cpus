@@ -184,12 +184,17 @@ architecture behav of Bichain32 is
         
 
 begin
-        outputs(0) <= outputs_139962970446984(1);
-        outputs_full_139962970446984(1) <= fifo_full(0)
-
-        outputs(1) <= outputs_139962970497880(0);
-        outputs_full_139962970497880(0) <= fifo_full(1);
- 
+        outputs(0) <= outputs_139962970497880(0);
+        outputs_full_139962970497880(0) <= outputs_full(0);
+        
+        outputs(1) <= outputs_139962970446984(1);
+        outputs_full_139962970446984(1) <= outputs_full(1);
+        
+        fifo_inputs_139962970497880(0) <= fifo_inputs(0);
+        fifo_full(0) <= fifo_full_139962970497880(0);
+                
+        fifo_inputs_139962970446984(1) <= fifo_inputs(1);
+        fifo_full(1) <= fifo_full_139962970446984(1);
     
         fifo_inputs_139962970446928(1) <= outputs_139962970446984(0);
         outputs_full_139962970446984(0) <= fifo_full_139962970446928(1);

@@ -104,12 +104,17 @@ architecture behav of Bichain16 is
         
 
 begin
-        outputs(0) <= outputs_140446931844232(1);
-        outputs_full_140446931844232(1) <= fifo_full(0)
-
-        outputs(1) <= outputs_140446931845016(0);
-        outputs_full_140446931845016(0) <= fifo_full(1);
- 
+        outputs(0) <= outputs_140446931845016(0);
+        outputs_full_140446931845016(0) <= outputs_full(0);
+        
+        outputs(1) <= outputs_140446931844232(1);
+        outputs_full_140446931844232(1) <= outputs_full(1);
+        
+        fifo_inputs_140446931845016(0) <= fifo_inputs(0);
+        fifo_full(0) <= fifo_full_140446931845016(0);
+                
+        fifo_inputs_140446931844232(1) <= fifo_inputs(1);
+        fifo_full(1) <= fifo_full_140446931844232(1);
     
         fifo_inputs_140446931844176(1) <= outputs_140446931844232(0);
         outputs_full_140446931844232(0) <= fifo_full_140446931844176(1);

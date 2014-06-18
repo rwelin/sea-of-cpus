@@ -1304,11 +1304,17 @@ architecture behav of Bichain256 is
         
 
 begin
-        outputs(0) <= outputs_140423305571464(1);
-        outputs_full_140423305571464(1) <= fifo_full(0)
-
-        outputs(1) <= outputs_140423305675720(0);
-        outputs_full_140423305675720(0) <= fifo_full(1);
+        outputs(0) <= outputs_140423305675720(0);
+        outputs_full_140423305675720(0) <= outputs_full(0);
+        
+        outputs(1) <= outputs_140423305571464(1);
+        outputs_full_140423305571464(1) <= outputs_full(1);
+        
+        fifo_inputs_140423305675720(0) <= fifo_inputs(0);
+        fifo_full(0) <= fifo_full_140423305675720(0);
+                
+        fifo_inputs_140423305571464(1) <= fifo_inputs(1);
+        fifo_full(1) <= fifo_full_140423305571464(1);
  
     
         fifo_inputs_140423305571408(1) <= outputs_140423305571464(0);

@@ -44,12 +44,17 @@ architecture behav of Bichain4 is
         
 
 begin
-        outputs(0) <= outputs_139870630104144(1);
-        outputs_full_139870630104144(1) <= fifo_full(0)
-
-        outputs(1) <= outputs_139870630104368(0);
-        outputs_full_139870630104368(0) <= fifo_full(1);
- 
+        outputs(0) <= outputs_139870630104368(0);
+        outputs_full_139870630104368(0) <= outputs_full(0);
+        
+        outputs(1) <= outputs_139870630104144(1);
+        outputs_full_139870630104144(1) <= outputs_full(1);
+        
+        fifo_inputs_139870630104368(0) <= fifo_inputs(0);
+        fifo_full(0) <= fifo_full_139870630104368(0);
+                
+        fifo_inputs_139870630104144(1) <= fifo_inputs(1);
+        fifo_full(1) <= fifo_full_139870630104144(1);
     
         fifo_inputs_139870630104088(1) <= outputs_139870630104144(0);
         outputs_full_139870630104144(0) <= fifo_full_139870630104088(1);

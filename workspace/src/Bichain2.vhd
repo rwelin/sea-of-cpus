@@ -35,12 +35,17 @@ architecture behav of Bichain2 is
 
 begin
 
-        outputs(0) <= outputs_140608335653968(1);
-        outputs_full_140608335653968(1) <= fifo_full(0)
-
-        outputs(1) <= outputs_140608335653912(0);
-        outputs_full_140608335653912(0) <= fifo_full(1);
+        outputs(0) <= outputs_140608335653912(0);
+        outputs_full_140608335653912(0) <= outputs_full(0);
         
+        outputs(1) <= outputs_140608335653968(1);
+        outputs_full_140608335653968(1) <= outputs_full(1);
+        
+        fifo_inputs_140608335653912(0) <= fifo_inputs(0);
+        fifo_full(0) <= fifo_full_140608335653912(0);
+                
+        fifo_inputs_140608335653968(1) <= fifo_inputs(1);
+        fifo_full(1) <= fifo_full_140608335653968(1);
     
         fifo_inputs_140608335653912(1) <= outputs_140608335653968(0);
         outputs_full_140608335653968(0) <= fifo_full_140608335653912(1);

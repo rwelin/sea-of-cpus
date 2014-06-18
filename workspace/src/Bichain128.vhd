@@ -664,12 +664,18 @@ architecture behav of Bichain128 is
         
 
 begin
-        outputs(0) <= outputs_140248006679688(1);
-        outputs_full_140248006679688(1) <= fifo_full(0)
 
-        outputs(1) <= outputs_140248006752408(0);
-        outputs_full_140248006752408(0) <= fifo_full(1);
- 
+        outputs(0) <= outputs_140248006752408(0);
+        outputs_full_140248006752408(0) <= outputs_full(0);
+        
+        outputs(1) <= outputs_140248006679688(1);
+        outputs_full_140248006679688(1) <= outputs_full(1);
+        
+        fifo_inputs_140248006752408(0) <= fifo_inputs(0);
+        fifo_full(0) <= fifo_full_140248006752408(0);
+                
+        fifo_inputs_140248006679688(1) <= fifo_inputs(1);
+        fifo_full(1) <= fifo_full_140248006679688(1);
     
         fifo_inputs_140248006679632(1) <= outputs_140248006679688(0);
         outputs_full_140248006679688(0) <= fifo_full_140248006679632(1);

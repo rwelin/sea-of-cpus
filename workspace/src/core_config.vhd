@@ -34,7 +34,7 @@ package core_config is
 
     type InstructionType is (Normal, Mult);
 
-    constant NUM_CORE_FIFOS: integer := 1;
+    constant NUM_CORE_FIFOS: integer := 2;
 
     type fifo_inputs_t is
     record
