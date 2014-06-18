@@ -1,5 +1,15 @@
 # Sea-of-CPUs
 
+## Place and route
+
+Create a Xilinx project in any way you see fit and include all files in the `src`
+directory except `dual_clk_fifo.vhd`. This directory contains the Core itself
+and a wide range of different array configuration of the Core. Choose any
+top level module. In order to synthesise the design a FIFO has to be generated
+using the CORE generator. Generate a native FIFO with independent read and write
+clocks with word size of 18 bits and length 16. Almost-full/empty flags are not
+necessary.
+
 ## Testing
 
 In order to efficiently test components the Sea-of-CPUs uses a testing framework
@@ -70,7 +80,7 @@ relevant testbenches with a single shell command.
 #### Run specific tests
 
 1. Create the simulation directory for and the makefile for a testbench
-   `test/EntetyTest.vhd`:
+   `test/EntityTest.vhd`:
 
     $ make sim/EntityTest/makefile
 
@@ -83,6 +93,10 @@ relevant testbenches with a single shell command.
    `isim.log`:
 
     $ make isim.log
+
+In order to watch the simulation run the following command in the simulation directory:
+
+    $ make sim
 
 ## Source directories
 
@@ -101,7 +115,9 @@ Contains all hardware sources.
 
 ### test
 
-Contains all testbench sources.
+Contains all testbench sources. Subdirectory `programs/asm` contains all assembly
+programs written for the project. Running `make` in `test/programs` builds all
+assembly programs to VHDL packages.
 
 ### tools
 

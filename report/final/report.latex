@@ -27,6 +27,7 @@
 \definecolor{cyellow}{rgb}{0.7,0.4,0}
 \definecolor{cgray}{rgb}{0.5,0.5,0.5}
 \definecolor{clightlightgray}{gray}{1.0}
+\def\fpgamodel{xc7v585tffg1761-2}
 
 \usepackage{listings}
 \lstset{
@@ -114,6 +115,7 @@ Modern FPGAs have therefore become increasingly complex, with large amounts of t
 
 The aim of the project is to design and implement a small, independent soft processor that utilise these resources.
 A large number of these CPUs should be instantiated on a single FPGA, forming a large processor array that can co-operate to solve larger, parallel tasks.
+An array of this kind could be very useful in field such as image processing, cryptography and video compression.
 
 \section{Background}
 
@@ -184,11 +186,11 @@ Figure \ref{fig:dsp48e1} shows a diagram of the embedded Xilinx DSP48E1 slice.
 It can perform a large number of different arithmetic and logic operations and is configurable on a per-cycle basis.
 
 The block consists of three main parts: the pre-adder, the multiplier and the ALU.
-It has four main data inputs: A, B, C and D and three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE).
+It has four main data inputs: A (30 bits), B (18 bits), C (47 bits) and D (25 bits), three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE) and one main data output P (47 bits).
 The pre-adder allows for two of the data inputs (A and D) to be added or subtracted before the resulting signal enters the multiplier.
 The multiplier performs a multiplication on the output of the pre-adder and the B input.
 The final stage in the DSP slice is the ALU which can take a number of different inputs and perform addition, subtraction and various logic operations.
-The inputs include the C input, the output of the multiplier and inputs A and B concatenated.
+The inputs include the C input, the output of the multiplier, inputs A and B concatenated and the previous result of the ALU.
 All these inputs and operations are configurable on every clock cycle which makes it a very flexible hardware block. \parencite{dsp48e1}
 
 
@@ -238,7 +240,7 @@ However, only the latter takes advantage of embedded DSP blocks.
 %- MPPAs
 
 
-\section{Design}
+\section{Design and implementation}
 
 The design had of the processor had to take several aspects into account.
 
@@ -277,6 +279,9 @@ Four bits for the register index would allow for a register file with only 16 en
 
 The register file was chosen to be 18 bits wide to keep it consistent with the main memory.
 
+In addition to the register file a 47-bit accumulator was added to the design in order to take advantage of the full width of the DSP block.
+A large result could alternatively be cropped down to the 18 bits of the register file and memory, but keeping the full result adds the flexibility for the programmer and makes it possible to store the result in three registers or memory locations if necessary.
+Also since only two operands can be encoded in the instruction word, the accumulator adds an extra implicit operand which makes it possible to utilise three of the four DSP block inputs.
 
 The different instruction types of the instruction set architecture are shown in table \ref{t:instruction-types}.
 
@@ -287,17 +292,63 @@ The different instruction types of the instruction set architecture are shown in
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l | l |}
     \hline
-    Type    & \multicolumn{3}{c|}{Format}  & Example instructions     \\ \hline
+    Type    & \multicolumn{3}{c|}{Format}  & Example instruction     \\ \hline
             & [17:12]   &   [11:6]  &   [5:0]   &           \\ \hline
     1       & op        &   -       &   -       &   Nop     \\ \hline
     2       & op        &   \const              &   Unconditional absolute jump \\ \hline
-    3       & op        &   reg     &   -       &   \\ \hline
-    4       & op        &   -       &   reg     \\ \hline
-    5       & op        &   reg     &   reg     \\ \hline
-    6       & op        &   reg     &   const   \\ \hline
+    3       & op        &   reg     &   -       &   Move register to accumulator \\ \hline
+    4       & op        &   -       &   reg     &   Add register to accumulator \\ \hline
+    5       & op        &   reg     &   reg     &   Multiply-accumulate \\ \hline
+    6       & op        &   reg     &   const   &   Register increment \\ \hline
 \end{tabular}
 \end{table}
 
+A key difference between processors is the placement of the main memory in relation to the ALU in the pipeline.
+In the beginning, a design heavily inspired by the MIPS architecture was considered and can be seen in figure \ref{core-1}.
+
+\begin{landscape}
+\begin{figure}
+    \caption{Initial processor design.}
+    \label{core-1}
+    \resizebox{\linewidth}{!}{\input{core-1.tex}}
+\end{figure}
+\end{landscape}
+
+It has the same
+execution stages: instruction fetch, instruction decode and register read,
+execution, memory read/write, register write-back. This processor can support
+absolute immediate addressing, PC-relative addressing and register indirect
+addressing for memory accesses.
+
+An alternative to this design swaps the position of the data memory and the DSP
+in the pipeline. This results in a few differences. Only absolute addressing and register indirect
+addressing is available for both data and branches. However, the design supports ALU
+instructions that operate directly on data from the block RAM. This is useful
+useful for implementing FIR filters for example.
+This design can be seen in figure \ref{core-2}.
+
+\begin{landscape}
+\begin{figure}
+    \caption{Initial memory first processor design.}
+    \label{core-2}
+    \resizebox{\linewidth}{!}{\input{core-2.tex}}
+\end{figure}
+\end{landscape}
+
+The second one was chosen, due to the advantage of execution direct on memory without having to load data into a register first.
+
+Both these processors had a register file with three read ports and one write port.
+Even though only two registers could be addressed from the instruction word, the third read port was considered to be used for other special purpose registers such as a stack pointer or  subroutine return addresses.
+This was removed in the final design since the same functionality could be achieved with only two read ports (this optimization saved around 25 logic elements).
+
+The pipeline registers that circumvented the DSP block in order to achieve \texttt{mov} instructions from the register file were also removed by using the registers inside the DSP block instead.
+
+One big addition to the design is the logical shift right path that goes along the DSP block.
+This separate compute path was added since the DSP block can only perform 17-bit shifts and a more flexible shift is necessary for fixed point FIR filters.
+
+The final instruction set of the processor is shown in table \ref{t:instruction-set}.
+
+Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
 
 \begin{table}
 \centering
@@ -355,10 +406,19 @@ The different instruction types of the instruction set architecture are shown in
 \end{tabular}
 \end{table}
 
-\section{Implementation}
-
-Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
-
+\begin{table}
+\centering
+\caption{Number of delay slots for different instruction types. Delay slots is the number of cycles that have to pass from the instruction fetch of one instruction until the result is produced or it has taken effect. One delay slot means that an instruction can use the result of preceding instruction immediately.}
+\label{t:instruction-delay-slots}
+\begin{tabular}{| l | l |}
+    \hline
+    Instruction type    &   Delay slots     \\ \hline
+    Multiplication      &   10              \\ \hline
+    Other arithmetic    &   9               \\ \hline
+    Jump                &   7               \\ \hline
+    CMAC register operations (dataa, datao, datam, coefa) & 1   \\ \hline
+\end{tabular}
+\end{table}
 
 \begin{landscape}
 
@@ -376,6 +436,10 @@ Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
 \end{landscape}
 
 \subsection{Tools}
+
+\subsubsection{Build system}
+
+The build system of the project consists of a number of \texttt{make} scripts that allows for automatic compilation of assembly programs and automated testing of the Core and its components.
 
 \subsubsection{Opcode generator}
 
@@ -449,6 +513,24 @@ caption={Chain and grid implementations in \texttt{mkarray}}]
 %  - vector-matrix multiplication (same as FIR essentially)
 %- Size with varying number of fifos
 %- Clock rate impact with different number of cores
+
+\subsection{Hardware}
+
+By instantiating a series of bi-directional chains of varying lengths it is possible to determine the scalability of the system.
+Figure \ref{fig:bichain-vary-length} shows post place-and-route resource usage and clock period.
+As can be observed in the graph, the number of slice registers per core stays constant over the range entire range.
+The number of slice LUTs per core goes down slightly as more cores are added, suggesting that the tools are able to share some slice LUTs between cores.
+The most significant result, however, is that the clock period increases rapidly with the number of instantiated cores.
+Ten cores can run at just under 3 ns, but 64 cores can only run as slowly as somewhat under 4 ns.
+This suggests that the tools have great difficulty placing the cores efficiently even at a utilization as low as 20\%.
+
+\begin{figure}[p]
+    \caption{Post place-and-route data of bi-directional chains of varying lengths on a Xilinx Virtex 7 \fpgamodel.}
+    \label{fig:bichain-vary-length}
+    \includegraphics[width=\linewidth]{bichain_vary_length}
+\end{figure}
+
+\subsection{Software}
 
 \lstinputlisting[
   label=lst:factorial,

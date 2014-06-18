@@ -6,6 +6,9 @@ TEST_PROGRAMS=$(addprefix ../../test/programs/vhdl/,$(addsuffix .vhd,$(basename 
 
 build: ${SIM}.exe
 
+sim: ${SIM}.exe
+	./$< -gui
+
 clean:
 	rm -rf isim.log ${SIM}.prj ${SIM}.exe ${SIM}.tcl fuse.log fuseRelaunch.cmd fuse.xmsgs isim isim.wdb
 

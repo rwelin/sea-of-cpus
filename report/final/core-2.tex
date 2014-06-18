@@ -1,7 +1,7 @@
 % Graphic for TeX using PGF
-% Title: /home/nilewapp/project/sea-of-cpus/workspace/doc/core-IV.dia
+% Title: /home/nilewapp/project/sea-of-cpus/workspace/doc/core-mem-first.dia
 % Creator: Dia v0.97.2
-% CreationDate: Wed Jun 18 18:04:31 2014
+% CreationDate: Mon Feb  3 19:39:36 2014
 % For: nilewapp
 % \usepackage{tikz}
 % The following commands are not supported in PSTricks at present
@@ -52,14 +52,14 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.505882, 0.756863, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (46.000000\du,7.000000\du)--(46.000000\du,15.000000\du)--(54.000000\du,15.000000\du)--(54.000000\du,7.000000\du)--cycle;
+\fill (45.000000\du,7.000000\du)--(45.000000\du,15.000000\du)--(53.000000\du,15.000000\du)--(53.000000\du,7.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (46.000000\du,7.000000\du)--(46.000000\du,15.000000\du)--(54.000000\du,15.000000\du)--(54.000000\du,7.000000\du)--cycle;
+\draw (45.000000\du,7.000000\du)--(45.000000\du,15.000000\du)--(53.000000\du,15.000000\du)--(53.000000\du,7.000000\du)--cycle;
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (50.000000\du,11.000000\du){Data memory};
+\node at (49.000000\du,11.000000\du){Data memory};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -231,6 +231,19 @@
 \pgfsetstrokecolor{dialinecolor}
 \draw (36.000000\du,9.000000\du)--(37.000000\du,9.000000\du);
 }
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (32.000000\du,25.000000\du)--(34.000000\du,25.000000\du);
+}
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
@@ -270,18 +283,18 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.921569, 0.372549, 0.372549}
 \pgfsetfillcolor{dialinecolor}
-\fill (32.000000\du,24.000000\du)--(32.000000\du,26.000000\du)--(36.000000\du,26.000000\du)--(36.000000\du,24.000000\du)--cycle;
+\fill (28.000000\du,23.000000\du)--(28.000000\du,27.000000\du)--(32.000000\du,27.000000\du)--(32.000000\du,23.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (32.000000\du,24.000000\du)--(32.000000\du,26.000000\du)--(36.000000\du,26.000000\du)--(36.000000\du,24.000000\du)--cycle;
+\draw (28.000000\du,23.000000\du)--(28.000000\du,27.000000\du)--(32.000000\du,27.000000\du)--(32.000000\du,23.000000\du)--cycle;
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (34.000000\du,25.000000\du){Sign };
+\node at (30.000000\du,25.000000\du){Sign };
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (34.000000\du,25.800000\du){extend};
+\node at (30.000000\du,25.800000\du){extend};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -299,21 +312,16 @@
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
-\pgfsetmiterjoin
 \pgfsetbuttcap
 {
-\definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetfillcolor{dialinecolor}
 % was here!!!
 \pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (39.000000\du,25.000000\du)--(46.000000\du,25.000000\du)--(50.000000\du,25.000000\du);
-}}
-% setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (46.000000\du,13.000000\du){Address};
+\draw (39.000000\du,9.000000\du)--(45.000000\du,9.000000\du);
+}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -326,7 +334,38 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (24.000000\du,25.000000\du)--(29.000000\du,25.000000\du);
+\draw (39.000000\du,25.000000\du)--(46.000000\du,25.000000\du)--(50.000000\du,25.000000\du);
+}}
+% setfont left to latex
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\node[anchor=west] at (45.000000\du,13.000000\du){Address};
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (36.000000\du,25.000000\du)--(37.000000\du,25.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (24.000000\du,25.000000\du)--(28.000000\du,25.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -362,30 +401,54 @@
 \pgfsetmiterjoin
 \pgfsetbuttcap
 {
-\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetfillcolor{dialinecolor}
 % was here!!!
 \pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (41.000000\du,8.000000\du)--(41.000000\du,3.000000\du)--(50.000000\du,3.000000\du);
+\draw (43.000000\du,9.000000\du)--(43.000000\du,3.000000\du)--(50.000000\du,3.000000\du);
 }}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (65.000000\du,3.000000\du)--(67.000000\du,3.000000\du);
+}}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (63.000000\du,2.000000\du)--(63.000000\du,4.000000\du)--(65.000000\du,4.000000\du)--(65.000000\du,2.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (63.000000\du,2.000000\du)--(63.000000\du,4.000000\du)--(65.000000\du,4.000000\du)--(65.000000\du,2.000000\du)--cycle;
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (46.000000\du,9.000000\du){Write};
+\node[anchor=west] at (45.000000\du,9.000000\du){Write};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (46.000000\du,9.800000\du){data};
+\node[anchor=west] at (45.000000\du,9.800000\du){data};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (52.000000\du,9.000000\du){Read};
+\node[anchor=west] at (51.000000\du,9.000000\du){Read};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (52.000000\du,9.800000\du){data};
+\node[anchor=west] at (51.000000\du,9.800000\du){data};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -397,7 +460,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (81.000000\du,15.000000\du)--(82.000000\du,15.000000\du);
+\draw (74.000000\du,15.000000\du)--(76.000000\du,15.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -411,7 +474,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,3.000000\du)--(59.000000\du,3.000000\du)--(59.000000\du,-2.000000\du)--(17.000000\du,-2.000000\du)--(17.000000\du,-4.000000\du)--(18.000000\du,-4.000000\du);
+\draw (58.000000\du,3.000000\du)--(58.000000\du,-2.000000\du)--(17.000000\du,-2.000000\du)--(17.000000\du,-4.000000\du)--(18.000000\du,-4.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -420,10 +483,10 @@
 \pgfsetbuttcap
 \definecolor{dialinecolor}{rgb}{0.564706, 0.933333, 0.564706}
 \pgfsetfillcolor{dialinecolor}
-\fill (82.000000\du,13.000000\du)--(83.000000\du,14.000000\du)--(83.000000\du,17.000000\du)--(82.000000\du,18.000000\du)--cycle;
+\fill (76.000000\du,13.000000\du)--(77.000000\du,14.000000\du)--(77.000000\du,17.000000\du)--(76.000000\du,18.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (82.000000\du,13.000000\du)--(83.000000\du,14.000000\du)--(83.000000\du,17.000000\du)--(82.000000\du,18.000000\du)--cycle;
+\draw (76.000000\du,13.000000\du)--(77.000000\du,14.000000\du)--(77.000000\du,17.000000\du)--(76.000000\du,18.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -436,7 +499,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (83.000000\du,16.000000\du)--(85.000000\du,16.000000\du)--(85.000000\du,31.000000\du)--(26.000000\du,31.000000\du)--(26.000000\du,17.000000\du)--(28.000000\du,17.000000\du);
+\draw (77.000000\du,16.000000\du)--(78.000000\du,16.000000\du)--(78.000000\du,31.000000\du)--(26.000000\du,31.000000\du)--(26.000000\du,17.000000\du)--(28.000000\du,17.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -450,7 +513,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (83.000000\du,27.000000\du)--(84.000000\du,27.000000\du)--(84.000000\du,30.000000\du)--(25.000000\du,30.000000\du)--(25.000000\du,15.000000\du)--(28.000000\du,15.000000\du);
+\draw (74.000000\du,28.000000\du)--(75.000000\du,28.000000\du)--(75.000000\du,30.000000\du)--(25.000000\du,30.000000\du)--(25.000000\du,15.000000\du)--(28.000000\du,15.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -463,7 +526,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (24.000000\du,28.000000\du)--(29.000000\du,28.000000\du);
+\draw (24.000000\du,28.000000\du)--(34.000000\du,28.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -476,7 +539,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (31.000000\du,28.000000\du)--(37.000000\du,28.000000\du);
+\draw (36.000000\du,28.000000\du)--(37.000000\du,28.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -494,10 +557,10 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (65.000000\du,27.000000\du)--(65.000000\du,29.000000\du)--(67.000000\du,29.000000\du)--(67.000000\du,27.000000\du)--cycle;
+\fill (63.000000\du,27.000000\du)--(63.000000\du,29.000000\du)--(65.000000\du,29.000000\du)--(65.000000\du,27.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (65.000000\du,27.000000\du)--(65.000000\du,29.000000\du)--(67.000000\du,29.000000\du)--(67.000000\du,27.000000\du)--cycle;
+\draw (63.000000\du,27.000000\du)--(63.000000\du,29.000000\du)--(65.000000\du,29.000000\du)--(65.000000\du,27.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -522,7 +585,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (52.000000\du,28.000000\du)--(55.000000\du,28.000000\du);
+\draw (52.000000\du,28.000000\du)--(54.000000\du,28.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -535,7 +598,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (67.000000\du,28.000000\du)--(71.000000\du,28.000000\du);
+\draw (65.000000\du,28.000000\du)--(67.000000\du,28.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -548,7 +611,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (73.000000\du,28.000000\du)--(75.000000\du,28.000000\du);
+\draw (69.000000\du,28.000000\du)--(72.000000\du,28.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -576,7 +639,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,1.000000\du)--(58.000000\du,1.000000\du)--(58.000000\du,-1.000000\du)--(18.507600\du,-1.018500\du)--(18.500000\du,-3.500000\du);
+\draw (56.000000\du,1.000000\du)--(57.000000\du,1.000000\du)--(57.000000\du,-1.000000\du)--(18.507600\du,-1.018500\du)--(18.500000\du,-3.500000\du);
 }}
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
@@ -593,8 +656,45 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (78.000000\du,15.000000\du)--(79.000000\du,15.000000\du);
+\draw (70.000000\du,15.000000\du)--(72.000000\du,15.000000\du);
 }
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (69.000000\du,3.000000\du)--(72.000000\du,3.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (74.000000\du,3.000000\du)--(75.000000\du,3.000000\du)--(75.000000\du,14.000000\du)--(76.000000\du,14.000000\du);
+}}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (67.000000\du,2.000000\du)--(67.000000\du,4.000000\du)--(69.000000\du,4.000000\du)--(69.000000\du,2.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (67.000000\du,2.000000\du)--(67.000000\du,4.000000\du)--(69.000000\du,4.000000\du)--(69.000000\du,2.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -631,20 +731,20 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (29.000000\du,24.000000\du)--(29.000000\du,26.000000\du)--(31.000000\du,26.000000\du)--(31.000000\du,24.000000\du)--cycle;
+\fill (34.000000\du,24.000000\du)--(34.000000\du,26.000000\du)--(36.000000\du,26.000000\du)--(36.000000\du,24.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (29.000000\du,24.000000\du)--(29.000000\du,26.000000\du)--(31.000000\du,26.000000\du)--(31.000000\du,24.000000\du)--cycle;
+\draw (34.000000\du,24.000000\du)--(34.000000\du,26.000000\du)--(36.000000\du,26.000000\du)--(36.000000\du,24.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (29.000000\du,27.000000\du)--(29.000000\du,29.000000\du)--(31.000000\du,29.000000\du)--(31.000000\du,27.000000\du)--cycle;
+\fill (34.000000\du,27.000000\du)--(34.000000\du,29.000000\du)--(36.000000\du,29.000000\du)--(36.000000\du,27.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (29.000000\du,27.000000\du)--(29.000000\du,29.000000\du)--(31.000000\du,29.000000\du)--(31.000000\du,27.000000\du)--cycle;
+\draw (34.000000\du,27.000000\du)--(34.000000\du,29.000000\du)--(36.000000\du,29.000000\du)--(36.000000\du,27.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -661,20 +761,44 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (79.000000\du,14.000000\du)--(79.000000\du,16.000000\du)--(81.000000\du,16.000000\du)--(81.000000\du,14.000000\du)--cycle;
+\fill (72.000000\du,2.000000\du)--(72.000000\du,4.000000\du)--(74.000000\du,4.000000\du)--(74.000000\du,2.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (79.000000\du,14.000000\du)--(79.000000\du,16.000000\du)--(81.000000\du,16.000000\du)--(81.000000\du,14.000000\du)--cycle;
+\draw (72.000000\du,2.000000\du)--(72.000000\du,4.000000\du)--(74.000000\du,4.000000\du)--(74.000000\du,2.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (75.000000\du,27.000000\du)--(75.000000\du,29.000000\du)--(77.000000\du,29.000000\du)--(77.000000\du,27.000000\du)--cycle;
+\fill (72.000000\du,14.000000\du)--(72.000000\du,16.000000\du)--(74.000000\du,16.000000\du)--(74.000000\du,14.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (75.000000\du,27.000000\du)--(75.000000\du,29.000000\du)--(77.000000\du,29.000000\du)--(77.000000\du,27.000000\du)--cycle;
+\draw (72.000000\du,14.000000\du)--(72.000000\du,16.000000\du)--(74.000000\du,16.000000\du)--(74.000000\du,14.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (72.000000\du,27.000000\du)--(72.000000\du,29.000000\du)--(74.000000\du,29.000000\du)--(74.000000\du,27.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (72.000000\du,27.000000\du)--(72.000000\du,29.000000\du)--(74.000000\du,29.000000\du)--(74.000000\du,27.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (56.000000\du,3.000000\du)--(63.000000\du,3.000000\du);
+}}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -718,13 +842,13 @@
 \pgfsetmiterjoin
 \pgfsetbuttcap
 {
-\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetfillcolor{dialinecolor}
 % was here!!!
 \pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (39.000000\du,11.000000\du)--(41.000000\du,11.000000\du)--(41.000000\du,8.000000\du)--(44.000000\du,8.000000\du);
+\draw (39.000000\du,11.000000\du)--(41.000000\du,11.000000\du)--(41.000000\du,12.000000\du)--(43.000000\du,12.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -732,11 +856,11 @@
 \pgfsetmiterjoin
 \pgfsetbuttcap
 {
-\definecolor{dialinecolor}{rgb}{0.000000, 1.000000, 0.000000}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetfillcolor{dialinecolor}
 % was here!!!
 \pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 1.000000, 0.000000}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
 \draw (39.000000\du,21.000000\du)--(50.000000\du,21.000000\du);
 }}
@@ -752,7 +876,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (83.000000\du,15.000000\du)--(86.000000\du,15.000000\du)--(86.000000\du,32.000000\du)--(27.000000\du,32.000000\du)--(27.000000\du,21.000000\du)--(28.000000\du,21.000000\du);
+\draw (77.000000\du,15.000000\du)--(79.000000\du,15.000000\du)--(79.000000\du,32.000000\du)--(27.000000\du,32.000000\du)--(27.000000\du,21.000000\du)--(28.000000\du,21.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -770,13 +894,13 @@
 \pgfsetmiterjoin
 \pgfsetbuttcap
 {
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 1.000000}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetfillcolor{dialinecolor}
 % was here!!!
 \pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 1.000000}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (40.000000\du,9.000000\du)--(40.000000\du,1.000000\du)--(46.000000\du,1.000000\du);
+\draw (43.000000\du,3.000000\du)--(43.000000\du,1.000000\du)--(46.000000\du,1.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -862,7 +986,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,9.000000\du)--(55.000000\du,9.000000\du);
+\draw (55.000000\du,9.000000\du)--(54.000000\du,9.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -870,36 +994,36 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,8.000000\du)--(55.000000\du,10.000000\du)--(57.000000\du,10.000000\du)--(57.000000\du,8.000000\du)--cycle;
+\fill (54.000000\du,8.000000\du)--(54.000000\du,10.000000\du)--(56.000000\du,10.000000\du)--(56.000000\du,8.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,8.000000\du)--(55.000000\du,10.000000\du)--(57.000000\du,10.000000\du)--(57.000000\du,8.000000\du)--cycle;
+\draw (54.000000\du,8.000000\du)--(54.000000\du,10.000000\du)--(56.000000\du,10.000000\du)--(56.000000\du,8.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.921569, 0.372549, 0.372549}
 \pgfsetfillcolor{dialinecolor}
-\fill (70.000000\du,6.000000\du)--(70.000000\du,22.000000\du)--(78.000000\du,22.000000\du)--(78.000000\du,6.000000\du)--cycle;
+\fill (62.000000\du,7.000000\du)--(62.000000\du,20.000000\du)--(70.000000\du,20.000000\du)--(70.000000\du,7.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (70.000000\du,6.000000\du)--(70.000000\du,22.000000\du)--(78.000000\du,22.000000\du)--(78.000000\du,6.000000\du)--cycle;
+\draw (62.000000\du,7.000000\du)--(62.000000\du,20.000000\du)--(70.000000\du,20.000000\du)--(70.000000\du,7.000000\du)--cycle;
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node at (74.000000\du,14.000000\du){DSP};
+\node at (66.000000\du,13.500000\du){DSP};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (70.000000\du,8.000000\du){A};
+\node[anchor=west] at (62.000000\du,9.000000\du){A};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (70.000000\du,12.000000\du){B};
+\node[anchor=west] at (62.000000\du,12.000000\du){B};
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (70.000000\du,16.000000\du){C};
+\node[anchor=west] at (62.000000\du,15.000000\du){C};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -911,7 +1035,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (60.000000\du,8.000000\du)--(61.000000\du,8.000000\du);
+\draw (60.000000\du,9.000000\du)--(62.000000\du,9.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -924,12 +1048,12 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (60.000000\du,12.000000\du)--(61.000000\du,12.000000\du);
+\draw (60.000000\du,12.000000\du)--(62.000000\du,12.000000\du);
 }
 % setfont left to latex
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (76.900000\du,15.000000\du){P};
+\node[anchor=west] at (68.900000\du,15.000000\du){P};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -941,7 +1065,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (60.000000\du,17.000000\du)--(61.000000\du,17.000000\du);
+\draw (60.000000\du,15.000000\du)--(62.000000\du,15.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -977,26 +1101,30 @@
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
 \node[anchor=east] at (57.000000\du,13.000000\du){1};
+% setfont left to latex
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\node[anchor=west] at (62.000000\du,18.000000\du){D};
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,27.000000\du)--(55.000000\du,29.000000\du)--(57.000000\du,29.000000\du)--(57.000000\du,27.000000\du)--cycle;
+\fill (54.000000\du,27.000000\du)--(54.000000\du,29.000000\du)--(56.000000\du,29.000000\du)--(56.000000\du,27.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,27.000000\du)--(55.000000\du,29.000000\du)--(57.000000\du,29.000000\du)--(57.000000\du,27.000000\du)--cycle;
+\draw (54.000000\du,27.000000\du)--(54.000000\du,29.000000\du)--(56.000000\du,29.000000\du)--(56.000000\du,27.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (71.000000\du,27.000000\du)--(71.000000\du,29.000000\du)--(73.000000\du,29.000000\du)--(73.000000\du,27.000000\du)--cycle;
+\fill (67.000000\du,27.000000\du)--(67.000000\du,29.000000\du)--(69.000000\du,29.000000\du)--(69.000000\du,27.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (71.000000\du,27.000000\du)--(71.000000\du,29.000000\du)--(73.000000\du,29.000000\du)--(73.000000\du,27.000000\du)--cycle;
+\draw (67.000000\du,27.000000\du)--(67.000000\du,29.000000\du)--(69.000000\du,29.000000\du)--(69.000000\du,27.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1008,7 +1136,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,28.000000\du)--(61.000000\du,28.000000\du);
+\draw (56.000000\du,28.000000\du)--(63.000000\du,28.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1022,7 +1150,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,9.000000\du)--(59.000000\du,9.000000\du);
+\draw (56.000000\du,9.000000\du)--(59.000000\du,9.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1030,13 +1158,13 @@
 \pgfsetmiterjoin
 \pgfsetbuttcap
 {
-\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetfillcolor{dialinecolor}
 % was here!!!
 \pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (41.000000\du,11.000000\du)--(41.000000\du,17.000000\du)--(50.000000\du,17.000000\du);
+\draw (41.000000\du,12.000000\du)--(41.000000\du,17.000000\du)--(50.000000\du,17.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1080,7 +1208,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,25.000000\du)--(58.000000\du,25.000000\du)--(58.000000\du,23.000000\du)--(59.000000\du,23.000000\du);
+\draw (56.000000\du,25.000000\du)--(57.000000\du,25.000000\du)--(57.000000\du,23.000000\du)--(59.000000\du,23.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1094,7 +1222,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,21.000000\du)--(59.000000\du,21.000000\du);
+\draw (56.000000\du,21.000000\du)--(59.000000\du,21.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1108,7 +1236,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (57.000000\du,17.000000\du)--(59.000000\du,17.000000\du);
+\draw (56.000000\du,17.000000\du)--(59.000000\du,17.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1121,7 +1249,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (52.000000\du,17.000000\du)--(55.000000\du,17.000000\du);
+\draw (52.000000\du,17.000000\du)--(54.000000\du,17.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1129,10 +1257,10 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,16.000000\du)--(55.000000\du,18.000000\du)--(57.000000\du,18.000000\du)--(57.000000\du,16.000000\du)--cycle;
+\fill (54.000000\du,16.000000\du)--(54.000000\du,18.000000\du)--(56.000000\du,18.000000\du)--(56.000000\du,16.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,16.000000\du)--(55.000000\du,18.000000\du)--(57.000000\du,18.000000\du)--(57.000000\du,16.000000\du)--cycle;
+\draw (54.000000\du,16.000000\du)--(54.000000\du,18.000000\du)--(56.000000\du,18.000000\du)--(56.000000\du,16.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1144,7 +1272,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (52.000000\du,21.000000\du)--(55.000000\du,21.000000\du);
+\draw (52.000000\du,21.000000\du)--(54.000000\du,21.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1152,10 +1280,10 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,20.000000\du)--(55.000000\du,22.000000\du)--(57.000000\du,22.000000\du)--(57.000000\du,20.000000\du)--cycle;
+\fill (54.000000\du,20.000000\du)--(54.000000\du,22.000000\du)--(56.000000\du,22.000000\du)--(56.000000\du,20.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,20.000000\du)--(55.000000\du,22.000000\du)--(57.000000\du,22.000000\du)--(57.000000\du,20.000000\du)--cycle;
+\draw (54.000000\du,20.000000\du)--(54.000000\du,22.000000\du)--(56.000000\du,22.000000\du)--(56.000000\du,20.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1167,7 +1295,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (52.000000\du,25.000000\du)--(55.000000\du,25.000000\du);
+\draw (52.000000\du,25.000000\du)--(54.000000\du,25.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1175,10 +1303,10 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,24.000000\du)--(55.000000\du,26.000000\du)--(57.000000\du,26.000000\du)--(57.000000\du,24.000000\du)--cycle;
+\fill (54.000000\du,24.000000\du)--(54.000000\du,26.000000\du)--(56.000000\du,26.000000\du)--(56.000000\du,24.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,24.000000\du)--(55.000000\du,26.000000\du)--(57.000000\du,26.000000\du)--(57.000000\du,24.000000\du)--cycle;
+\draw (54.000000\du,24.000000\du)--(54.000000\du,26.000000\du)--(56.000000\du,26.000000\du)--(56.000000\du,24.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1190,7 +1318,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (52.000000\du,3.000000\du)--(55.000000\du,3.000000\du);
+\draw (52.000000\du,3.000000\du)--(54.000000\du,3.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1198,10 +1326,10 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,2.000000\du)--(55.000000\du,4.000000\du)--(57.000000\du,4.000000\du)--(57.000000\du,2.000000\du)--cycle;
+\fill (54.000000\du,2.000000\du)--(54.000000\du,4.000000\du)--(56.000000\du,4.000000\du)--(56.000000\du,2.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,2.000000\du)--(55.000000\du,4.000000\du)--(57.000000\du,4.000000\du)--(57.000000\du,2.000000\du)--cycle;
+\draw (54.000000\du,2.000000\du)--(54.000000\du,4.000000\du)--(56.000000\du,4.000000\du)--(56.000000\du,2.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1213,7 +1341,7 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (52.000000\du,1.000000\du)--(55.000000\du,1.000000\du);
+\draw (52.000000\du,1.000000\du)--(54.000000\du,1.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1221,10 +1349,10 @@
 \pgfsetmiterjoin
 \definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
 \pgfsetfillcolor{dialinecolor}
-\fill (55.000000\du,0.000000\du)--(55.000000\du,2.000000\du)--(57.000000\du,2.000000\du)--(57.000000\du,0.000000\du)--cycle;
+\fill (54.000000\du,0.000000\du)--(54.000000\du,2.000000\du)--(56.000000\du,2.000000\du)--(56.000000\du,0.000000\du)--cycle;
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (55.000000\du,0.000000\du)--(55.000000\du,2.000000\du)--(57.000000\du,2.000000\du)--(57.000000\du,0.000000\du)--cycle;
+\draw (54.000000\du,0.000000\du)--(54.000000\du,2.000000\du)--(56.000000\du,2.000000\du)--(56.000000\du,0.000000\du)--cycle;
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1237,7 +1365,7 @@
 \pgfsetarrowsend{to}
 {\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (58.000000\du,3.000000\du)--(58.000000\du,5.000000\du)--(59.000000\du,5.000000\du);
+\draw (57.000000\du,3.000000\du)--(57.000000\du,5.000000\du)--(59.000000\du,5.000000\du);
 }}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1261,7 +1389,20 @@
 \pgfsetarrowsend{to}
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
-\draw (54.000000\du,9.000000\du)--(55.000000\du,9.000000\du);
+\draw (60.000000\du,18.000000\du)--(62.000000\du,18.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (53.000000\du,9.000000\du)--(54.000000\du,9.000000\du);
 }
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
@@ -1293,6 +1434,240 @@
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
 \node[anchor=west] at (18.000000\du,13.800000\du){data};
+% setfont left to latex
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\node[anchor=west] at (28.000000\du,12.000000\du){Read};
+% setfont left to latex
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\node[anchor=west] at (28.000000\du,12.800000\du){register 3};
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (24.000000\du,12.000000\du)--(28.000000\du,12.000000\du);
+}
+% setfont left to latex
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\node[anchor=west] at (33.650000\du,13.000000\du){Read};
+% setfont left to latex
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\node[anchor=west] at (33.650000\du,13.800000\du){data 3};
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (36.000000\du,13.000000\du)--(37.000000\du,13.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (37.000000\du,12.000000\du)--(37.000000\du,14.000000\du)--(39.000000\du,14.000000\du)--(39.000000\du,12.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (37.000000\du,12.000000\du)--(37.000000\du,14.000000\du)--(39.000000\du,14.000000\du)--(39.000000\du,12.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+\definecolor{dialinecolor}{rgb}{0.564706, 0.933333, 0.564706}
+\pgfsetfillcolor{dialinecolor}
+\fill (43.000000\du,11.000000\du)--(44.000000\du,12.000000\du)--(44.000000\du,14.000000\du)--(43.000000\du,15.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (43.000000\du,11.000000\du)--(44.000000\du,12.000000\du)--(44.000000\du,14.000000\du)--(43.000000\du,15.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (44.000000\du,13.000000\du)--(45.000000\du,13.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (39.000000\du,13.000000\du)--(40.000000\du,13.000000\du)--(40.000000\du,13.000000\du)--(42.000000\du,14.000000\du)--(43.000000\du,14.000000\du);
+}}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (50.000000\du,18.000000\du)--(50.000000\du,20.000000\du)--(52.000000\du,20.000000\du)--(52.000000\du,18.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (50.000000\du,18.000000\du)--(50.000000\du,20.000000\du)--(52.000000\du,20.000000\du)--(52.000000\du,18.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (56.000000\du,19.000000\du)--(59.000000\du,19.000000\du);
+}}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (52.000000\du,19.000000\du)--(54.000000\du,19.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (54.000000\du,18.000000\du)--(54.000000\du,20.000000\du)--(56.000000\du,20.000000\du)--(56.000000\du,18.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (54.000000\du,18.000000\du)--(54.000000\du,20.000000\du)--(56.000000\du,20.000000\du)--(56.000000\du,18.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (40.000000\du,13.000000\du)--(40.000000\du,19.000000\du)--(50.000000\du,19.000000\du);
+}}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (74.000000\du,22.000000\du)--(75.000000\du,22.000000\du)--(75.000000\du,17.000000\du)--(76.000000\du,17.000000\du);
+}}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (63.000000\du,21.000000\du)--(63.000000\du,23.000000\du)--(65.000000\du,23.000000\du)--(65.000000\du,21.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (63.000000\du,21.000000\du)--(63.000000\du,23.000000\du)--(65.000000\du,23.000000\du)--(65.000000\du,21.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (65.000000\du,22.000000\du)--(67.000000\du,22.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (69.000000\du,22.000000\du)--(72.000000\du,22.000000\du);
+}
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (72.000000\du,21.000000\du)--(72.000000\du,23.000000\du)--(74.000000\du,23.000000\du)--(74.000000\du,21.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (72.000000\du,21.000000\du)--(72.000000\du,23.000000\du)--(74.000000\du,23.000000\du)--(74.000000\du,21.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetmiterjoin
+\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
+\pgfsetfillcolor{dialinecolor}
+\fill (67.000000\du,21.000000\du)--(67.000000\du,23.000000\du)--(69.000000\du,23.000000\du)--(69.000000\du,21.000000\du)--cycle;
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (67.000000\du,21.000000\du)--(67.000000\du,23.000000\du)--(69.000000\du,23.000000\du)--(69.000000\du,21.000000\du)--cycle;
+\pgfsetlinewidth{0.100000\du}
+\pgfsetdash{}{0pt}
+\pgfsetdash{}{0pt}
+\pgfsetbuttcap
+{
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetfillcolor{dialinecolor}
+% was here!!!
+\pgfsetarrowsend{to}
+\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
+\pgfsetstrokecolor{dialinecolor}
+\draw (60.000000\du,22.000000\du)--(63.000000\du,22.000000\du);
+}
 \pgfsetlinewidth{0.100000\du}
 \pgfsetdash{}{0pt}
 \pgfsetdash{}{0pt}
@@ -1322,521 +1697,4 @@
 \definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
 \pgfsetstrokecolor{dialinecolor}
 \node[anchor=west] at (12.000000\du,9.800000\du){data};
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-\definecolor{dialinecolor}{rgb}{0.564706, 0.933333, 0.564706}
-\pgfsetfillcolor{dialinecolor}
-\fill (44.000000\du,7.000000\du)--(45.000000\du,8.000000\du)--(45.000000\du,10.000000\du)--(44.000000\du,11.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (44.000000\du,7.000000\du)--(45.000000\du,8.000000\du)--(45.000000\du,10.000000\du)--(44.000000\du,11.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 1.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 1.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (42.000000\du,21.000000\du)--(42.000000\du,9.000000\du)--(44.000000\du,9.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (43.000000\du,25.000000\du)--(43.000000\du,10.000000\du)--(44.000000\du,10.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (45.000000\du,9.000000\du)--(46.000000\du,9.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-\definecolor{dialinecolor}{rgb}{0.564706, 0.933333, 0.564706}
-\pgfsetfillcolor{dialinecolor}
-\fill (44.000000\du,11.000000\du)--(45.000000\du,12.000000\du)--(45.000000\du,14.000000\du)--(44.000000\du,15.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (44.000000\du,11.000000\du)--(45.000000\du,12.000000\du)--(45.000000\du,14.000000\du)--(44.000000\du,15.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{1.000000, 0.647059, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (43.000000\du,14.000000\du)--(44.000000\du,14.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (45.000000\du,13.000000\du)--(46.000000\du,13.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 1.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (39.000000\du,9.000000\du)--(40.000000\du,9.000000\du)--(40.000000\du,12.000000\du)--(44.000000\du,12.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (31.000000\du,25.000000\du)--(32.000000\du,25.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (36.044922\du,25.000000\du)--(37.000000\du,25.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{1.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (41.000000\du,13.000000\du)--(44.000000\du,13.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (61.000000\du,7.000000\du)--(61.000000\du,9.000000\du)--(63.000000\du,9.000000\du)--(63.000000\du,7.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (61.000000\du,7.000000\du)--(61.000000\du,9.000000\du)--(63.000000\du,9.000000\du)--(63.000000\du,7.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (61.000000\du,11.000000\du)--(61.000000\du,13.000000\du)--(63.000000\du,13.000000\du)--(63.000000\du,11.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (61.000000\du,11.000000\du)--(61.000000\du,13.000000\du)--(63.000000\du,13.000000\du)--(63.000000\du,11.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (61.000000\du,16.000000\du)--(61.000000\du,18.000000\du)--(63.000000\du,18.000000\du)--(63.000000\du,16.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (61.000000\du,16.000000\du)--(61.000000\du,18.000000\du)--(63.000000\du,18.000000\du)--(63.000000\du,16.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (61.000000\du,27.000000\du)--(61.000000\du,29.000000\du)--(63.000000\du,29.000000\du)--(63.000000\du,27.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (61.000000\du,27.000000\du)--(61.000000\du,29.000000\du)--(63.000000\du,29.000000\du)--(63.000000\du,27.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (63.000000\du,28.000000\du)--(65.000000\du,28.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (63.000000\du,8.000000\du)--(70.000000\du,8.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (63.000000\du,12.000000\du)--(70.000000\du,12.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (63.000000\du,17.000000\du)--(65.000000\du,17.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (79.000000\du,27.000000\du)--(79.000000\du,29.000000\du)--(81.000000\du,29.000000\du)--(81.000000\du,27.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (79.000000\du,27.000000\du)--(79.000000\du,29.000000\du)--(81.000000\du,29.000000\du)--(81.000000\du,27.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-\definecolor{dialinecolor}{rgb}{0.564706, 0.933333, 0.564706}
-\pgfsetfillcolor{dialinecolor}
-\fill (82.000000\du,25.000000\du)--(83.000000\du,26.000000\du)--(83.000000\du,28.000000\du)--(82.000000\du,29.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (82.000000\du,25.000000\du)--(83.000000\du,26.000000\du)--(83.000000\du,28.000000\du)--(82.000000\du,29.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (77.000000\du,28.000000\du)--(79.000000\du,28.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (78.000000\du,28.000000\du)--(78.000000\du,26.000000\du)--(82.000000\du,26.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (81.000000\du,28.000000\du)--(82.000000\du,28.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (65.000000\du,16.000000\du)--(65.000000\du,18.000000\du)--(67.000000\du,18.000000\du)--(67.000000\du,16.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (65.000000\du,16.000000\du)--(65.000000\du,18.000000\du)--(67.000000\du,18.000000\du)--(67.000000\du,16.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (67.000000\du,17.000000\du)--(68.000000\du,17.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-\definecolor{dialinecolor}{rgb}{0.564706, 0.933333, 0.564706}
-\pgfsetfillcolor{dialinecolor}
-\fill (68.000000\du,14.000000\du)--(69.000000\du,15.000000\du)--(69.000000\du,17.000000\du)--(68.000000\du,18.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (68.000000\du,14.000000\du)--(69.000000\du,15.000000\du)--(69.000000\du,17.000000\du)--(68.000000\du,18.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (64.000000\du,17.000000\du)--(64.000000\du,15.000000\du)--(68.000000\du,15.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (69.000000\du,16.000000\du)--(70.000000\du,16.000000\du);
-}
-% setfont left to latex
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (40.900100\du,25.650000\du){Instruction constant};
-% setfont left to latex
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (41.813500\du,28.587500\du){Write register};
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (53.000000\du,3.000000\du)--(53.000000\du,6.000000\du)--(55.000000\du,6.000000\du);
-}}
-% setfont left to latex
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\node[anchor=west] at (53.163500\du,5.475000\du){FIFO output};
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (64.000000\du,20.000000\du)--(64.000000\du,22.000000\du)--(66.000000\du,22.000000\du)--(66.000000\du,20.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (64.000000\du,20.000000\du)--(64.000000\du,22.000000\du)--(66.000000\du,22.000000\du)--(66.000000\du,20.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (65.000000\du,24.000000\du)--(65.000000\du,26.000000\du)--(67.000000\du,26.000000\du)--(67.000000\du,24.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (65.000000\du,24.000000\du)--(65.000000\du,26.000000\du)--(67.000000\du,26.000000\du)--(67.000000\du,24.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.921569, 0.372549, 0.372549}
-\pgfsetfillcolor{dialinecolor}
-\fill (61.000000\du,20.000000\du)--(61.000000\du,22.000000\du)--(63.000000\du,22.000000\du)--(63.000000\du,20.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (61.000000\du,20.000000\du)--(61.000000\du,22.000000\du)--(63.000000\du,22.000000\du)--(63.000000\du,20.000000\du)--cycle;
-% setfont left to latex
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\node at (62.000000\du,21.000000\du){SRL};
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (60.000000\du,21.000000\du)--(61.000000\du,21.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (63.000000\du,21.000000\du)--(64.000000\du,21.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (66.000000\du,21.000000\du)--(67.000000\du,21.000000\du)--(67.000000\du,23.000000\du)--(64.000000\du,23.000000\du)--(64.000000\du,25.000000\du)--(65.000000\du,25.000000\du);
-}}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (67.000000\du,25.000000\du)--(71.000000\du,25.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (73.000000\du,25.000000\du)--(75.000000\du,25.000000\du);
-}
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (75.000000\du,24.000000\du)--(75.000000\du,26.000000\du)--(77.000000\du,26.000000\du)--(77.000000\du,24.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (75.000000\du,24.000000\du)--(75.000000\du,26.000000\du)--(77.000000\du,26.000000\du)--(77.000000\du,24.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\definecolor{dialinecolor}{rgb}{0.874510, 0.937255, 1.000000}
-\pgfsetfillcolor{dialinecolor}
-\fill (71.000000\du,24.000000\du)--(71.000000\du,26.000000\du)--(73.000000\du,26.000000\du)--(73.000000\du,24.000000\du)--cycle;
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (71.000000\du,24.000000\du)--(71.000000\du,26.000000\du)--(73.000000\du,26.000000\du)--(73.000000\du,24.000000\du)--cycle;
-\pgfsetlinewidth{0.100000\du}
-\pgfsetdash{}{0pt}
-\pgfsetdash{}{0pt}
-\pgfsetmiterjoin
-\pgfsetbuttcap
-{
-\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetfillcolor{dialinecolor}
-% was here!!!
-\pgfsetarrowsend{to}
-{\pgfsetcornersarced{\pgfpoint{0.000000\du}{0.000000\du}}\definecolor{dialinecolor}{rgb}{0.000000, 0.000000, 0.000000}
-\pgfsetstrokecolor{dialinecolor}
-\draw (77.000000\du,25.000000\du)--(80.000000\du,25.000000\du)--(80.000000\du,17.000000\du)--(82.000000\du,17.000000\du);
-}}
 \end{tikzpicture}
