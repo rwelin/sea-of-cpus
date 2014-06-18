@@ -127,6 +127,16 @@ def chain(length):
 
     return cores
 
+def bichain(length):
+    cores = [ Core([None]*2) for i in range(length) ]
+    for i, c in enumerate(cores):
+        if i != length-1:
+            c.out_cores[0] = Output(cores[i+1], 1)
+        if i != 0:
+            c.out_cores[1] = Output(cores[i-1], 0)
+
+    return cores
+
 def grid(dim):
     cores = [ [ Core([None]*4) for i in range(dim) ] for j in range(dim) ]
 
@@ -144,17 +154,42 @@ def grid(dim):
 
     return [ c for row in cores for c in row]
 
+def cube(dim):
+    cores = [ [ [ Core([None]*6) for i in range(dim) ] for j in range(dim) ] for k in range(dim) ]
+
+    for j in range(dim):
+        for i in range(dim):
+            for k in range(dim):
+                c = cores[k][j][i]
+                if i + 1 < dim:
+                    c.out_cores[0] = Output(cores[k][j][i+1], 1)
+                if i - 1 >= 0:
+                    c.out_cores[1] = Output(cores[k][j][i-1], 0)
+                if j + 1 < dim:
+                    c.out_cores[2] = Output(cores[k][j+1][i], 3)
+                if j - 1 >= 0:
+                    c.out_cores[3] = Output(cores[k][j-1][i], 2)
+                if k + 1 < dim:
+                    c.out_cores[4] = Output(cores[k+1][j][i], 5)
+                if k - 1 >= 0:
+                    c.out_cores[5] = Output(cores[k-1][j][i], 4)
+
+    return [ c for layer in cores for row in layer for c in row ]
 
 def main():
     parser = argparse.ArgumentParser(prog = 'mkarray')
-    parser.add_argument('type', choices=['chain', 'grid'])
+    parser.add_argument('type', choices=['chain', 'bichain', 'grid', 'cube'])
     parser.add_argument('size', type=int)
     args = parser.parse_args()
 
     if args.type == 'chain':
         print(to_vhdl('Chain{}'.format(args.size), chain(args.size)))
+    elif args.type == 'bichain':
+        print(to_vhdl('Bichain{}'.format(args.size), bichain(args.size)))
     elif args.type == 'grid':
         print(to_vhdl('Grid{dim}x{dim}'.format(dim = args.size), grid(args.size)))
+    elif args.type == 'cube':
+        print(to_vhdl('Cube{}'.format(args.size), cube(args.size)))
 
 
 if __name__ == "__main__":
