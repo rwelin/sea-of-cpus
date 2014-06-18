@@ -4,7 +4,7 @@ build: report.pdf
 clean:
 	rm -rf *.log *.xml *.bcf *.blg *.aux *.pdf
 
-report.pdf: report.latex $(wildcard *.tex) $(wildcard *.latex) sources.bib
+report.pdf: report.latex $(wildcard *.tex) $(wildcard *.latex) sources.bib $(wildcard *.s)
 	pdflatex $< && biber $(basename $<) && pdflatex $< && pdflatex $< 
 
 
