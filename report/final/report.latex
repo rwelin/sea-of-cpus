@@ -245,7 +245,9 @@ The design had of the processor had to take several aspects into account.
     \item As it was going to be target on an FPGA, the dedicated logic in the form of block RAMs and DSP slices had to be used effectively.
     \item The implementation had to a relatively few number of LUTs in order to accommodate for the ratio between LUTs and other dedicated logic.
     \item The processor had to run at a relatively high clock frequency.
+    \item It had to have an instruction set that allowed for good performing DSP programs such as FIR filters, but also allowed for more general computations.
 \end{itemize}
+
 
 %- Proof of concept processor:
 %  - Arithmetic instructions that prove points
@@ -256,6 +258,9 @@ The design had of the processor had to take several aspects into account.
 
 
 \subsection{Instruction set architecture}
+
+The first constraint on the instruction set architecture was the size of the instruction word.
+Since a single block RAM was going to be used as main memory, the instruction word had to be a possible word width of the RAM in order utilise it efficiently.
 
 The different instruction types of the instruction set architecture are shown in table \ref{t:instruction-types}.
 
@@ -355,14 +360,31 @@ The different instruction types of the instruction set architecture are shown in
 
 \subsubsection{Assembler}
 
+\subsubsection{Test template generator}
+
+Automated testing was used in order to ensure correct execution of the processor and its components.
+This was achieved by implementing a test template generator, called \texttt{mktest}.
+The program takes a VHDL entity and outputs a corresponding test template.
+Inputs and expected outputs could then be added to the template and when run as a simulation, would automatically fail on incorrect output.
+This method ensured faster refactoring and the test files also serve as a guarantee of the components behaviour.
+
+Listing \ref{lst:test-template} shows the template generated for the Core entity.
+
+\lstinputlisting[
+  language=vhdl,
+  label=lst:test-template,
+caption={Test template generated for \texttt{Core} by \texttt{mktest}}]
+  {core_test_template.vhd}
+
 \subsubsection{Array generator}
 
 Due to the Xilinx tools lack of support for versions of VHDL later than VHDL 1993, a program had to be written in order to generate large configurations of processor cores.
 The resulting program, called \texttt{mkarray}, takes a topology and a size as arguments and outputs a VHDL entity.
 The entity instantiates the given number of cores, connected according to the given topology.
+The entity uses the same interface as the core itself, but leaves the FIFO signals unconnected for the user to connect.
 
-Two configurations were implemented: a one directional chain and a two-dimensional grid pattern with bi-directional communication.
-These can be seen in listing \ref{l-mkarray-sample}.
+Four configurations were implemented: a one directional chain, a bi-directional chain, a two-dimensional grid pattern with bi-directional communication and a three-dimensional grid pattern with bi-directional communication.
+The one directional chain and the 2D grid can be seen in listing \ref{l-mkarray-sample}.
 
 Since the configurations are simply expressed using Python, additional topologies can easily be expressed.
 
