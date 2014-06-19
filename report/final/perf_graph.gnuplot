@@ -2,6 +2,7 @@ set terminal png
 set output 'bichain_vary_length.png'
 
 set autoscale
+set grid y
 set xlabel "Chain length"
 
 set ylabel "Fabric resources per core"

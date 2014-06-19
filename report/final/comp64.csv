@@ -1,0 +1,5 @@
+Configuration (64 cores),Slice Registers,Slice LUTs,Clock Period (ns)
+Uni-directional chain,49534,70489,3.334
+Bi-directional chain,53182,71367,3.771
+2D grid,68182,82186,4.475
+3D cube,,,

@@ -106,6 +106,24 @@ Second Marker: & \textbf{Dr K. Nikolic} \\
 \end{tabular}
 \end{titlepage}
 
+\begin{abstract}
+This project concerns the design and implementation of a large, configurable
+array of independent soft processors on an FPGA with inter-core communication.
+The aim of this project is to create a general purpose CPU that utilizes the
+dedicated logic, block RAMs, DSP slices of the target Xilinx FPGA well; to
+create a scalable interface between the CPUs that allows for communication
+between CPUs in different clock regions and to create an assembler in order to
+more easily program the device. By designing a very regular instruction set
+architecture which was greatly influenced by the target hardware, the resulting
+micro-architecture implementation was reasonably, but powerful, and also allowed for
+a very simple assembler. The inter-core communication was implemented using a
+FIFO based approach which allowed for straight-forward configuration and high
+bandwidth. The CPUs were tested using various programs, demonstrating good
+functionality and performance with different topologies. In addition, possible
+future improvements to the CPU are considered.
+\end{abstract}
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -118,6 +136,57 @@ A large number of these CPUs should be instantiated on a single FPGA, forming a 
 An array of this kind could be very useful in field such as image processing, cryptography and video compression.
 
 \section{Background}
+
+\subsection{DSP48E1 Slice}
+
+Figure \ref{fig:dsp48e1} shows a diagram of the embedded Xilinx DSP48E1 slice.
+It can perform a large number of different arithmetic and logic operations and is configurable on a per-cycle basis.
+
+The block consists of three main parts: the pre-adder, the multiplier and the ALU.
+It has four main data inputs: A (30 bits), B (18 bits), C (47 bits) and D (25 bits), three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE) and one main data output P (47 bits).
+The pre-adder allows for two of the data inputs (A and D) to be added or subtracted before the resulting signal enters the multiplier.
+The multiplier performs a multiplication on the output of the pre-adder and the B input.
+The final stage in the DSP slice is the ALU which can take a number of different inputs and perform addition, subtraction and various logic operations.
+The inputs include the C input, the output of the multiplier, inputs A and B concatenated and the previous result of the ALU.
+All these inputs and operations are configurable on every clock cycle which makes it a very flexible hardware block. \parencite{dsp48e1}
+
+
+\begin{figure}
+  \centering
+  \caption{Diagram of the DSP48E1 slice \parencite[pp 8]{dsp48e1}}
+  \label{fig:dsp48e1}
+  \includegraphics[width=\linewidth]{dsp48e1}
+\end{figure}
+
+\subsection{Block RAM}
+
+Figure \ref{fig:bram} shows a diagram of the Xilinx 36kb block RAM.
+The block RAM can be configured in many ways, including the word size and memory width, different port configurations (e.g. single port, true dual port) and clock inputs.
+
+\begin{figure}
+  \centering
+  \caption{Diagram of the 36kb block RAM \parencite[pp 14]{memory}}
+  \label{fig:bram}
+  \includegraphics[width=0.5\textwidth]{bram}
+\end{figure}
+
+\subsection{Related work}
+
+FPGAs have historically been used for accelerating algorithms by creating custom pipelined, parallel processors, often called hard-core processors.
+However, many programs are more suited for software implementations, and it has therefore become more and more common to use soft-core processors along with the accelerator hardware or standalone.
+Many commercial soft-processors are available including the Xilinx PicoBlaze microcontroller \parencite{picoblaze}, the Xilinx MicroBlaze \parencite{microblaze} and the Altera Nios II processor \parencite{nios2}.
+
+In research, many different kinds of soft processors have been proposed.
+These include multithreaded processors such as \parencite{octavo-2012} and \parencite{custard} which has automatically generated custom instructions.
+Various VLIW processors have also been developed such as \parencite{vliw} which has runtime configurable number of issue slots.
+Vector processors have also been attempted multiple times \parencite{ultra-fine-2009}\parencite{vespa}.
+
+With the recent addition of special purpose hardware such as the Xilinx DSP48E1 slice, research into soft-processors that utilise these resources has become increasingly popular.
+\cite{cheah2012lean} created a small processor that showcased the capabilities of a single DSP slice.
+They later, developed this into a complete processor \parencite{idea-2012}.
+
+There has also been research into multicore architectures such as \parencite{mora-2009} and \parencite{fpga-simd}.
+However, only the latter takes advantage of embedded DSP blocks.
 
 \subsection{Instruction set architectures}
 
@@ -180,57 +249,6 @@ The microarchitecture of a processors refers to a specific implementation of an 
 Although an instruction set architecture can be implemented in more than one microarchitecture, the two are closely related.
 Since the aim of this project is to effectively utilise the hardware on the FPGA, the microarchitecture is very influential on the resulting ISA.
 
-\subsubsection{DSP48E1 Slice}
-
-Figure \ref{fig:dsp48e1} shows a diagram of the embedded Xilinx DSP48E1 slice.
-It can perform a large number of different arithmetic and logic operations and is configurable on a per-cycle basis.
-
-The block consists of three main parts: the pre-adder, the multiplier and the ALU.
-It has four main data inputs: A (30 bits), B (18 bits), C (47 bits) and D (25 bits), three configuration inputs that control the ALU (ALUMODE), the inputs to the ALU (OPMODE) and the function of the pre-adder and multiplier inputs (INMODE) and one main data output P (47 bits).
-The pre-adder allows for two of the data inputs (A and D) to be added or subtracted before the resulting signal enters the multiplier.
-The multiplier performs a multiplication on the output of the pre-adder and the B input.
-The final stage in the DSP slice is the ALU which can take a number of different inputs and perform addition, subtraction and various logic operations.
-The inputs include the C input, the output of the multiplier, inputs A and B concatenated and the previous result of the ALU.
-All these inputs and operations are configurable on every clock cycle which makes it a very flexible hardware block. \parencite{dsp48e1}
-
-
-\begin{figure}
-  \centering
-  \caption{Diagram of the DSP48E1 slice \parencite[pp 8]{dsp48e1}}
-  \label{fig:dsp48e1}
-  \includegraphics[width=\linewidth]{dsp48e1}
-\end{figure}
-
-\subsubsection{Block RAM}
-
-Figure \ref{fig:bram} shows a diagram of the Xilinx 36kb block RAM.
-The block RAM can be configured in many ways, including the word size and memory width, different port configurations (e.g. single port, true dual port) and clock inputs.
-
-\begin{figure}
-  \centering
-  \caption{Diagram of the 36kb block RAM \parencite[pp 14]{memory}}
-  \label{fig:bram}
-  \includegraphics[width=0.5\textwidth]{bram}
-\end{figure}
-
-\subsection{Related work}
-
-FPGAs have historically been used for accelerating algorithms by creating custom pipelined, parallel processors, often called hard-core processors.
-However, many programs are more suited for software implementations, and it has therefore become more and more common to use soft-core processors along with the accelerator hardware or standalone.
-Many commercial soft-processors are available including the Xilinx PicoBlaze microcontroller \parencite{picoblaze}, the Xilinx MicroBlaze \parencite{microblaze} and the Altera Nios II processor \parencite{nios2}.
-
-In research, many different kinds of soft processors have been proposed.
-These include multithreaded processors such as \parencite{octavo-2012} and \parencite{custard} which has automatically generated custom instructions.
-Various VLIW processors have also been developed such as \parencite{vliw} which has runtime configurable number of issue slots.
-Vector processors have also been attempted multiple times \parencite{ultra-fine-2009}\parencite{vespa}.
-
-With the recent addition of special purpose hardware such as the Xilinx DSP48E1 slice, research into soft-processors that utilise these resources has become increasingly popular.
-\cite{cheah2012lean} created a small processor that showcased the capabilities of a single DSP slice.
-They later, developed this into a complete processor \parencite{idea-2012}.
-
-There has also been research into multicore architectures such as \parencite{mora-2009} and \parencite{fpga-simd}.
-However, only the latter takes advantage of embedded DSP blocks.
-
 
 
 %- Other attempts at soft-processors
@@ -255,10 +273,6 @@ The design had of the processor had to take several aspects into account.
 %- Proof of concept processor:
 %  - Arithmetic instructions that prove points
 %  - useful branch instructions and mov
-
-
-
-
 
 \subsection{Instruction set architecture}
 
@@ -343,12 +357,45 @@ This was removed in the final design since the same functionality could be achie
 
 The pipeline registers that circumvented the DSP block in order to achieve \texttt{mov} instructions from the register file were also removed by using the registers inside the DSP block instead.
 
-One big addition to the design is the logical shift right path that goes along the DSP block.
+\subsection{Additions to initial design}
+
+The final instruction set of the processor is shown in table \ref{t:instruction-set} and figure \ref{fig:core-IV} shows a block digram of the final implemented design.
+
+One addition to the initial design is the logical shift right path that goes along the DSP block.
 This separate compute path was added since the DSP block can only perform 17-bit shifts and a more flexible shift is necessary for fixed point FIR filters.
 
-The final instruction set of the processor is shown in table \ref{t:instruction-set}.
+Another important addition was the special \texttt{CMAC} instruction which allows for multiply-accumulate operation that does one MAC operation per cycle with a four cycle setup delay.
+This takes full advantage of the capabilities of the DSP block.
+The operation is implemented by using special purpose registers that keep track of the starting location of an array of filter coefficients (\texttt{coefa}) and the head of a circular buffer (\texttt{dataa}).
+The circular buffer is implemented in hardware is simply an offset (\texttt{datao}) that is incremented every cycle during the \texttt{CMAC} operation and wraps around to zero when it reaches the size of the buffer.
+At the start of the \texttt{CMAC} operation, the coefficient address and the data address plus the offset are loaded into the registers that will serve as the input addresses of the block RAM. 
+This size is also stored in a special register.
+During this instruction the program counter is frozen and the memory port that is normally used for instruction fetch is used as the read port of the coefficient array.
 
-Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
+A special instruction for writing to the circular buffer was also added in order to conveniently added new data to the array.
+This instruction decrements the offset register and writes the contents of a normal register to the corresponding memory location.
+
+\subsection{Inter-core communication}
+
+Two idea for communication between cores were explored: a shift-register based approach and a FIFO based approach.
+Using shift-registers as inputs would allow a processor to be statically connected to another processor and write up to one word per cycle.
+A valid bit would indicate whether a specific word had been written to be the sending processor.
+During a read, the receiving processor would then wait for the first valid piece of data to arrive at the head of the shift-register.
+
+This approach was decided against since it would require extremely precise timing between processors and would therefore make multi-core programming very difficult.
+Instead the FIFO based approach was chosen.
+Xilinx CORE generator tool can generate various FIFO configurations of different depth and width and clock configurations.
+Since the processors should be able to communicate across different clock regions, an asynchronous FIFO was chosen with independent read and write clocks.
+
+Additional logic was added to select to read from or write to a specific input or output from an array of FIFOs.
+The implementation is generic and only requires a change of a constant to change the number of FIFOs that belong to the Core.
+This makes it very convenient to change the number of inputs and outputs without much effort.
+
+The software primitives for sending and receiving data from another processor are the \texttt{movfr} and \texttt{movrf} instructions, respectively.
+These instructions allow the programmer to either send the value of a register onto a specific output or store the head of a given FIFO in a register.
+If a send instruction is issued, but the target FIFO is full, the processor halts until there is room to write.
+Similarly, if a receive instruction is issued, but the input FIFO is empty, the processor halts until there is something to read.
+
 
 \begin{table}
 \centering
@@ -433,6 +480,7 @@ Figure \ref{fig:core-IV} shows a block digram of the final implemented design.
     \label{fig:core-cmac}
     \resizebox{\linewidth}{!}{\input{core-cmac.tex}}
 \end{figure}
+
 \end{landscape}
 
 \subsection{Tools}
@@ -452,15 +500,6 @@ The script also makes it more convenient to change the instruction set without h
 
 Listing \ref{lst:instruction-set-txt} shows a subset of the Core's instruction set in this format and listing \ref{lst:instruction-set-vhdl} shows the corresponding VHDL package generated by \texttt{opcode\_vhdl\_gen}.
 
-\lstinputlisting[
-  label=lst:instruction-set-txt,
-caption={Subset of the Core's instruction set in the format used by the opcode generator and the assembler.}]
-  {instruction_set_example.txt}
-
-\lstinputlisting[
-  label=lst:instruction-set-vhdl,
-caption={Subset of the Core's instruction set as a VHDL package generated by \texttt{opcode\_vhdl\_gen} from Listing \ref{lst:instruction-set-txt}}]
-  {instruction_set_example.vhd}
 
 
 \subsubsection{Assembler}
@@ -469,6 +508,8 @@ In order to make it easier to program the device, a simple assembler was created
 The assembly language features instruction mnemonics, register names, signed decimal constants, labels and comments.
 Labels make it easier to write branch instructions and add static data.
 The assembler does two passes on the assembly code: the first to translate labels to memory addresses and the second to generate the machine code.
+The program outputs a VHDL package containing an array of machine instructions.
+This output was chosen because in would allow for easy usage in the simulations.
 
 \subsubsection{Test template generator}
 
@@ -479,12 +520,6 @@ Inputs and expected outputs could then be added to the template and when run as 
 This method ensured faster refactoring and the test files also serve as a guarantee of the components behaviour.
 
 Listing \ref{lst:test-template} shows the template generated for the Core entity.
-
-\lstinputlisting[
-  language=vhdl,
-  label=lst:test-template,
-caption={Test template generated for \texttt{Core} by \texttt{mktest}}]
-  {core_test_template.vhd}
 
 \subsubsection{Array generator}
 
@@ -530,24 +565,31 @@ This suggests that the tools have great difficulty placing the cores efficiently
     \includegraphics[width=\linewidth]{bichain_vary_length}
 \end{figure}
 
+By instantiating the same number of cores but with different topologies, the effect of more communication hardware can be observed.
+Figure \ref{fig:comp64} shows 64 cores in three different configurations.
+
+\begin{figure}[p]
+    \caption{Post place-and-route data of 64 processor cores with different configurations on a Xilinx Virtex 7 \fpgamodel.}
+    \label{fig:comp64}
+    \includegraphics[width=\linewidth]{comp64}
+\end{figure}
+
 \subsection{Software}
 
-\lstinputlisting[
-  label=lst:factorial,
-caption={Recursive factorial implementation}]
-  {factorial.s}
-
-\lstinputlisting[
-  label=lst:fibonacci,
-caption={Recursive fibonacci implementation (nops removed for consistency)}]
-  {fibonacci.s}
-
-\lstinputlisting[
-  label=lst:fir,
-caption={Fixed point FIR filter implementation}]
-  {fir_filter.s}
-
 Table \ref{t:program-performance} shows size and speed of three programs.
+These programs: recursive Fibonacci, recursive factorial and a fixed point FIR filter can be seen in listings \ref{lst:fibonacci}, \ref{lst:factorial} and \ref{lst:fir_filter}, respectively.
+The factorial and Fibonacci programs both demonstrate the general compute capabilities of the processor.
+The programs show that any recursive program that uses additions, multiplications and conditional branches can be written (as long as it fits in the program memory).
+Ubiquitous functions like binary search or bubble sort could therefore be implemented.
+
+The FIR filter program demonstrates the more specialized capabilities of the processor by using the \texttt{CMAC} instruction.
+For a filter with a large number of taps, the utilization of the DSP block is very high since it will spend most of its cycles calculating multiply-accumulates.
+The program also demonstrates that special purpose hardware can make programs much shorter.
+The FIR program is only a quarter of the size of the Fibonacci function, but performs a much more complex function.
+Being able to do multiply-accumulates very efficiently is not only good for FIR or IIR filter, but can also be used to perform vector-matrix multiplications, since the calculation is the same at its core.
+
+One downside of the \texttt{CMAC} instruction is that the implementation requires a significant amount of the area of the Core.
+Around 20\% of the area is in fact dedicated to the extra registers and control logic to realise \texttt{CMAC} and \texttt{CSTR}.
 
 \begin{table}
 \centering
@@ -556,12 +598,23 @@ Table \ref{t:program-performance} shows size and speed of three programs.
 \newcommand{\const}{\multicolumn{2}{c|}{const}}
 \begin{tabular}{| l | l | l | l | l |}
     \hline
-    Program     &   Size (\#instr.)  &   Size w/o nops   &   Cycle Count                     &   Exec. Time      \\ \hline
-    Fibonacci   &   110                 &   24              &   11047 for fib(10)               &                   \\ \hline
-    Factorial   &   85                  &   17              &   224 for 4!                      &                   \\ \hline
-    FIR         &   28                  &   16              &   13 setup + 12 outer loop + (4 + taps) inner loop &     \\ \hline
+    Program     &   Size (\#instr.)  &   Size w/o nops   &   Cycle Count     \\ \hline
+    Fibonacci   &   110                 &   24              &   11047 for fib(10)   \\ \hline
+    Factorial   &   85                  &   17              &   224 for 4!             \\ \hline
+    FIR         &   28                  &   16              &   $13 + numinputs\times(12 + (4 + taps))$ \\ \hline
 \end{tabular}
 \end{table}
+
+The inter-core communication has a latency of 18 cycles from instruction fetch on the sending processor to register write on the receiving processor.
+The sending processor spends six cycles from instruction fetch until the receiving FIFO is written to.
+It then takes another six cycles until the FIFO clears its empty-flag.
+Finally it takes another six cycles for the data to be read from the FIFO, travel down the pipeline in the receiving processor and be written to the register file.
+
+The bandwidth of the communication is one word per cycle since one send instruction can be issued every cycle.
+This is independent on the number of outputs the processor has, since only one can be written to every cycle with the send instruction.
+At 330 MHz this is 5.9 gigabits per second per core.
+Even at the lowest observed clock frequency of the larger configurations, the bandwidth is 4 gigabits per second per core.
+It is, however, safe to say that with increasing number of cores and more complex communication the clock rate will go down and so will the bandwidth.
 
 
 \section{Discussion}
@@ -583,6 +636,15 @@ The current design could benefit from a forwarding path from the output of the D
 This would save two cycles for memory operations that are dependent on a DSP instruction.
 Although this would be of some benefit, it would mean extra area usage to an already too large processor.
 
+Regarding the decreasing clock frequency with increasing number of cores, it might be an issue with the tools not grouping the processors close enough together which could potentially be solved by manually placing the cores.
+It could also be a problem generated by the size of the processor.
+By having a smaller core, it would be easier for the tool to pack the processors tightly.
+
+The system presented in this paper is also poorly adapted to the hardware, since many Virtex-7 chips have as little as 400 logic cells per block RAM and as little as 200 logic cells DSP48E1 slice \parencite{virtex7-overview}.
+A better architecture would be much smaller, closer 200 logic cells.
+With the same FIFO based communication, a lot more processors would be possible to instantiate.
+The ratio between block RAMs and DSP blocks is often 1 to 2 on Virtex-7 chips and an architecture that use two DSP blocks instead of one would utilize the resources better.
+
 The tools created in addition to the processor were useful during the development processes, but would not be considered very good as a product.
 The assembler, especially, lacks basic features such as checking the correct operands for a given instruction.
 The latest version only fails if the mnemonic is incorrect or more than two operands are given.
@@ -599,6 +661,45 @@ A better programming language and/or debugging tools that detect these problems 
 
 \section{Conclusion}
 
+Although this project showed the possibility of creating arrays of DSP block based soft processors on an FPGA,
+the resulting hardware was not very well performing overall.
+The processor itself uses to many logic cells which inevitable results in poor utilization of block RAMs and DSP blocks.
+The FIFO based communication was not very scalable and clock frequency dropped quickly with increasing topology complexity and number of cores in the array.
+
 \printbibliography
+
+\pagebreak
+\section*{Appendix}
+
+\lstinputlisting[
+  label=lst:instruction-set-txt,
+caption={Subset of the Core's instruction set in the format used by the opcode generator and the assembler.}]
+  {instruction_set_example.txt}
+
+\lstinputlisting[
+  label=lst:instruction-set-vhdl,
+caption={Subset of the Core's instruction set as a VHDL package generated by \texttt{opcode\_vhdl\_gen} from Listing \ref{lst:instruction-set-txt}}]
+  {instruction_set_example.vhd}
+
+\lstinputlisting[
+  language=vhdl,
+  label=lst:test-template,
+caption={Test template generated for \texttt{Core} by \texttt{mktest}}]
+  {core_test_template.vhd}
+
+\lstinputlisting[
+  label=lst:factorial,
+caption={Recursive factorial implementation}]
+  {factorial.s}
+
+\lstinputlisting[
+  label=lst:fibonacci,
+caption={Recursive fibonacci implementation (nops removed for consistency)}]
+  {fibonacci.s}
+
+\lstinputlisting[
+  label=lst:fir_filter,
+caption={Fixed point FIR filter implementation}]
+  {fir_filter.s}
 
 \end{document}
