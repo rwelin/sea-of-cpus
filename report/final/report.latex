@@ -378,7 +378,6 @@ The pipeline registers that circumvented the DSP block in order to achieve \text
 The final instruction set of the processor is shown in table \ref{t:instruction-set} and figure \ref{fig:core-IV} shows a block digram of the final implemented design.
 The processor at its core a RISC architecture, but has some elements of CISC as well since it has arithmetic instructions that operate directly on memory.
 
-
 One addition to the initial design is the logical shift right path that goes along the DSP block.
 This separate compute path was added since the DSP block can only perform 17-bit shifts and a more flexible shift is necessary for fixed point FIR filters.
 
@@ -437,8 +436,8 @@ Listings \ref{lst:ping} and \ref{lst:pong} shows two programs that when put on t
     star        &   ra      &   -       &   [ra] := acc             \\ \hline
     ldrr        &   ra      &   rb      &   ra := [rb]              \\ \hline
     strr        &   ra      &   rb      &   [ra] := rb              \\ \hline
-    shfta       &   \const              &   acc := acc \textgreater\textgreater by const \\ \hline
-    shftar      &   ra      &   -       &   acc := acc logical shift right by ra \\ \hline
+    shfta       &   \const              &   acc := acc \textgreater\textgreater const \\ \hline
+    shftar      &   ra      &   -       &   acc := acc \textgreater\textgreater ra \\ \hline
     adda        &   \const              &   acc := acc + const      \\ \hline
     suba        &   \const              &   acc := acc - const      \\ \hline
     addar       &   ra      &   const   &   ra := ra + const        \\ \hline
@@ -507,6 +506,26 @@ Additional logic to delay the write-back stage also had to be added.
 \end{figure}
 
 \end{landscape}
+
+\subsection{Detailed description of pipeline operation}
+
+Below follows a description of the pipeline during normal operation (no multiplication instruction or \texttt{CMAC}).
+The list number refers to the pipeline stage.
+
+\begin{enumerate}
+  \item The read from the instruction memory is initiated. Program counter is incremented or set to a branch address.
+  \item The instruction word is read.
+  \item The instruction word is decoded and all control flags are set.
+  \item Data is fetched from the register file and accumulator.
+  \item The processor determines if a branch will occur two cycles. Data read/write is initiated.
+  \item Data is fetched from the data memory or written to.
+  \item The inputs to the DSP block are determined and the shift operation is performed. Branch occurs.
+  \item The DSP data and control inputs are set.
+  \item DSP computing.
+  \item Ditto.
+  \item Output data is read from the DSP block.
+  \item Register/accumulator write-back occurs.
+\end{enumerate}
 
 \subsection{Tools}
 
@@ -583,6 +602,8 @@ The number of slice LUTs per core goes down slightly as more cores are added, su
 The most significant result, however, is that the clock period increases rapidly with the number of instantiated cores.
 Eight cores can run at just under 3 ns, but 64 cores can only run as slowly as somewhat under 4 ns.
 This suggests that the tools have great difficulty placing the cores efficiently even at a utilization as low as 20\%.
+The critical paths usually come either from the read from the instruction memory or are caused by the large shift operation.
+More than 70\% of this delay is caused by routing as opposed to logic.
 
 \begin{figure}
     \caption{Post place-and-route data of bi-directional chains of varying lengths on a Xilinx Virtex 7 \fpgamodel.}
