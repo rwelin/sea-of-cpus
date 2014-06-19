@@ -109,7 +109,7 @@ Second Marker: & \textbf{Dr K. Nikolic} \\
 
 \section*{Acknowledgements}
 
-I would like to thank my supervisor Dr David Thomas for all his help throughout this project. 
+I would like to thank my supervisor, Dr David Thomas, for all his help throughout this project.
 
 \newpage
 
@@ -142,8 +142,9 @@ Over the last few year, however, the demand for special purpose hardware primiti
 Modern FPGAs have therefore become increasingly complex, with large amounts of traditional configurable logic, RAM blocks and dedicated DSP units.
 
 The aim of the project is to design and implement a small, independent soft processor that utilise these resources.
-A large number of these CPUs should be instantiated on a single FPGA, forming a large processor array that can co-operate to solve larger, parallel tasks.
+A large number of these CPUs should be instantiated on a single FPGA, forming a processor array that can co-operate to solve larger, parallel tasks.
 An array of this kind could be very useful in field such as image processing, cryptography and video compression.
+In addition to the processor, a basic tool for programming the device in the form of an assembler is created.
 
 \section{Background}
 
@@ -330,7 +331,7 @@ The different instruction types of the instruction set architecture are shown in
 \subsection{Initial designs}
 
 A key difference between processors is the placement of the main memory in relation to the ALU in the pipeline.
-In the beginning, a design heavily inspired by the MIPS architecture was considered and can be seen in figure \ref{core-1}.
+In the beginning, a design heavily inspired by the MIPS architecture was considered which can be seen in figure \ref{core-1}.
 
 It has the same
 execution stages: instruction fetch, instruction decode and register read,
@@ -385,7 +386,7 @@ Another important addition was the special \texttt{CMAC} instruction which allow
 This takes full advantage of the capabilities of the DSP block.
 The operation is implemented by using special purpose registers that keep track of the starting location of an array of filter coefficients (\texttt{coefa}) and the head of a circular buffer (\texttt{dataa}).
 The circular buffer is implemented in hardware is simply an offset (\texttt{datao}) that is incremented every cycle during the \texttt{CMAC} operation and wraps around to zero when it reaches the size of the buffer.
-At the start of the \texttt{CMAC} operation, the coefficient address and the data address plus the offset are loaded into the registers that will serve as the input addresses of the block RAM. 
+At the start of the \texttt{CMAC} operation, the coefficient address and the data address plus the offset are loaded into the registers that will serve as the input addresses of the block RAM.
 This size is also stored in a special register.
 During this instruction the program counter is frozen and the memory port that is normally used for instruction fetch is used as the read port of the coefficient array.
 A stripped down diagram of the Core during the \texttt{CMAC} instruction can be seen in figure \ref{fig:core-cmac}.
@@ -403,7 +404,7 @@ During a read, the receiving processor would then wait for the first valid piece
 This approach was decided against since it would require extremely precise timing between processors and would therefore make multi-core programming very difficult.
 Instead the FIFO based approach was chosen.
 Xilinx CORE generator tool can generate various FIFO configurations of different depth and width and clock configurations.
-Since the processors should be able to communicate across different clock regions, an asynchronous FIFO was chosen with independent read and write clocks.
+Since the processors should be able to communicate across different clock regions, a FIFO implemented in distributed RAM was chosen with independent read and write clocks.
 
 Additional logic was added to select to read from or write to a specific input or output from an array of FIFOs.
 The implementation is generic and only requires a change of a constant to change the number of FIFOs that belong to the Core.
@@ -600,10 +601,10 @@ Figure \ref{fig:bichain-vary-length} shows post place-and-route resource usage a
 As can be observed in the graph, the number of slice registers per core stays constant over the range entire range.
 The number of slice LUTs per core goes down slightly as more cores are added, suggesting that the tools are able to share some slice LUTs between cores.
 The most significant result, however, is that the clock period increases rapidly with the number of instantiated cores.
-Eight cores can run at just under 3 ns, but 64 cores can only run as slowly as somewhat under 4 ns.
-This suggests that the tools have great difficulty placing the cores efficiently even at a utilization as low as 20\%.
+Eight cores can run at just under 3 ns (the minimum possible period on the target device being around 2 ns), but 64 cores can only run as slowly as somewhat under 4 ns.
+This suggests that the tools have great difficulty placing the cores efficiently even at a utilization as low as 20\% and that the cores might have to be manually placed on the FPGA.
 The critical paths usually come either from the read from the instruction memory or are caused by the large shift operation.
-More than 70\% of this delay is caused by routing as opposed to logic.
+More than 70\% of this delay is caused by routing rather than logic.
 
 \begin{figure}
     \caption{Post place-and-route data of bi-directional chains of varying lengths on a Xilinx Virtex 7 \fpgamodel.}
@@ -631,18 +632,6 @@ The factorial and Fibonacci programs both demonstrate the general compute capabi
 The programs show that any recursive program that uses additions, multiplications and conditional branches can be written (as long as it fits in the program memory).
 Ubiquitous functions like binary search or bubble sort could therefore be implemented.
 
-The FIR filter program demonstrates the more specialized capabilities of the processor by using the \texttt{CMAC} instruction.
-For a filter with a large number of taps, the utilization of the DSP block is very high since it will spend most of its cycles calculating multiply-accumulates.
-The program also demonstrates that special purpose hardware can make programs much shorter.
-The FIR program is only a quarter of the size of the Fibonacci function, but performs a much more complex function.
-Being able to do multiply-accumulates very efficiently is not only good for FIR or IIR filter, but can also be used to perform vector-matrix multiplications, since the calculation is the same at its core.
-
-For an FIR filter with a large number of taps, the computation is dominated by the multiply-accumulate operation.
-For a linear chain of 64 cores running at 250 MHz with each processor running a filter with a large number of taps, the effective number of multiply-accumulate operations is 16 billion MACs per second.
-
-One downside of the \texttt{CMAC} instruction is that the implementation requires a significant amount of the area of the Core.
-Around 20\% of the area is in fact dedicated to the extra registers, adders and control logic to realise \texttt{CMAC} and \texttt{CSTR}.
-
 \begin{table}
 \centering
 \caption{Program performance}
@@ -657,6 +646,22 @@ Around 20\% of the area is in fact dedicated to the extra registers, adders and 
 \end{tabular}
 \end{table}
 
+\subsubsection{FIR filter}
+
+The FIR filter program demonstrates the more specialized capabilities of the processor by using the \texttt{CMAC} instruction.
+For a filter with a large number of taps, the utilization of the DSP block is very high since it will spend most of its cycles calculating multiply-accumulates.
+The program also demonstrates that special purpose hardware can make programs much shorter.
+The FIR program is only a quarter of the size of the Fibonacci function, but performs a much more complex function.
+Being able to do multiply-accumulates very efficiently is not only good for FIR or IIR filter, but can also be used to perform vector-matrix multiplications, since the calculation is the same at its core.
+
+For an FIR filter with a large number of taps, the computation is dominated by the multiply-accumulate operation.
+For a linear chain of 64 cores running at 250 MHz with each processor running a filter with a large number of taps, the effective number of multiply-accumulate operations is 16 billion MACs per second.
+
+One downside of the \texttt{CMAC} instruction is that the implementation requires a significant amount of the area of the Core.
+Around 20\% of the area is in fact dedicated to the extra registers, adders and control logic to realise \texttt{CMAC} and \texttt{CSTR}.
+
+\subsubsection{Inter-core communication}
+
 The inter-core communication has a latency of 18 cycles from instruction fetch on the sending processor to register write on the receiving processor.
 The sending processor spends six cycles from instruction fetch until the receiving FIFO is written to.
 It then takes another six cycles until the FIFO clears its empty-flag.
@@ -667,7 +672,6 @@ This is independent on the number of outputs the processor has, since only one c
 At 330 MHz this is 5.9 gigabits per second per core.
 Even at the lowest observed clock frequency of the larger configurations, the bandwidth is 4 gigabits per second per core.
 It is, however, safe to say that with increasing number of cores and more complex communication the clock rate will go down and so will the bandwidth.
-
 
 \section{Discussion}
 
@@ -692,7 +696,8 @@ Although this would be of some benefit, it would mean extra area usage to an alr
 
 The choice to make a multiplication instruction take one more clock cycle was ill-considered since it unnecessarily complicates the write-back logic.
 The final implementation also negates any write-back that would have occurred in an instruction following the multiplication.
-This problem could easily be alleviated by enabling an extra set of registers in the pre-adder stage of the DSP block (this is done by setting the INMODE input to the appropriate value).
+This problem could easily be alleviated by enabling an extra set of registers in the pre-adder stage of the DSP block during non-multiplication instructions (this is simply done by setting the INMODE input to the appropriate value).
+The write-back stage would then always occur on the same cycle.
 
 Regarding the decreasing clock frequency with increasing number of cores, it might be an issue with the tools not grouping the processors close enough together which could potentially be solved by manually placing the cores.
 It could also be a problem generated by the size of the processor.
